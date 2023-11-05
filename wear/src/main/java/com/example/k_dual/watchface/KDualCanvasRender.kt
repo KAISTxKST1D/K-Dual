@@ -1,5 +1,7 @@
 package com.example.k_dual.watchface
 
+import android.R.attr.x
+import android.R.attr.y
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -16,6 +18,7 @@ import androidx.wear.watchface.WatchState
 import androidx.wear.watchface.style.CurrentUserStyleRepository
 import com.example.k_dual.R
 import java.time.ZonedDateTime
+
 
 class KDualCanvasRender (
     context: Context,
@@ -157,30 +160,48 @@ class KDualCanvasRender (
             height - mVertical - pTop*2
         }
 
-        val dropRadius = unitF * 5.5f
+        val icWidth = unitF * 11f
         val space = unitF * 4f
 
+        // Draw name text
         namePaint.getTextBounds(name, 0, name.length, textBounds)
-        val totalWidth = dropRadius*2 + space + textBounds.width()
+        val totalWidth = icWidth + space + textBounds.width()
 
-        val nameStartX = centerX - totalWidth/2 + dropRadius*2 + space
+        val nameStartX = centerX - totalWidth/2 + icWidth + space
         canvas.drawText(name, nameStartX, centerY - textBounds.exactCenterY(), namePaint)
 
-        val icCenterX = centerX - totalWidth/2 + dropRadius
-        val icCenterY = centerY + (dropRadius + dropRadius * 1.8f - textBounds.height())/2
+        val icCenterX = centerX - totalWidth/2 + icWidth/2
+        val icCenterY = centerY
+
+        // Draw waterDrop icon
+        val originalWidth = 11f // The original width of the SVG
+        val scale: Float = icWidth / originalWidth // Calculate the scale factor based on the new width
 
         val waterDropPath = Path().apply {
-            moveTo(icCenterX - dropRadius, icCenterY)
-            arcTo(icCenterX - dropRadius, icCenterY - dropRadius, icCenterX + dropRadius, icCenterY + dropRadius, 180f, -180f, false)
-            val controlX1 = icCenterX + dropRadius * 1.1f
-            val controlY1 = icCenterY - dropRadius * 0.5f
-            quadTo(controlX1, controlY1, icCenterX, icCenterY - dropRadius * 1.8f)
-
-            val controlX2 = icCenterX - dropRadius * 1.1f
-            val controlY2 = icCenterY - dropRadius * 0.5f
-            quadTo(controlX2, controlY2, icCenterX - dropRadius, icCenterY)
+            moveTo(icCenterX + scale * (11 - originalWidth / 2), icCenterY + scale * (9.45087f - 7.5f))
+            cubicTo(
+                icCenterX + scale * (11 - originalWidth / 2), icCenterY + scale * (12.5156f - 7.5f),
+                icCenterX + scale * (8.53757f - originalWidth / 2), icCenterY + scale * (15 - 7.5f),
+                icCenterX + scale * (5.5f - originalWidth / 2), icCenterY + scale * (15 - 7.5f)
+            )
+            cubicTo(
+                icCenterX + scale * (2.46243f - originalWidth / 2), icCenterY + scale * (15 - 7.5f),
+                icCenterX + scale * (0 - originalWidth / 2), icCenterY + scale * (12.5156f - 7.5f),
+                icCenterX + scale * (0 - originalWidth / 2), icCenterY + scale * (9.45087f - 7.5f)
+            )
+            cubicTo(
+                icCenterX + scale * (0 - originalWidth / 2), icCenterY + scale * (6.38617f - 7.5f),
+                icCenterX + scale * (5.5f - originalWidth / 2), icCenterY + scale * (0 - 7.5f),
+                icCenterX + scale * (5.5f - originalWidth / 2), icCenterY + scale * (0 - 7.5f)
+            )
+            cubicTo(
+                icCenterX + scale * (5.5f - originalWidth / 2), icCenterY + scale * (0 - 7.5f),
+                icCenterX + scale * (11 - originalWidth / 2), icCenterY + scale * (6.38617f - 7.5f),
+                icCenterX + scale * (11 - originalWidth / 2), icCenterY + scale * (9.45087f - 7.5f)
+            )
             close()
         }
+
         canvas.drawPath(waterDropPath, iconPaint)
     }
 
