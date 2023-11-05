@@ -71,15 +71,17 @@ class KDualCanvasRender (
         zonedDateTime: ZonedDateTime,
         sharedAssets: KDualAssets
     ) {
-        width = bounds.width().toFloat()
-        height = bounds.height().toFloat()
-        unitF = width / 192f
-        mHorizontal = unitF * 12f
-        mVertical = unitF * 20.5f
-        pHorizontal = unitF * 17.5f
-        pTop = unitF * 8f
-        pBottom = unitF * 14f
-        gap = unitF * 1.5f
+        if (bounds.width().toFloat() != width) {
+            width = bounds.width().toFloat()
+            height = bounds.height().toFloat()
+            unitF = width / 192f
+            mHorizontal = unitF * 12f
+            mVertical = unitF * 20.5f
+            pHorizontal = unitF * 17.5f
+            pTop = unitF * 8f
+            pBottom = unitF * 14f
+            gap = unitF * 1.5f
+        }
 
         canvas.drawColor(Color.BLACK)
 
@@ -102,7 +104,7 @@ class KDualCanvasRender (
     private fun drawDigitalClock(canvas: Canvas, hour: Int, minute: Int) {
         val clockPaint = CustomPaint.clockAndBatteryPaint(unitF, robotoMedium)
 
-        val timeText = if (minute < 10) {"$hour:0$minute"} else {"$hour:$minute"}
+        val timeText = String.format("%02d:%02d", hour, minute)
         val path = Path().apply {
             arcTo(width/2 - 40f, 20f, width/2 + 40f, 40f, -150f, 120f, false) }
         val arcLength = PathMeasure(path, false).length
@@ -137,7 +139,7 @@ class KDualCanvasRender (
             rect = RectF(mHorizontal, height/2 + gap, width-mHorizontal, height-mVertical)
         }
 
-        val backgroundPaint = CustomPaint.defaultBackgroundPaint(rect)
+        val backgroundPaint = CustomPaint.backgroundPaint(rect)
         val path = Path().apply {
             addRoundRect(rect, corners, Path.Direction.CW)
         }
@@ -226,8 +228,10 @@ class KDualCanvasRender (
         val paint = CustomPaint.bloodGlucoseTextPaint(unitF, robotoMedium)
         val valueText = value.toString()
         paint.getTextBounds(valueText, 0, valueText.length, textBounds)
-        val textX = width - mHorizontal - pHorizontal - textBounds.width()
-        val textY = if (order == 1) { height/2 - gap - pBottom } else { height/2 + gap + pBottom + textBounds.height() }
+
+        val rectHalfHeight = unitF * 27f / 2f
+        val textX = width - mHorizontal - pHorizontal - unitF*69f/2
+        val textY = if (order == 1) { height/2 - gap - pBottom - rectHalfHeight + textBounds.height()/2 } else { height/2 + gap + pBottom + textBounds.height() - rectHalfHeight + textBounds.height()/2 }
         canvas.drawText(valueText, textX, textY, paint)
     }
 

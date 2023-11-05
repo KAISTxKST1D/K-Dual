@@ -20,10 +20,7 @@ class CustomPaint {
             textSize = unitF * 13
         }
 
-        fun defaultBackgroundPaint(bound: RectF): Paint {
-            val colors = intArrayOf(
-                0x33DADCDD, 0x218FC1C6
-            )
+        private fun createGradientPaint(bound: RectF, colors: IntArray): Paint {
             val positions = floatArrayOf(0.0f, 1.3f)
             val angle = 111.73f
 
@@ -38,6 +35,13 @@ class CustomPaint {
                 shader = gradientShader
             }
             return backgroundPaint
+        }
+
+        fun backgroundPaint(bound: RectF): Paint {
+            val colors = intArrayOf(
+                0x33DADCDD, 0x218FC1C6
+            )
+            return createGradientPaint(bound, colors)
         }
 
         fun backgroundPaint(colorName: CustomColor, bound: RectF): Paint {
@@ -63,21 +67,7 @@ class CustomPaint {
                     Color.argb(140, 207, 148, 254)
                 )
             }
-            val positions = floatArrayOf(0f, 1f)
-            val angle = 111.73f
-
-            val matrix = Matrix()
-            matrix.setRotate(angle-90f, bound.width()/2, bound.top+bound.height()/2)
-
-            val gradientShader = LinearGradient(bound.left, bound.top, bound.right, bound.bottom, colors, positions, Shader.TileMode.CLAMP)
-            gradientShader.setLocalMatrix(matrix)
-
-            val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                style = Paint.Style.FILL
-                shader = gradientShader
-            }
-
-            return backgroundPaint
+            return createGradientPaint(bound, colors)
         }
 
         fun iconPaint(colorName: CustomColor): Paint {
@@ -130,6 +120,7 @@ class CustomPaint {
                 color = Color.WHITE
                 typeface = font
                 textSize = unitF * 40f
+                textAlign = Paint.Align.CENTER
             }
         }
     }
