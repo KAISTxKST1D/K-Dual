@@ -84,9 +84,9 @@ class CustomPaint {
             return paint
         }
 
-        fun namePaint(colorName: CustomColor, unitF: Float, font: Typeface): Paint {
+        fun namePaint(colorName: CustomColor, unitF: Float, isDualMode: Boolean, font: Typeface): Paint {
             val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-            paint.textSize = unitF * 14f
+            paint.textSize = if (isDualMode) { unitF * 14f } else { unitF * 18f }
             paint.typeface = font
 
             when (colorName) {
@@ -115,11 +115,11 @@ class CustomPaint {
             }
         }
 
-        fun bloodGlucoseTextPaint(unitF: Float, font: Typeface): Paint {
+        fun bloodGlucoseTextPaint(unitF: Float, isDualMode: Boolean, font: Typeface): Paint {
             return Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 color = Color.WHITE
                 typeface = font
-                textSize = unitF * 40f
+                textSize = if (isDualMode) { unitF * 40f } else { unitF * 56f }
                 textAlign = Paint.Align.CENTER
             }
         }
