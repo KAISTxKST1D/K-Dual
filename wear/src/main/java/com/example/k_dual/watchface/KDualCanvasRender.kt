@@ -1,6 +1,9 @@
 package com.example.k_dual.watchface
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -10,8 +13,15 @@ import android.graphics.PathMeasure
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Typeface
+import android.os.BatteryManager
+import android.os.Handler
+import android.os.Looper
 import android.view.SurfaceHolder
+import androidx.wear.watchface.ComplicationSlot
 import androidx.wear.watchface.Renderer
+import androidx.wear.watchface.TapEvent
+import androidx.wear.watchface.TapType
+import androidx.wear.watchface.WatchFace
 import androidx.wear.watchface.WatchState
 import androidx.wear.watchface.style.CurrentUserStyleRepository
 import com.example.k_dual.R
@@ -32,8 +42,10 @@ class KDualCanvasRender (
     canvasType,
     interactiveDrawModeUpdateDelayMillis,
     clearWithBackgroundTintBeforeRenderingHighlightLayer = true
-) {
+), WatchFace.TapListener {
     private val isDualMode: Boolean = false
+    private var isUser1AlertOn: Boolean = false
+    private var isUser2AlertOn: Boolean = false
 
     private var width : Float = 0F
     private var height : Float = 0F
@@ -47,6 +59,8 @@ class KDualCanvasRender (
 
     private val textBounds = Rect()
 
+    // TODO. paint 여기서 한번만 불러 오는 게 낫나?
+
     // Resources for arrow image files
     private val r = context.resources
     private val arrowUp: Bitmap = BitmapFactory.decodeResource(r, R.drawable.arrow_up)
@@ -55,6 +69,20 @@ class KDualCanvasRender (
     private val assetManager = context.assets
     private val robotoMedium = Typeface.createFromAsset(assetManager, "Roboto-Medium.ttf")
     private val robotoRegular = Typeface.createFromAsset(assetManager, "Roboto-Regular.ttf")
+
+    // Get watch battery stat
+    private class BatteryReceiver: BroadcastReceiver() {
+        var batteryStat: Int = 0
+        override fun onReceive(p0: Context?, intent: Intent?) {
+            batteryStat = intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: 0
+        }
+    }
+    private val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+    private val batteryReceiver = BatteryReceiver()
+
+    init {
+        context.registerReceiver(batteryReceiver, intentFilter)
+    }
 
     override suspend fun createSharedAssets(): KDualAssets {
         return KDualAssets()
@@ -92,22 +120,22 @@ class KDualCanvasRender (
         drawRemainingBattery(canvas)
 
         if (isDualMode) {
-            drawBackgroundBox(canvas, "up")
-            drawBackgroundBox(canvas, "down")
+            drawBackgroundBox(canvas, "up" , isUser1AlertOn, CustomColor.YELLOW)
+            drawBackgroundBox(canvas, "down" , isUser2AlertOn, CustomColor.BLUE)
 
             drawIconAndUserName(canvas, 1, "Minha", CustomColor.YELLOW)
             drawIconAndUserName(canvas, 2, "Jaewon", CustomColor.BLUE)
 
-            drawDiffArrowBox(canvas, 1, 84)
-            drawDiffArrowBox(canvas, 2, -8)
+            drawDiffArrowBox(canvas, 1, isUser1AlertOn, CustomColor.YELLOW, 84)
+            drawDiffArrowBox(canvas, 2, isUser2AlertOn, CustomColor.BLUE, -8)
 
             drawBloodGlucose(canvas, 1, 144)
             drawBloodGlucose(canvas, 2, 94)
         } else {
-            drawBackgroundBox(canvas, null)
+            drawBackgroundBox(canvas, null, isUser1AlertOn, CustomColor.PURPLE)
             drawIconAndUserName(canvas, null, "Minha", CustomColor.PURPLE)
             drawBloodGlucose(canvas, null, 144)
-            drawDiffArrowBox(canvas, null, 4)
+            drawDiffArrowBox(canvas, null, isUser1AlertOn, CustomColor.PURPLE, 4)
         }
     }
 
@@ -121,19 +149,17 @@ class KDualCanvasRender (
         val textWidth = clockPaint.measureText(timeText)
         val hOffset = (arcLength - textWidth) / 2
 
-        canvas.drawTextOnPath(timeText, path, hOffset, 5f, clockPaint)
+        canvas.drawTextOnPath(timeText, path, hOffset, unitF*5f, clockPaint)
     }
 
     private fun drawRemainingBattery(canvas: Canvas) {
         val batteryPaint = CustomPaint.clockAndBatteryPaint(unitF, robotoMedium)
-        // TODO. get real battery status
-        val remainingBattery = 39
-        val batteryText = "$remainingBattery%"
+        val batteryText = "${batteryReceiver.batteryStat}%"
         val textWidth = batteryPaint.measureText(batteryText)
         canvas.drawText(batteryText, width/2-textWidth/2, height - 10, batteryPaint)
     }
 
-    private fun drawBackgroundBox(canvas: Canvas, position: String?) {
+    private fun drawBackgroundBox(canvas: Canvas, position: String?, isAlertOn: Boolean, color: CustomColor) {
         val smallR = if (isDualMode) { unitF * 24f } else { unitF * 120f }
         val bigR = unitF * 120f
 
@@ -153,7 +179,7 @@ class KDualCanvasRender (
             corners = corners.reversedArray()
         }
 
-        val backgroundPaint = CustomPaint.backgroundPaint(rect)
+        val backgroundPaint = if (isAlertOn) { CustomPaint.backgroundPaint(color, rect) } else { CustomPaint.backgroundPaint(rect) }
         val path = Path().apply {
             addRoundRect(rect, corners, Path.Direction.CW)
         }
@@ -215,7 +241,7 @@ class KDualCanvasRender (
         canvas.drawPath(waterDropPath, iconPaint)
     }
 
-    private fun drawDiffArrowBox(canvas: Canvas, order: Number?, difference: Int) {
+    private fun drawDiffArrowBox(canvas: Canvas, order: Number?, isAlertOn: Boolean, color: CustomColor, difference: Int) {
         // Draw rounded rect
         val rectHeight = unitF * 27f
         val rectWidth = if (difference < 10 && difference > -10) { unitF * 56f } else { unitF * 61f }
@@ -240,8 +266,8 @@ class KDualCanvasRender (
         }
 
         val rectF = RectF(rectLeft, rectTop, rectLeft + rectWidth, rectTop + rectHeight)
-
-        val backgroundPaint = CustomPaint.arrowBoxPaint()
+        val backgroundPaint = if (isAlertOn) { CustomPaint.arrowBoxPaint(color, unitF) }
+            else { CustomPaint.arrowBoxPaint(null, unitF) }
         canvas.drawRoundRect(rectF, rectRoundness, rectRoundness, backgroundPaint)
 
         // Draw arrow source bitmap
@@ -258,14 +284,20 @@ class KDualCanvasRender (
             arrowSrc = arrowUp
         }
 
+        val arrowPaint = if (isAlertOn) {
+            CustomPaint.arrowPaint(color)
+        } else { null }
+
         val boxPaddingHorizontal = unitF * 8f
         val rectCenterY = rectTop + rectHeight/2
         val arrowSize = unitF * 15f
         val arrowRect = RectF(rectLeft + boxPaddingHorizontal, rectCenterY - arrowSize/2, rectLeft + boxPaddingHorizontal + arrowSize, rectCenterY + arrowSize/2)
-        canvas.drawBitmap(arrowSrc, null, arrowRect, null)
+        canvas.drawBitmap(arrowSrc, null, arrowRect, arrowPaint)
 
         // Draw difference value
-        val paint = CustomPaint.differenceTextPaint(unitF, robotoRegular)
+        val paint = if (isAlertOn) { CustomPaint.differenceTextPaint(unitF, robotoRegular, color) } else {
+            CustomPaint.differenceTextPaint(unitF, robotoRegular, null)
+        }
         paint.getTextBounds(differenceText, 0, differenceText.length, textBounds)
         canvas.drawText(differenceText, rectLeft+rectWidth-boxPaddingHorizontal-textBounds.width(), rectCenterY-textBounds.exactCenterY(), paint)
     }
@@ -293,6 +325,37 @@ class KDualCanvasRender (
 
         canvas.drawText(valueText, textX, textY, paint)
     }
+
+    override fun onTapEvent(tapType: Int, tapEvent: TapEvent, complicationSlot: ComplicationSlot?) {
+        // For test blink effect
+        if (tapType == TapType.DOWN) {
+            blinkEffect(1)
+        }
+    }
+
+    // Function for low/high alert highlights
+    private fun blinkEffect(order: Number?) {
+        var blinkCount = 0
+        val blinkHandler = Handler(Looper.getMainLooper())
+
+        val runnable = object : Runnable {
+            override fun run() {
+                if (blinkCount == 3) {
+                    isUser1AlertOn = false
+                    isUser2AlertOn = false
+                    blinkHandler.removeCallbacks(this)
+                } else {
+                    val showMillis: Long = if (blinkCount % 2 == 0) { 400 } else { 100 }
+                    if (order == 2) { isUser2AlertOn = !isUser2AlertOn } else { isUser1AlertOn = !isUser1AlertOn }
+                    blinkHandler.postDelayed(this, showMillis)
+                    blinkCount += 1
+                }
+            }
+        }
+        blinkHandler.removeCallbacks(runnable)
+        blinkHandler.post(runnable)
+    }
+
 
 }
 class KDualAssets: Renderer.SharedAssets {
