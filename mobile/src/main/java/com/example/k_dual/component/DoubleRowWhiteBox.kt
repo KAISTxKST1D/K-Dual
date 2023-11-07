@@ -4,9 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +24,8 @@ fun DoubleRowWhiteBox(modifier: Modifier = Modifier, content: @Composable() () -
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(118.dp)
+            .wrapContentHeight()
+            .defaultMinSize(minHeight = 118.dp)
             .background(color = Color.White, shape = RoundedCornerShape(24.dp))
             .padding(vertical = 20.dp, horizontal = 36.dp),
         horizontalAlignment = Alignment.Start,

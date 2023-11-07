@@ -4,18 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.k_dual.component.Toggle
-import com.example.k_dual.component.ToggleState
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.k_dual.screen.HomeScreen
+import com.example.k_dual.screen.UserScreen
 import com.example.k_dual.ui.theme.KDualTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,38 +22,35 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             KDualTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .safeContentPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
-                    val state = remember { mutableStateOf<ToggleState>(ToggleState.Right) }
-
-                    Toggle(
-                        state = state.value,
-                        onChange = {
-                            state.value = it
+                    NavHost(
+                        modifier = Modifier,
+                        navController = rememberNavController(),
+                        startDestination = "home"
+                    ) {
+                        composable("home") {
+                            HomeScreen()
                         }
-                    )
+                        composable(
+                            "user/{index}",
+                            arguments = listOf(
+                                navArgument("index") {                                    // Make argument type safe
+                                    type = NavType.IntType
+                                }
+                            ),
+                        ) {entry ->
+                            val index = entry.arguments?.getInt("index")
+                            UserScreen(index == 1)
+                        }
+                    }
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun GreetingPreview() {
-    KDualTheme {
-        Greeting("Android")
-    }
-}

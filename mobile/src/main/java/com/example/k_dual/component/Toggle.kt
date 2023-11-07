@@ -23,10 +23,10 @@ import androidx.core.graphics.toColorInt
 fun Toggle(
     modifier: Modifier = Modifier,
     state: ToggleState,
-    size: Dp = 50.dp,
+    size: Dp = 24.dp,
     offStateColor: Color = Color("#E6E0E9".toColorInt()),
     onStateColor: Color = Color("#A45050".toColorInt()),
-    borderWidth: Dp = 3.dp,
+    borderWidth: Dp = 1.dp,
     thumbOnColor: Color = Color.White,
     thumbOffColor: Color = Color("#79747E".toColorInt()),
     onChange: (ToggleState) -> Unit,

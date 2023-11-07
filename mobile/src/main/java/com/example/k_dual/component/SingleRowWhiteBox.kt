@@ -23,7 +23,7 @@ fun SingleRowWhiteBox(modifier: Modifier = Modifier, content: @Composable() () -
             .fillMaxWidth()
             .height(64.dp)
             .background(color = Color.White, shape = RoundedCornerShape(24.dp))
-            .padding(vertical = 20.dp, horizontal = 36.dp),
+            .padding(horizontal = 36.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
