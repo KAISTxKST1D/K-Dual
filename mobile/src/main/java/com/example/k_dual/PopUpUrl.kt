@@ -88,6 +88,7 @@ class PopUpUrl : AppCompatActivity() {
                 }.start()
             }
             else if (urlStr.contains("carelink", ignoreCase = false)) {
+                //TODO : add api to carelink url
                 urlStr=urlStr.plus("")
                 Thread {
                     getBGDataByUrl(urlStr)
@@ -100,6 +101,7 @@ class PopUpUrl : AppCompatActivity() {
                 }.start()
             }
             else if (urlStr.contains("libre", ignoreCase = false)) {
+                //TODO : add api to libre url
                 urlStr=urlStr.plus("")
                 Thread {
                     getBGDataByUrl(urlStr)
