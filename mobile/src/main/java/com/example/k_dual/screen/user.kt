@@ -14,6 +14,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +30,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.k_dual.R
 import com.example.k_dual.component.Divider
 import com.example.k_dual.component.MultipleRowWhiteBox
+import com.example.k_dual.component.OutlinedInputParameters
+import com.example.k_dual.component.TextFieldAlertDialog
 import com.example.k_dual.ui.theme.KDualTheme
 
 @Composable
@@ -34,6 +40,9 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
     val url = "-"
     val color = "Yellow"
     val alert = "On / On / 70-180"
+
+    var isNameDialogOpen by remember { mutableStateOf(false) }
+    var isURLDialogOpen by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -72,7 +81,8 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 20.dp),
+                        .padding(vertical = 20.dp)
+                        .clickable { isNameDialogOpen = true },
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
@@ -84,12 +94,24 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color(0xFF454545),
                     )
+                    TextFieldAlertDialog(
+                        isOpen = isNameDialogOpen,
+                        onConfirm = { isNameDialogOpen = false },
+                        onDismiss = { isNameDialogOpen = false },
+                        title = "Name",
+                        description = "Enter the name of the first user.\n" +
+                                "(Minimum 1 character, maximum 10 characters limit.)",
+                        outlinedInputParameters = OutlinedInputParameters(
+                            placeholder = "Enter Name", suffix = null
+                        )
+                    )
                 }
                 Divider()
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 20.dp),
+                        .padding(vertical = 20.dp)
+                        .clickable { isURLDialogOpen = true },
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
@@ -100,6 +122,16 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
                         text = url,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color(0xFF454545),
+                    )
+                    TextFieldAlertDialog(
+                        isOpen = isURLDialogOpen,
+                        onConfirm = { isURLDialogOpen = false },
+                        onDismiss = { isURLDialogOpen = false },
+                        title = "URL",
+                        description = "Enter the website link to retrieve the first user's blood glucose data.",
+                        outlinedInputParameters = OutlinedInputParameters(
+                            placeholder = "Enter or paste URL", suffix = null
+                        )
                     )
                 }
                 Divider()
