@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -26,21 +24,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.k_dual.component.Divider
-import com.example.k_dual.component.DoubleRowWhiteBox
+import com.example.k_dual.component.MultipleRowWhiteBox
 import com.example.k_dual.component.SingleRowWhiteBox
 import com.example.k_dual.component.Toggle
 import com.example.k_dual.component.ToggleState
 import com.example.k_dual.ui.theme.KDualTheme
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     val firstUserName = "Minha"
     val secondUserName = "Jaewon"
     val language = "English"
     val units = "mg/dL"
-    val navController = rememberNavController()
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -89,11 +87,12 @@ fun HomeScreen() {
                     )
                 }
             } else {
-                DoubleRowWhiteBox {
+                MultipleRowWhiteBox {
 
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(top = 20.dp)
                             .clickable { navController.navigate("user/1") },
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
@@ -113,6 +112,7 @@ fun HomeScreen() {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(bottom = 20.dp)
                             .clickable { navController.navigate("user/2") },
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
@@ -179,12 +179,13 @@ fun HomeScreen() {
 @Preview(showBackground = false, showSystemUi = true)
 @Composable
 fun HomeScreenPreview() {
+    val navController = rememberNavController();
     KDualTheme {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .safeContentPadding(),
             color = MaterialTheme.colorScheme.background
-        ) { HomeScreen() }
+        ) { HomeScreen(navController) }
     }
 }

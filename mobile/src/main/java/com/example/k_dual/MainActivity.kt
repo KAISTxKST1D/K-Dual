@@ -28,24 +28,25 @@ class MainActivity : ComponentActivity() {
                         .safeContentPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val navController = rememberNavController();
+
                     NavHost(
                         modifier = Modifier,
-                        navController = rememberNavController(),
+                        navController = navController,
                         startDestination = "home"
                     ) {
                         composable("home") {
-                            HomeScreen()
+                            HomeScreen(navController)
                         }
                         composable(
                             "user/{index}",
                             arguments = listOf(
-                                navArgument("index") {                                    // Make argument type safe
+                                navArgument("index") {
                                     type = NavType.IntType
                                 }
                             ),
-                        ) {entry ->
-                            val index = entry.arguments?.getInt("index")
-                            UserScreen(index == 1)
+                        ) {backStackEntry ->
+                            UserScreen(navController, backStackEntry.arguments?.getInt("index") == 1)
                         }
                     }
                 }

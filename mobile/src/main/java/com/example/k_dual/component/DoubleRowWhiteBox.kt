@@ -3,10 +3,8 @@ package com.example.k_dual.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,14 +18,14 @@ import androidx.compose.ui.unit.dp
 import com.example.k_dual.ui.theme.KDualTheme
 
 @Composable
-fun DoubleRowWhiteBox(modifier: Modifier = Modifier, content: @Composable() () -> Unit) {
+fun MultipleRowWhiteBox(modifier: Modifier = Modifier, content: @Composable() () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .defaultMinSize(minHeight = 118.dp)
             .background(color = Color.White, shape = RoundedCornerShape(24.dp))
-            .padding(vertical = 20.dp, horizontal = 36.dp),
+            .padding(horizontal = 36.dp),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -37,9 +35,9 @@ fun DoubleRowWhiteBox(modifier: Modifier = Modifier, content: @Composable() () -
 
 @Preview(showBackground = false, showSystemUi = false)
 @Composable
-fun DoubleRowWhiteBoxPreview() {
+fun MultipleRowWhiteBoxPreview() {
     KDualTheme {
-        DoubleRowWhiteBox {
+        MultipleRowWhiteBox {
             Text("hello")
             Divider()
             Text("bye")
