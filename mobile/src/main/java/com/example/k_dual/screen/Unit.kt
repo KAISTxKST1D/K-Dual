@@ -7,11 +7,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -34,19 +33,16 @@ import androidx.navigation.compose.rememberNavController
 import com.example.k_dual.R
 import com.example.k_dual.component.Divider
 import com.example.k_dual.component.MultipleRowWhiteBox
-import com.example.k_dual.component.WatchFacePreview
 import com.example.k_dual.ui.theme.KDualTheme
 
-
 @Composable
-fun ColorScreen(navController: NavController, isFirst: Boolean) {
-    val colors = arrayOf("Red", "Yellow", "Green", "Blue", "Purple")
-    var selectedColorIndex by remember { mutableIntStateOf(0) }
+fun UnitScreen(navController: NavController) {
+    val units = arrayOf("mg/dL", "mmol/L")
+    var selectedUnitIndex by remember { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row(
             modifier = Modifier
@@ -58,60 +54,59 @@ fun ColorScreen(navController: NavController, isFirst: Boolean) {
             Image(
                 imageVector = ImageVector.vectorResource(R.drawable.arrow_back_24px),
                 contentDescription = "Back arrow icon",
-                modifier = Modifier.clickable { navController.popBackStack() },
+                modifier = Modifier.clickable { navController.popBackStack() }
             )
             Text(
-                text = (if (isFirst) "First User" else "Second User") + " - Color",
+                text = "Blood Glucose Units",
                 style = MaterialTheme.typography.titleLarge,
                 color = Color(0xFF454545)
             )
         }
-        WatchFacePreview()
         Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "Color",
+                text = "Units",
                 style = MaterialTheme.typography.labelLarge,
                 color = Color(0xFF454545),
                 modifier = Modifier.padding(start = 24.dp)
             )
             MultipleRowWhiteBox {
-                colors.mapIndexed { index, color ->
+                units.mapIndexed { index, unit ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 20.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
                             modifier = Modifier
                                 .size(24.dp),
-                            selected = selectedColorIndex == index,
-                            onClick = { selectedColorIndex = index },
+                            selected = selectedUnitIndex == index,
+                            onClick = { selectedUnitIndex = index },
                             colors = RadioButtonDefaults.colors(
                                 selectedColor = Color.Black,
                             )
                         )
                         Text(
-                            text = color,
-                            style = MaterialTheme.typography.bodyLarge,
+                            text = unit,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color(0xFF454545),
                         )
                     }
-                    if (index != colors.lastIndex) Divider()
+                    if (index != units.lastIndex) Divider()
                 }
             }
         }
-
     }
 }
 
 @Preview(showBackground = false, showSystemUi = true)
 @Composable
-fun ColorScreenPreview() {
+fun UnitScreenPreview() {
     val navController = rememberNavController();
     KDualTheme {
         Surface(
@@ -119,6 +114,6 @@ fun ColorScreenPreview() {
                 .fillMaxSize()
                 .safeContentPadding(),
             color = MaterialTheme.colorScheme.background
-        ) { ColorScreen(navController, isFirst = true) }
+        ) { UnitScreen(navController) }
     }
 }
