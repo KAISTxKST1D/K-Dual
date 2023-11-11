@@ -49,6 +49,7 @@ fun HomeScreen(navController: NavController) {
             Text(
                 text = "Connected Devices",
                 style = MaterialTheme.typography.labelLarge,
+                color = Color(0xFF454545),
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
             SingleRowWhiteBox {
@@ -125,6 +126,7 @@ fun HomeScreen(navController: NavController) {
             Text(
                 text = "Setting",
                 style = MaterialTheme.typography.labelLarge,
+                color = Color(0xFF454545),
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
             SingleRowWhiteBox(modifier = Modifier.clickable { navController.navigate("unit") }) {

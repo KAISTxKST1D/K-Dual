@@ -27,24 +27,24 @@ val Typography = Typography(
         fontSize = 22.sp,
         lineHeight = 28.sp,
         fontFamily = fontFamily,
-        fontWeight = FontWeight(500),
+        fontWeight = FontWeight.Bold,
     ),
     bodyLarge = TextStyle(
         fontSize = 16.sp,
         lineHeight = 20.sp,
         fontFamily = fontFamily,
-        fontWeight = FontWeight(400),
+        fontWeight = FontWeight.Normal,
     ),
     bodyMedium = TextStyle(
         fontSize = 14.sp,
         lineHeight = 18.sp,
         fontFamily = fontFamily,
-        fontWeight = FontWeight(400),
+        fontWeight = FontWeight.Normal,
     ),
     labelLarge = TextStyle(
         fontSize = 14.sp,
         lineHeight = 18.sp,
         fontFamily = fontFamily,
-        fontWeight = FontWeight(500),
+        fontWeight = FontWeight.Bold,
     ),
 )
