@@ -69,7 +69,7 @@ fun TextFieldAlertDialog(
                                     style = MaterialTheme.typography.bodyLarge,
                                 )
                             }
-                        },
+                        }, // TODO. suffix padding
                         label = { Text(title) },
                         placeholder = {
                             Text(

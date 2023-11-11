@@ -31,6 +31,7 @@ import com.example.k_dual.component.MultipleRowWhiteBox
 import com.example.k_dual.component.SingleRowWhiteBox
 import com.example.k_dual.component.Toggle
 import com.example.k_dual.component.ToggleState
+import com.example.k_dual.component.WatchFacePreview
 import com.example.k_dual.ui.theme.KDualTheme
 
 @Composable
@@ -45,13 +46,7 @@ fun HomeScreen(navController: NavController) {
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
-                .padding(top = 24.dp)
-                .width(192.dp)
-                .height(192.dp)
-                .background(color = Color.Black, shape = CircleShape)
-        )
+        WatchFacePreview(modifier = Modifier.padding(top = 24.dp))
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp)

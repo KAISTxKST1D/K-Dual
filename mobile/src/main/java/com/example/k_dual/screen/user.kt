@@ -138,7 +138,7 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 20.dp),
+                        .padding(vertical = 20.dp).clickable { navController.navigate("user/${if (isFirst) 1 else 2}/color") },
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(

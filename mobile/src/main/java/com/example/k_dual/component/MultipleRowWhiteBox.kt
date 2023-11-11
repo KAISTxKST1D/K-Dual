@@ -20,7 +20,7 @@ import com.example.k_dual.ui.theme.KDualTheme
 @Composable
 fun MultipleRowWhiteBox(modifier: Modifier = Modifier, content: @Composable() () -> Unit) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .defaultMinSize(minHeight = 118.dp)
@@ -39,6 +39,12 @@ fun MultipleRowWhiteBoxPreview() {
     KDualTheme {
         MultipleRowWhiteBox {
             Text("hello")
+            Divider()
+            Text("bye")
+            Divider()
+            Text("bye")
+            Divider()
+            Text("bye")
             Divider()
             Text("bye")
         }
