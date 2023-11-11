@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,10 +30,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.k_dual.R
 import com.example.k_dual.component.Divider
 import com.example.k_dual.component.MultipleRowWhiteBox
+import com.example.k_dual.component.OutlinedInputParameters
 import com.example.k_dual.component.SingleRowWhiteBox
+import com.example.k_dual.component.TextFieldAlertDialog
 import com.example.k_dual.component.Toggle
 import com.example.k_dual.component.ToggleState
-import com.example.k_dual.component.WatchFacePreview
 import com.example.k_dual.ui.theme.KDualTheme
 
 @Composable
@@ -41,6 +43,8 @@ fun AlertScreen(navController: NavController, isFirst: Boolean) {
     val isVisualEnabled = remember { mutableStateOf<ToggleState>(ToggleState.Left) }
     val lowValue by remember { mutableIntStateOf(70) }
     val highValue by remember { mutableIntStateOf(110) }
+    var isLowValueDialogOpen by remember { mutableStateOf(false) }
+    var isHighValueDialogOpen by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -127,7 +131,7 @@ fun AlertScreen(navController: NavController, isFirst: Boolean) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 20.dp)
-                            .clickable { navController.navigate("user/1") },
+                            .clickable { isLowValueDialogOpen = true },
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -141,13 +145,23 @@ fun AlertScreen(navController: NavController, isFirst: Boolean) {
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFF454545)
                         )
+                        TextFieldAlertDialog(
+                            isOpen = isLowValueDialogOpen,
+                            onConfirm = { isLowValueDialogOpen = false },
+                            onDismiss = { isLowValueDialogOpen = false },
+                            title = "Low Value",
+                            description = "Enter the low value of blood glucose to receive vibration alert.",
+                            outlinedInputParameters = OutlinedInputParameters(
+                                placeholder = "Enter the glucose value", suffix = "mg/dL"
+                            )
+                        )
                     }
                     Divider()
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 20.dp)
-                            .clickable { navController.navigate("user/2") },
+                            .clickable { isHighValueDialogOpen = true },
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -159,6 +173,16 @@ fun AlertScreen(navController: NavController, isFirst: Boolean) {
                             text = highValue.toString(),
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFF454545)
+                        )
+                        TextFieldAlertDialog(
+                            isOpen = isHighValueDialogOpen,
+                            onConfirm = { isHighValueDialogOpen = false },
+                            onDismiss = { isHighValueDialogOpen = false },
+                            title = "High Value",
+                            description = "Enter the high value of blood glucose to receive vibration alert.",
+                            outlinedInputParameters = OutlinedInputParameters(
+                                placeholder = "Enter the glucose value", suffix = "mg/dL"
+                            )
                         )
                     }
                 }

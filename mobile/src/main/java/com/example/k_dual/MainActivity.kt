@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.k_dual.screen.AlertScreen
 import com.example.k_dual.screen.ColorScreen
 import com.example.k_dual.screen.HomeScreen
 import com.example.k_dual.screen.UserScreen
@@ -58,6 +59,16 @@ class MainActivity : ComponentActivity() {
                             ),
                         ) {backStackEntry ->
                             ColorScreen(navController, backStackEntry.arguments?.getInt("index") == 1)
+                        }
+                        composable(
+                            "user/{index}/alert",
+                            arguments = listOf(
+                                navArgument("index") {
+                                    type = NavType.IntType
+                                }
+                            ),
+                        ) {backStackEntry ->
+                            AlertScreen(navController, backStackEntry.arguments?.getInt("index") == 1)
                         }
                     }
                 }
