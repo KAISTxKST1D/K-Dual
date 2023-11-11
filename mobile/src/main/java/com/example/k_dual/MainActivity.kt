@@ -16,6 +16,7 @@ import androidx.navigation.navArgument
 import com.example.k_dual.screen.AlertScreen
 import com.example.k_dual.screen.ColorScreen
 import com.example.k_dual.screen.HomeScreen
+import com.example.k_dual.screen.UnitScreen
 import com.example.k_dual.screen.UserScreen
 import com.example.k_dual.ui.theme.KDualTheme
 
@@ -39,6 +40,9 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable("home") {
                             HomeScreen(navController)
+                        }
+                        composable("unit") {
+                            UnitScreen(navController)
                         }
                         composable(
                             "user/{index}",

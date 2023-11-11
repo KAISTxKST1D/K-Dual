@@ -33,7 +33,6 @@ import com.example.k_dual.ui.theme.KDualTheme
 fun HomeScreen(navController: NavController) {
     val firstUserName = "Minha"
     val secondUserName = "Jaewon"
-    val language = "English"
     val units = "mg/dL"
 
     Column(
@@ -66,7 +65,7 @@ fun HomeScreen(navController: NavController) {
             }
 
             if (state.value == ToggleState.Left) {
-                SingleRowWhiteBox {
+                SingleRowWhiteBox(modifier = Modifier.clickable { navController.navigate("user/1") }) {
                     Text(
                         text = "First User",
                         style = MaterialTheme.typography.bodyLarge,
@@ -78,7 +77,6 @@ fun HomeScreen(navController: NavController) {
                 }
             } else {
                 MultipleRowWhiteBox {
-
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -125,32 +123,11 @@ fun HomeScreen(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Language",
-                style = MaterialTheme.typography.labelLarge,
-                modifier = Modifier.padding(horizontal = 24.dp)
-            )
-            SingleRowWhiteBox {
-                Text(
-                    text = "Language",
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                Text(
-                    text = language,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF454545)
-                )
-            }
-        }
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text(
                 text = "Setting",
                 style = MaterialTheme.typography.labelLarge,
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
-            SingleRowWhiteBox {
+            SingleRowWhiteBox(modifier = Modifier.clickable { navController.navigate("unit") }) {
                 Text(
                     text = "Blood Glucose Units",
                     style = MaterialTheme.typography.bodyLarge,

@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.k_dual.R
+import com.example.k_dual.component.BackButtonTitleRow
 import com.example.k_dual.component.Divider
 import com.example.k_dual.component.MultipleRowWhiteBox
 import com.example.k_dual.component.OutlinedInputParameters
@@ -51,24 +52,10 @@ fun AlertScreen(navController: NavController, isFirst: Boolean) {
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                imageVector = ImageVector.vectorResource(R.drawable.arrow_back_24px),
-                contentDescription = "Back arrow icon",
-                modifier = Modifier.clickable { navController.popBackStack() }
-            )
-            Text(
-                text = if (isFirst) "First User" else "Second User",
-                style = MaterialTheme.typography.titleLarge,
-                color = Color(0xFF454545)
-            )
-        }
+        BackButtonTitleRow(
+            navController = navController,
+            title = (if (isFirst) "First User" else "Second User") + " - Alert"
+        )
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(24.dp)

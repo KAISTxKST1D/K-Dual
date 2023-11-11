@@ -19,7 +19,7 @@ import com.example.k_dual.ui.theme.KDualTheme
 @Composable
 fun SingleRowWhiteBox(modifier: Modifier = Modifier, content: @Composable() () -> Unit) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(64.dp)
             .background(color = Color.White, shape = RoundedCornerShape(24.dp))
