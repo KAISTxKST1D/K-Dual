@@ -66,7 +66,6 @@ fun Toggle(
                 else onChange(ToggleState.Left)
             }
     ) {
-
         val startGuideLine = createGuidelineFromStart(animValue.value)
         val thumb = createRef()
 
@@ -79,11 +78,8 @@ fun Toggle(
                 .constrainAs(thumb) {
                     start.linkTo(startGuideLine)
                 }
-        ) {}
-
+        )
     }
-
-
 }
 
 sealed class ToggleState {
@@ -100,7 +96,6 @@ fun PreviewSwitch() {
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-
         val state = remember { mutableStateOf<ToggleState>(ToggleState.Right) }
 
         Toggle(
@@ -111,6 +106,5 @@ fun PreviewSwitch() {
                 state.value = it
             }
         )
-
     }
 }

@@ -24,6 +24,7 @@ import com.example.k_dual.ui.theme.RedUISolid
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextFieldAlertDialog(
+    modifier: Modifier = Modifier,
     isOpen: Boolean,
     onConfirm: (String) -> Unit,
     onDismiss: () -> Unit,
@@ -38,76 +39,83 @@ fun TextFieldAlertDialog(
     )
 
     if (isOpen) {
-        // Apply the custom theme to the AlertDialog
         MaterialTheme(colorScheme = customColorScheme) {
-            AlertDialog(onDismissRequest = {
-                onDismiss()
-            }, title = {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
-            }, text = {
-                Column {
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(bottom = 24.dp)
-                    )
-                    OutlinedTextField(
-                        modifier = Modifier.padding(vertical = 16.dp),
-                        value = textValue,
-                        onValueChange = {
-                            textValue = it
-                        },
-                        trailingIcon = {
-                            outlinedInputParameters.suffix?.let {
-                                Text(
-                                    it,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(end = 16.dp)
-                                )
-                            }
-                        },
-                        label = { Text(title) },
-                        placeholder = {
-                            Text(
-                                outlinedInputParameters.placeholder,
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
-                        },
-                        colors = TextFieldDefaults.textFieldColors(
-                            focusedIndicatorColor = RedUISolid,
-                            placeholderColor = Color(0xFFA79C9E),
-                            containerColor = Color.Transparent,
-                            focusedLabelColor = RedUISolid
-                        ),
-                    )
-                }
-            }, confirmButton = {
-                TextButton(
-                    onClick = {
-                        onConfirm(textValue)
-                    },
-                    enabled = textValue.isNotEmpty(),
-                    colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)
-                ) {
-                    Text("Done", style = MaterialTheme.typography.labelLarge)
-                }
-            }, dismissButton = {
-                TextButton(onClick = {
+            AlertDialog(
+                modifier = modifier,
+                onDismissRequest = {
                     onDismiss()
-                }, colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)) {
-                    Text("Cancel", style = MaterialTheme.typography.labelLarge)
-                }
-            })
+                },
+                title = {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                },
+                text = {
+                    Column {
+                        Text(
+                            text = description,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(bottom = 24.dp)
+                        )
+                        OutlinedTextField(
+                            modifier = outlinedInputParameters.modifier.padding(vertical = 16.dp),
+                            value = textValue,
+                            onValueChange = {
+                                textValue = it
+                            },
+                            trailingIcon = {
+                                outlinedInputParameters.suffix?.let {
+                                    Text(
+                                        it,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.padding(end = 16.dp)
+                                    )
+                                }
+                            },
+                            label = { Text(title) },
+                            placeholder = {
+                                Text(
+                                    outlinedInputParameters.placeholder,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                            },
+                            colors = TextFieldDefaults.textFieldColors(
+                                focusedIndicatorColor = RedUISolid,
+                                placeholderColor = Color(0xFFA79C9E),
+                                containerColor = Color.Transparent,
+                                focusedLabelColor = RedUISolid
+                            ),
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            onConfirm(textValue)
+                        },
+                        enabled = textValue.isNotEmpty(),
+                        colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)
+                    ) {
+                        Text("Done", style = MaterialTheme.typography.labelLarge)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        onDismiss()
+                    }, colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)) {
+                        Text("Cancel", style = MaterialTheme.typography.labelLarge)
+                    }
+                },
+            )
         }
     }
 }
 
 data class OutlinedInputParameters(
+    val modifier: Modifier = Modifier,
     val placeholder: String,
     val suffix: String?,
 )

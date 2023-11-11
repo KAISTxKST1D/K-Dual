@@ -21,7 +21,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.k_dual.R
 import com.example.k_dual.ui.theme.KDualTheme
 
-
 @Composable
 fun BackButtonTitleRow(modifier: Modifier = Modifier, navController: NavController, title: String) {
     Row(
