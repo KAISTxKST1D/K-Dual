@@ -33,7 +33,7 @@ private val LightColorScheme = lightColorScheme(
 fun KDualTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+//    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
 //    val colorScheme = when {
