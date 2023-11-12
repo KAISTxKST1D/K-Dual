@@ -12,12 +12,12 @@ import androidx.compose.ui.unit.dp
 import com.example.k_dual.ui.theme.KDualTheme
 
 @Composable
-fun Divider(modifier: Modifier = Modifier) {
+fun Divider(modifier: Modifier = Modifier, color: Color = Color(0xFFE6E6E6)) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .height(1.dp)
-            .background(color = Color(0xFFE6E6E6)),
+            .background(color = color),
     ) {
     }
 }

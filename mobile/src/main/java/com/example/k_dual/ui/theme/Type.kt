@@ -23,11 +23,23 @@ val fontFamily = FontFamily(
 
 // Set of Material typography styles to start with
 val Typography = Typography(
+    headlineSmall = TextStyle(
+        fontSize = 24.sp,
+        lineHeight = 32.sp,
+        fontFamily = fontFamily,
+        fontWeight = FontWeight.Normal,
+    ),
     titleLarge = TextStyle(
         fontSize = 22.sp,
         lineHeight = 28.sp,
         fontFamily = fontFamily,
         fontWeight = FontWeight.Bold,
+    ),
+    titleSmall = TextStyle(
+        fontSize = 16.sp,
+        lineHeight = 20.sp,
+        fontFamily = fontFamily,
+        fontWeight = FontWeight.Normal,
     ),
     bodyLarge = TextStyle(
         fontSize = 16.sp,

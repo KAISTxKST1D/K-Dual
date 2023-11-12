@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.k_dual.component.Divider
 import com.example.k_dual.component.MultipleRowWhiteBox
+import com.example.k_dual.component.OpenWatchAppDialog
 import com.example.k_dual.component.SingleRowWhiteBox
 import com.example.k_dual.component.Toggle
 import com.example.k_dual.component.ToggleState
@@ -72,7 +73,9 @@ fun HomeScreen(navController: NavController) {
             }
 
             if (state.value == ToggleState.Left) {
-                SingleRowWhiteBox(modifier = Modifier.clip(shape = RoundedCornerShape(24.dp)).clickable { navController.navigate("user/1") }) {
+                SingleRowWhiteBox(modifier = Modifier
+                    .clip(shape = RoundedCornerShape(24.dp))
+                    .clickable { navController.navigate("user/1") }) {
                     Text(
                         text = "First User",
                         style = MaterialTheme.typography.bodyLarge,
@@ -155,6 +158,9 @@ fun HomeScreen(navController: NavController) {
         }
     }
 
+    OpenWatchAppDialog(isOpen = true) {
+        
+    }
 }
 
 @Preview(showBackground = false, showSystemUi = true)
