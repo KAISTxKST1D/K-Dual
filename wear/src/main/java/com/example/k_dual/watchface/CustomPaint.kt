@@ -4,6 +4,8 @@ import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Matrix
 import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.RectF
 import android.graphics.Shader
 import android.graphics.Typeface
@@ -84,9 +86,9 @@ class CustomPaint {
             return paint
         }
 
-        fun namePaint(colorName: CustomColor, unitF: Float, font: Typeface): Paint {
+        fun namePaint(colorName: CustomColor, unitF: Float, isDualMode: Boolean, font: Typeface): Paint {
             val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-            paint.textSize = unitF * 14f
+            paint.textSize = if (isDualMode) { unitF * 14f } else { unitF * 18f }
             paint.typeface = font
 
             when (colorName) {
@@ -100,26 +102,52 @@ class CustomPaint {
             return paint
         }
 
-        fun arrowBoxPaint(): Paint {
-            return Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color = Color.parseColor("#33FFFFFF")
-                style = Paint.Style.FILL
+        fun arrowBoxPaint(colorName: CustomColor?, unitF: Float): Paint {
+            return if (colorName != null) {
+                val paint = iconPaint(colorName)
+                paint.style = Paint.Style.STROKE
+                paint.strokeWidth = unitF
+                paint
+            } else {
+                Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = Color.parseColor("#33FFFFFF")
+                    style = Paint.Style.FILL
+                }
             }
         }
 
-        fun differenceTextPaint(unitF: Float, font: Typeface): Paint {
+        fun arrowPaint(colorName: CustomColor): Paint {
+            val color = when (colorName) {
+                CustomColor.RED -> Color.parseColor("#EE675C")
+                CustomColor.YELLOW -> Color.parseColor("#FDD663")
+                CustomColor.GREEN -> Color.parseColor("#2AAB46")
+                CustomColor.BLUE -> Color.parseColor("#1B6BD5")
+                CustomColor.PURPLE -> Color.parseColor("#AE5CEE")
+            }
+            val filter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP)
             return Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color = Color.parseColor("#BDC1C6")
-                typeface = font
-                textSize = unitF * 16f
+                colorFilter = filter
             }
         }
 
-        fun bloodGlucoseTextPaint(unitF: Float, font: Typeface): Paint {
+        fun differenceTextPaint(unitF: Float, font: Typeface, colorName: CustomColor?): Paint {
+            val paint = if (colorName != null) {
+                iconPaint(colorName)
+            } else {
+                Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = Color.parseColor("#BDC1C6")
+                }
+            }
+            paint.typeface = font
+            paint.textSize = unitF * 16f
+            return paint
+        }
+
+        fun bloodGlucoseTextPaint(unitF: Float, isDualMode: Boolean, font: Typeface): Paint {
             return Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 color = Color.WHITE
                 typeface = font
-                textSize = unitF * 40f
+                textSize = if (isDualMode) { unitF * 40f } else { unitF * 56f }
                 textAlign = Paint.Align.CENTER
             }
         }
