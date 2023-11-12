@@ -9,14 +9,14 @@ import androidx.wear.watchface.WatchFaceType
 import androidx.wear.watchface.WatchState
 import androidx.wear.watchface.style.CurrentUserStyleRepository
 
-class KDualWatchFaceService: WatchFaceService() {
+class KDualWatchFaceService : WatchFaceService() {
     override suspend fun createWatchFace(
         surfaceHolder: SurfaceHolder,
         watchState: WatchState,
         complicationSlotsManager: ComplicationSlotsManager,
         currentUserStyleRepository: CurrentUserStyleRepository
     ): WatchFace {
-        val renderer = KDualCanvasRender(
+        val renderer = KDualCanvasRenderer(
             applicationContext,
             surfaceHolder = surfaceHolder,
             currentUserStyleRepository = currentUserStyleRepository,
@@ -29,5 +29,4 @@ class KDualWatchFaceService: WatchFaceService() {
             renderer = renderer
         ).setTapListener(tapListener = renderer)
     }
-
 }
