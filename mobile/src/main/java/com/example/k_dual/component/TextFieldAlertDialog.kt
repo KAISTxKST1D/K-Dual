@@ -14,6 +14,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,7 +40,13 @@ fun TextFieldAlertDialog(
         surface = Color(0xFFFCECEC)
     )
 
+    val focusRequester = remember { FocusRequester() }
+
     if (isOpen) {
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
+
         MaterialTheme(colorScheme = customColorScheme) {
             AlertDialog(
                 modifier = modifier,
@@ -61,7 +69,9 @@ fun TextFieldAlertDialog(
                             modifier = Modifier.padding(bottom = 24.dp)
                         )
                         OutlinedTextField(
-                            modifier = outlinedInputParameters.modifier.padding(vertical = 16.dp),
+                            modifier = outlinedInputParameters.modifier
+                                .padding(vertical = 16.dp)
+                                .focusRequester(focusRequester),
                             value = textValue,
                             onValueChange = {
                                 textValue = it

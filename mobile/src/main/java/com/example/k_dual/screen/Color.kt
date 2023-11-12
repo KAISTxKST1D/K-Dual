@@ -1,5 +1,6 @@
 package com.example.k_dual.screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -61,8 +62,9 @@ fun ColorScreen(navController: NavController, isFirst: Boolean) {
                 colors.mapIndexed { index, color ->
                     Row(
                         modifier = Modifier
+                            .clickable { selectedColorIndex = index }
                             .fillMaxWidth()
-                            .padding(vertical = 20.dp),
+                            .padding(vertical = 20.dp, horizontal = 36.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -91,7 +93,7 @@ fun ColorScreen(navController: NavController, isFirst: Boolean) {
 @Preview(showBackground = false, showSystemUi = true)
 @Composable
 fun ColorScreenPreview() {
-    val navController = rememberNavController();
+    val navController = rememberNavController()
     KDualTheme {
         Surface(
             modifier = Modifier

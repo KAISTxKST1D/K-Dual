@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                         .safeContentPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val navController = rememberNavController();
+                    val navController = rememberNavController()
 
                     NavHost(
                         modifier = Modifier,

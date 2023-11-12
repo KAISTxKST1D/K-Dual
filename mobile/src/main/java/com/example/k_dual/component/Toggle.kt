@@ -83,6 +83,13 @@ fun Toggle(
 }
 
 sealed class ToggleState {
+    operator fun not(): ToggleState {
+        if (this == Left) {
+            return Right
+        }
+        return Left
+    }
+
     object Left : ToggleState()
     object Right : ToggleState()
 }

@@ -1,5 +1,6 @@
 package com.example.k_dual.screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,8 +56,9 @@ fun UnitScreen(navController: NavController) {
                 units.mapIndexed { index, unit ->
                     Row(
                         modifier = Modifier
+                            .clickable { selectedUnitIndex = index }
                             .fillMaxWidth()
-                            .padding(vertical = 20.dp),
+                            .padding(vertical = 20.dp, horizontal = 36.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -85,7 +87,7 @@ fun UnitScreen(navController: NavController) {
 @Preview(showBackground = false, showSystemUi = true)
 @Composable
 fun UnitScreenPreview() {
-    val navController = rememberNavController();
+    val navController = rememberNavController()
     KDualTheme {
         Surface(
             modifier = Modifier

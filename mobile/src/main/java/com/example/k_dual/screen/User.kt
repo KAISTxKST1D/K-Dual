@@ -62,9 +62,9 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
             MultipleRowWhiteBox {
                 Row(
                     modifier = Modifier
+                        .clickable { isNameDialogOpen = true }
                         .fillMaxWidth()
-                        .padding(vertical = 20.dp)
-                        .clickable { isNameDialogOpen = true },
+                        .padding(vertical = 20.dp, horizontal = 36.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
@@ -91,9 +91,9 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
                 Divider()
                 Row(
                     modifier = Modifier
+                        .clickable { isURLDialogOpen = true }
                         .fillMaxWidth()
-                        .padding(vertical = 20.dp)
-                        .clickable { isURLDialogOpen = true },
+                        .padding(vertical = 20.dp, horizontal = 36.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
@@ -119,9 +119,9 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
                 Divider()
                 Row(
                     modifier = Modifier
+                        .clickable { navController.navigate("user/${if (isFirst) 1 else 2}/color") }
                         .fillMaxWidth()
-                        .padding(vertical = 20.dp)
-                        .clickable { navController.navigate("user/${if (isFirst) 1 else 2}/color") },
+                        .padding(vertical = 20.dp, horizontal = 36.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
@@ -137,9 +137,9 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
                 Divider()
                 Row(
                     modifier = Modifier
+                        .clickable { navController.navigate("user/${if (isFirst) 1 else 2}/alert") }
                         .fillMaxWidth()
-                        .padding(vertical = 20.dp)
-                        .clickable { navController.navigate("user/${if (isFirst) 1 else 2}/alert") },
+                        .padding(vertical = 20.dp, horizontal = 36.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
@@ -161,7 +161,7 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
 @Preview(showBackground = false, showSystemUi = true)
 @Composable
 fun UserScreenPreview() {
-    val navController = rememberNavController();
+    val navController = rememberNavController()
     KDualTheme {
         Surface(
             modifier = Modifier

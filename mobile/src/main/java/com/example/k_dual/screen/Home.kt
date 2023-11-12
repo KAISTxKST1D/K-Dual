@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -16,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,7 +55,10 @@ fun HomeScreen(navController: NavController) {
                 color = Color(0xFF454545),
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
-            SingleRowWhiteBox {
+            SingleRowWhiteBox(
+                modifier = Modifier
+                    .clip(shape = RoundedCornerShape(24.dp))
+                    .clickable { state.value = !state.value }) {
                 Text(
                     text = "Enabled dual mode",
                     style = MaterialTheme.typography.bodyLarge,
@@ -66,7 +72,7 @@ fun HomeScreen(navController: NavController) {
             }
 
             if (state.value == ToggleState.Left) {
-                SingleRowWhiteBox(modifier = Modifier.clickable { navController.navigate("user/1") }) {
+                SingleRowWhiteBox(modifier = Modifier.clip(shape = RoundedCornerShape(24.dp)).clickable { navController.navigate("user/1") }) {
                     Text(
                         text = "First User",
                         style = MaterialTheme.typography.bodyLarge,
@@ -81,8 +87,8 @@ fun HomeScreen(navController: NavController) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 20.dp)
-                            .clickable { navController.navigate("user/1") },
+                            .clickable { navController.navigate("user/1") }
+                            .padding(horizontal = 36.dp, vertical = 20.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -97,12 +103,15 @@ fun HomeScreen(navController: NavController) {
                             color = Color(0xFF454545)
                         )
                     }
-                    Divider()
+                    Divider(
+                        modifier = Modifier
+                            .padding(horizontal = 36.dp)
+                    )
                     Row(
                         modifier = Modifier
+                            .clickable { navController.navigate("user/2") }
                             .fillMaxWidth()
-                            .padding(bottom = 20.dp)
-                            .clickable { navController.navigate("user/2") },
+                            .padding(vertical = 20.dp, horizontal = 36.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -129,7 +138,10 @@ fun HomeScreen(navController: NavController) {
                 color = Color(0xFF454545),
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
-            SingleRowWhiteBox(modifier = Modifier.clickable { navController.navigate("unit") }) {
+            SingleRowWhiteBox(
+                modifier = Modifier
+                    .clip(shape = RoundedCornerShape(24.dp))
+                    .clickable { navController.navigate("unit") }) {
                 Text(
                     text = "Blood Glucose Units",
                     style = MaterialTheme.typography.bodyLarge,
@@ -148,7 +160,7 @@ fun HomeScreen(navController: NavController) {
 @Preview(showBackground = false, showSystemUi = true)
 @Composable
 fun HomeScreenPreview() {
-    val navController = rememberNavController();
+    val navController = rememberNavController()
     KDualTheme {
         Surface(
             modifier = Modifier

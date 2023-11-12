@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -61,13 +63,18 @@ fun AlertScreen(navController: NavController, isFirst: Boolean) {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "Connected Devices",
+                    text = "Vibration Alert Setting",
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(horizontal = 24.dp)
                 )
-                SingleRowWhiteBox {
+                SingleRowWhiteBox(
+                    modifier = Modifier
+                        .clip(shape = RoundedCornerShape(24.dp))
+                        .clickable {
+                            isVibrationEnabled.value = !isVibrationEnabled.value
+                        }){
                     Text(
-                        text = "Enabled dual mode",
+                        text = "Enabled",
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Toggle(
@@ -87,7 +94,12 @@ fun AlertScreen(navController: NavController, isFirst: Boolean) {
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(horizontal = 24.dp)
                 )
-                SingleRowWhiteBox {
+                SingleRowWhiteBox(
+                    modifier = Modifier
+                        .clip(shape = RoundedCornerShape(24.dp))
+                        .clickable {
+                            isVisualEnabled.value = !isVisualEnabled.value
+                        }) {
                     Text(
                         text = "Enabled",
                         style = MaterialTheme.typography.bodyLarge,
@@ -112,9 +124,9 @@ fun AlertScreen(navController: NavController, isFirst: Boolean) {
                 MultipleRowWhiteBox {
                     Row(
                         modifier = Modifier
+                            .clickable { isLowValueDialogOpen = true }
                             .fillMaxWidth()
-                            .padding(top = 20.dp)
-                            .clickable { isLowValueDialogOpen = true },
+                            .padding(vertical = 20.dp, horizontal = 36.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -142,9 +154,9 @@ fun AlertScreen(navController: NavController, isFirst: Boolean) {
                     Divider()
                     Row(
                         modifier = Modifier
+                            .clickable { isHighValueDialogOpen = true }
                             .fillMaxWidth()
-                            .padding(bottom = 20.dp)
-                            .clickable { isHighValueDialogOpen = true },
+                            .padding(vertical = 20.dp, horizontal = 36.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -177,7 +189,7 @@ fun AlertScreen(navController: NavController, isFirst: Boolean) {
 @Preview(showBackground = false, showSystemUi = true)
 @Composable
 fun AlertScreenPreview() {
-    val navController = rememberNavController();
+    val navController = rememberNavController()
     KDualTheme {
         Surface(
             modifier = Modifier
