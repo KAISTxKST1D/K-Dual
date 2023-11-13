@@ -19,3 +19,28 @@ internal val wearColorPalette: Colors = Colors(
     onSecondary = Color.Black,
     onError = Color.Black
 )
+enum class CustomColor {
+    RED, YELLOW, GREEN, BLUE, PURPLE
+}
+
+object Colors {
+    fun icon(color: CustomColor): Color {
+        return when (color) {
+            CustomColor.RED -> TODO()
+            CustomColor.YELLOW -> Color(0xFFFDD663)
+            CustomColor.GREEN -> TODO()
+            CustomColor.BLUE -> Color(0xFF1B6BD5)
+            CustomColor.PURPLE -> TODO()
+        }
+    }
+
+    fun name(color: CustomColor): Color {
+        return when (color) {
+            CustomColor.RED -> Color(0xFFFDE293)
+            CustomColor.YELLOW -> Color(0xFFFDE293)
+            CustomColor.GREEN -> TODO()
+            CustomColor.BLUE -> Color(0xFFA1BBE5)
+            CustomColor.PURPLE -> TODO()
+        }
+    }
+}
