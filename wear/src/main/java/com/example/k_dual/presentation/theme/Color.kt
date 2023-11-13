@@ -2,6 +2,7 @@ package com.example.k_dual.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 import androidx.wear.compose.material.Colors
+import kr.ac.kaist.k_canvas.KColor
 
 val Purple200 = Color(0xFFBB86FC)
 val Purple500 = Color(0xFF6200EE)
@@ -19,28 +20,26 @@ internal val wearColorPalette: Colors = Colors(
     onSecondary = Color.Black,
     onError = Color.Black
 )
-enum class CustomColor {
-    RED, YELLOW, GREEN, BLUE, PURPLE
-}
 
+// TODO. merge to K-canvas library
 object Colors {
-    fun icon(color: CustomColor): Color {
+    fun icon(color: KColor): Color {
         return when (color) {
-            CustomColor.RED -> TODO()
-            CustomColor.YELLOW -> Color(0xFFFDD663)
-            CustomColor.GREEN -> TODO()
-            CustomColor.BLUE -> Color(0xFF1B6BD5)
-            CustomColor.PURPLE -> TODO()
+            KColor.RED -> TODO()
+            KColor.YELLOW -> Color(0xFFFDD663)
+            KColor.GREEN -> TODO()
+            KColor.BLUE -> Color(0xFF1B6BD5)
+            KColor.PURPLE -> TODO()
         }
     }
 
-    fun name(color: CustomColor): Color {
+    fun name(color: KColor): Color {
         return when (color) {
-            CustomColor.RED -> Color(0xFFFDE293)
-            CustomColor.YELLOW -> Color(0xFFFDE293)
-            CustomColor.GREEN -> TODO()
-            CustomColor.BLUE -> Color(0xFFA1BBE5)
-            CustomColor.PURPLE -> TODO()
+            KColor.RED -> Color(0xFFFDE293)
+            KColor.YELLOW -> Color(0xFFFDE293)
+            KColor.GREEN -> TODO()
+            KColor.BLUE -> Color(0xFFA1BBE5)
+            KColor.PURPLE -> TODO()
         }
     }
 }

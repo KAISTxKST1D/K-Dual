@@ -21,9 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.MaterialTheme
 import com.example.k_dual.R
-import com.example.k_dual.presentation.components.UserItem
-import com.example.k_dual.presentation.theme.CustomColor
 import com.example.k_dual.presentation.theme.KDualTheme
+import kr.ac.kaist.k_canvas.KColor
 
 @Composable
 fun HomePage(
@@ -49,13 +48,14 @@ fun HomePage(
                 .align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // TODO. userItem 여러번 터치하면 다음 화면 여러개 생성됨
             UserItem(
                 modifier = Modifier
                     .height(52.dp)
                     .width(172.dp)
                     .clickable { navigateToGraphPage(1) },
                 name = "Minha",
-                color = CustomColor.YELLOW,
+                color = KColor.YELLOW,
                 server = "Libre",
                 isAlertOn = true)
             UserItem(
@@ -65,7 +65,7 @@ fun HomePage(
                     .width(172.dp)
                     .clickable { navigateToGraphPage(2) },
                 name = "Jaewon",
-                color = CustomColor.BLUE,
+                color = KColor.BLUE,
                 server = "Dexcom",
                 isAlertOn = false)
         }

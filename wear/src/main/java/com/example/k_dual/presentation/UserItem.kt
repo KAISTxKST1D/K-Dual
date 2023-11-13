@@ -1,4 +1,4 @@
-package com.example.k_dual.presentation.components
+package com.example.k_dual.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,10 +22,10 @@ import androidx.wear.compose.material.Text
 import com.example.k_dual.R
 import com.example.k_dual.presentation.theme.Colors
 import com.example.k_dual.presentation.theme.KDualTheme
-import com.example.k_dual.presentation.theme.CustomColor
+import kr.ac.kaist.k_canvas.KColor
 
 @Composable
-fun UserItem(modifier: Modifier, name: String, color: CustomColor, server: String, isAlertOn: Boolean) {
+fun UserItem(modifier: Modifier, name: String, color: KColor, server: String, isAlertOn: Boolean) {
     Row(
         modifier = modifier
             .background(Color(0xFF202124), RoundedCornerShape(92.129.dp))
@@ -58,6 +58,6 @@ fun UserItem(modifier: Modifier, name: String, color: CustomColor, server: Strin
 @Composable
 fun UserItemPreview() {
     KDualTheme {
-        UserItem(modifier = Modifier, "Minha", CustomColor.YELLOW, "Libre", true)
+        UserItem(modifier = Modifier, "Minha", KColor.YELLOW, "Libre", true)
     }
 }
