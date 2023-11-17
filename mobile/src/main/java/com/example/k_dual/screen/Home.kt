@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,7 +25,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.k_dual.component.Divider
 import com.example.k_dual.component.MultipleRowWhiteBox
-import com.example.k_dual.component.OpenWatchAppDialog
 import com.example.k_dual.component.SingleRowWhiteBox
 import com.example.k_dual.component.Toggle
 import com.example.k_dual.component.ToggleState
@@ -34,7 +32,7 @@ import com.example.k_dual.component.WatchFacePreview
 import com.example.k_dual.ui.theme.KDualTheme
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
     val firstUserName = "Minha"
     val secondUserName = "Jaewon"
     val units = "mg/dL"
@@ -59,7 +57,9 @@ fun HomeScreen(navController: NavController) {
             SingleRowWhiteBox(
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(24.dp))
-                    .clickable { state.value = !state.value }) {
+                    .clickable {
+                        state.value = !state.value
+                    }) {
                 Text(
                     text = "Enabled dual mode",
                     style = MaterialTheme.typography.bodyLarge,
@@ -98,8 +98,7 @@ fun HomeScreen(navController: NavController) {
                         Text(
                             text = "First User",
                             style = MaterialTheme.typography.bodyLarge,
-
-                            )
+                        )
                         Text(
                             text = firstUserName,
                             style = MaterialTheme.typography.bodyMedium,
@@ -157,10 +156,6 @@ fun HomeScreen(navController: NavController) {
             }
         }
     }
-
-    OpenWatchAppDialog(isOpen = true) {
-        
-    }
 }
 
 @Preview(showBackground = false, showSystemUi = true)
@@ -173,6 +168,6 @@ fun HomeScreenPreview() {
                 .fillMaxSize()
                 .safeContentPadding(),
             color = MaterialTheme.colorScheme.background
-        ) { HomeScreen(navController) }
+        ) { HomeScreen(navController = navController, onSendMessageFailed = {}) }
     }
 }

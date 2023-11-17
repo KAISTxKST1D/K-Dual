@@ -32,7 +32,7 @@ import com.example.k_dual.component.MultipleRowWhiteBox
 import com.example.k_dual.ui.theme.KDualTheme
 
 @Composable
-fun UnitScreen(navController: NavController) {
+fun UnitScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
     val units = arrayOf("mg/dL", "mmol/L")
     var selectedUnitIndex by remember { mutableIntStateOf(0) }
 
@@ -94,6 +94,6 @@ fun UnitScreenPreview() {
                 .fillMaxSize()
                 .safeContentPadding(),
             color = MaterialTheme.colorScheme.background
-        ) { UnitScreen(navController) }
+        ) { UnitScreen(navController = navController, onSendMessageFailed = {}) }
     }
 }

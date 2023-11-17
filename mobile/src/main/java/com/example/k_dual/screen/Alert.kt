@@ -37,7 +37,7 @@ import com.example.k_dual.component.ToggleState
 import com.example.k_dual.ui.theme.KDualTheme
 
 @Composable
-fun AlertScreen(navController: NavController, isFirst: Boolean) {
+fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFailed: () -> Unit) {
     val isVibrationEnabled = remember { mutableStateOf<ToggleState>(ToggleState.Left) }
     val isVisualEnabled = remember { mutableStateOf<ToggleState>(ToggleState.Left) }
     val lowValue by remember { mutableIntStateOf(70) }
@@ -72,7 +72,7 @@ fun AlertScreen(navController: NavController, isFirst: Boolean) {
                         .clip(shape = RoundedCornerShape(24.dp))
                         .clickable {
                             isVibrationEnabled.value = !isVibrationEnabled.value
-                        }){
+                        }) {
                     Text(
                         text = "Enabled",
                         style = MaterialTheme.typography.bodyLarge,
@@ -196,6 +196,6 @@ fun AlertScreenPreview() {
                 .fillMaxSize()
                 .safeContentPadding(),
             color = MaterialTheme.colorScheme.background
-        ) { AlertScreen(navController, isFirst = true) }
+        ) { AlertScreen(navController = navController, isFirst = true, onSendMessageFailed = {}) }
     }
 }

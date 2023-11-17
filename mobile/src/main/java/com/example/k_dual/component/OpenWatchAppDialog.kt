@@ -1,6 +1,8 @@
 package com.example.k_dual.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,22 +13,24 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.Lifecycle
+import com.example.k_dual.R
 import com.example.k_dual.ui.theme.KDualTheme
 import com.example.k_dual.ui.theme.RedUISolid
 
@@ -39,14 +43,10 @@ fun OpenWatchAppDialog(
         surface = Color(0xFFFCECEC)
     )
 
-    val isLoading by remember { mutableStateOf(false) }
-
     if (isOpen) {
         MaterialTheme(colorScheme = customColorScheme) {
             Dialog(
-                onDismissRequest = {
-                    onDismiss()
-                },
+                onDismissRequest = { onDismiss() },
             ) {
                 Card(
                     modifier = Modifier
@@ -61,13 +61,41 @@ fun OpenWatchAppDialog(
                             .background(color = Color(0xFFFCECEC))
                             .padding(24.dp),
                     ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                        ) {
+                            Image(
+                                // TODO. Change vector resource to close button
+                                imageVector = ImageVector.vectorResource(R.drawable.arrow_back_24px),
+                                contentDescription = "Back arrow icon",
+                                modifier = Modifier
+                                    .clip(shape = RoundedCornerShape(100))
+                                    .clickable { onDismiss() }
+                                    .padding(6.dp),
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp),
+                            horizontalArrangement = Arrangement.Center,
+                        ) {
+                            Image(
+                                imageVector = ImageVector.vectorResource(R.drawable.watch_24px),
+                                contentDescription = "Back arrow icon",
+                            )
+                        }
                         Text(
+                            // TODO. Change text
                             text = "Open the K-Dual app\non your Galaxy Watch",
                             style = MaterialTheme.typography.headlineSmall,
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )
                         Text(
+                            // TODO. Change text
                             text = "To set up the K-Dual app for the smart watch, the K-Dual app on your Galaxy Watch must be open at the same time. Please open this app on your Galaxy Watch as well.",
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier
@@ -99,48 +127,10 @@ fun OpenWatchAppDialog(
                                     style = MaterialTheme.typography.bodyLarge,
                                 )
                             }
-                            if (isLoading) {
-                                CircularProgressIndicator(
-                                    color = RedUISolid,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            } else {
-                                Row(
-                                    modifier = Modifier
-                                        .width(8.dp)
-                                        .height(1.dp)
-                                        .background(color = RedUISolid)
-                                ){}
-                            }
-                        }
-                        Divider(
-                            modifier = Modifier.padding(top = 32.dp, bottom = 16.dp),
-                            color = Color(0x1A000000)
-                        )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            TextButton(
-                                modifier = Modifier
-                                    .width(120.dp)
-                                    .height(40.dp),
-                                onClick = {
-                                    onDismiss()
-                                },
-                                colors = ButtonDefaults.textButtonColors(contentColor = Color.Black)
-                            ) {
-                                Text("Cancel", style = MaterialTheme.typography.labelLarge)
-                            }
-                            TextButton(
-                                modifier = Modifier
-                                    .width(120.dp)
-                                    .height(40.dp),
-                                onClick = { },
-                                colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)
-                            ) {
-                                Text("Open", style = MaterialTheme.typography.labelLarge)
-                            }
+                            CircularProgressIndicator(
+                                color = RedUISolid,
+                                modifier = Modifier.size(24.dp)
+                            )
                         }
                     }
                 }

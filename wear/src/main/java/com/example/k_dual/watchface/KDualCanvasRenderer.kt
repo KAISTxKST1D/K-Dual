@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -79,8 +80,19 @@ class KDualCanvasRenderer(
     private val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
     private val batteryReceiver = BatteryReceiver()
 
+    // Shared Preferences
+    private val sharedPref = context.getSharedPreferences(
+        "MyPrefs",
+        Context.MODE_PRIVATE
+    )
+    private val sharedPrefChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
+            invalidate()
+        }
+
     init {
         context.registerReceiver(batteryReceiver, intentFilter)
+        sharedPref.registerOnSharedPreferenceChangeListener(sharedPrefChangeListener)
     }
 
     override fun onDestroy() {
@@ -137,7 +149,7 @@ class KDualCanvasRenderer(
             drawBackgroundBox(canvas, null, isUser1AlertOn, CustomColor.PURPLE)
             drawIconAndUserName(canvas, null, "Minha", CustomColor.PURPLE)
             drawBloodGlucose(canvas, null, 144)
-            drawDiffArrowBox(canvas, sharedAssets,null, isUser1AlertOn, CustomColor.PURPLE, 4)
+            drawDiffArrowBox(canvas, sharedAssets, null, isUser1AlertOn, CustomColor.PURPLE, 4)
         }
     }
 
@@ -308,10 +320,12 @@ class KDualCanvasRenderer(
                 rectTop = height / 2 - gap - pBottom - rectHeight
                 rectLeft = mHorizontal + pHorizontal
             }
+
             2 -> {
                 rectTop = height / 2 + gap + pBottom
                 rectLeft = mHorizontal + pHorizontal
             }
+
             else -> {
                 rectTop = height - mVertical - pBottom - rectHeight
                 rectLeft = width / 2 - rectWidth / 2

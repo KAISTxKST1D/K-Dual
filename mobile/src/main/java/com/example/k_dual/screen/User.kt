@@ -31,7 +31,7 @@ import com.example.k_dual.component.TextFieldAlertDialog
 import com.example.k_dual.ui.theme.KDualTheme
 
 @Composable
-fun UserScreen(navController: NavController, isFirst: Boolean) {
+fun UserScreen(navController: NavController, isFirst: Boolean, onSendMessageFailed: () -> Unit) {
     val name = "-"
     val url = "-"
     val color = "Yellow"
@@ -168,6 +168,6 @@ fun UserScreenPreview() {
                 .fillMaxSize()
                 .safeContentPadding(),
             color = MaterialTheme.colorScheme.background
-        ) { UserScreen(navController, isFirst = true) }
+        ) { UserScreen(navController = navController, isFirst = true, onSendMessageFailed = {}) }
     }
 }
