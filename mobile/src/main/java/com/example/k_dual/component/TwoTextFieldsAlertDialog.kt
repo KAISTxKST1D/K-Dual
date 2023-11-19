@@ -169,7 +169,6 @@ fun TwoTextFieldsAlertDialogPreview() {
             outlinedInputParameters1 = OutlinedInputParameters(
                 label = "Label1",
                 placeholder = "Placeholder1",
-                suffix = null
             ),
             outlinedInputParameters2 = OutlinedInputParameters(
                 label = "Label2",

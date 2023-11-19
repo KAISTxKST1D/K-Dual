@@ -95,7 +95,9 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
                         description = "Enter the name of the first user.\n" +
                                 "(Minimum 1 character, maximum 10 characters limit.)",
                         outlinedInputParameters = OutlinedInputParameters(
-                            placeholder = "Enter Name", suffix = null, label = "Name",
+                            placeholder = "Enter Name",
+                            label = "Name",
+                            maxLength = 10,
                         )
                     )
                 }
@@ -204,7 +206,8 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
                             title = "Nightscout URL",
                             description = "Enter the website link to retrieve the first user's blood glucose data.",
                             outlinedInputParameters = OutlinedInputParameters(
-                                placeholder = "Enter or paste URL", suffix = null, label = "URL",
+                                placeholder = "Enter or paste URL",
+                                label = "URL",
                             )
                         )
                     }
@@ -234,10 +237,12 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
                             title = "Dexcom Address",
                             description = "Enter the Dexcom ID and Password to retrieve the first user's blood glucose data.",
                             outlinedInputParameters1 = OutlinedInputParameters(
-                                placeholder = "ex. user123", suffix = null, label = "ID",
+                                placeholder = "ex. user123",
+                                label = "ID",
                             ),
                             outlinedInputParameters2 = OutlinedInputParameters(
-                                placeholder = "ex. 12345678", suffix = null, label = "Password",
+                                placeholder = "ex. 12345678",
+                                label = "Password",
                             )
                         )
                     }

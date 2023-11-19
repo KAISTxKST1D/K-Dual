@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.k_dual.ui.theme.KDualTheme
 import com.example.k_dual.ui.theme.RedUISolid
+import java.lang.Integer.min
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,14 +75,29 @@ fun TextFieldAlertDialog(
                                 .focusRequester(focusRequester),
                             value = textValue,
                             onValueChange = {
-                                textValue = it
+                                textValue = if (outlinedInputParameters.maxLength != null) {
+                                    it.substring(
+                                        0,
+                                        min(it.length, outlinedInputParameters.maxLength)
+                                    )
+                                } else {
+                                    it
+                                }
                             },
                             trailingIcon = {
-                                outlinedInputParameters.suffix?.let {
+                                if (outlinedInputParameters.suffix != null) {
                                     Text(
-                                        it,
+                                        text = outlinedInputParameters.suffix,
                                         style = MaterialTheme.typography.bodyLarge,
                                         modifier = Modifier.padding(end = 16.dp)
+                                    )
+                                }
+                                if (outlinedInputParameters.maxLength != null) {
+                                    Text(
+                                        text = "${textValue.length}/${outlinedInputParameters.maxLength}",
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.padding(end = 16.dp),
+                                        color = RedUISolid,
                                     )
                                 }
                             },
@@ -128,7 +144,8 @@ data class OutlinedInputParameters(
     val modifier: Modifier = Modifier,
     val label: String,
     val placeholder: String,
-    val suffix: String?,
+    val suffix: String? = null,
+    val maxLength: Int? = null,
 )
 
 @Preview
@@ -144,7 +161,7 @@ fun TextFieldAlertDialogPreview() {
             outlinedInputParameters = OutlinedInputParameters(
                 label = "Label",
                 placeholder = "Placeholder",
-                suffix = "Suffix"
+                maxLength = 10,
             )
         )
     }
