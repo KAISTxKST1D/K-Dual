@@ -21,21 +21,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaist.k_dual.ui.theme.RedUISolid
+import com.kaist.k_dual.component.OutlinedInputParameters
 import com.kaist.k_dual.ui.theme.KDualTheme
-import java.lang.Integer.min
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextFieldAlertDialog(
+fun TwoTextFieldsAlertDialog(
     modifier: Modifier = Modifier,
     isOpen: Boolean,
-    onConfirm: (String) -> Unit,
+    onConfirm: (String, String) -> Unit,
     onDismiss: () -> Unit,
     title: String,
     description: String,
-    outlinedInputParameters: OutlinedInputParameters
+    outlinedInputParameters1: OutlinedInputParameters,
+    outlinedInputParameters2: OutlinedInputParameters
 ) {
-    var textValue by remember { mutableStateOf("") }
+    var textValue1 by remember { mutableStateOf("") }
+    var textValue2 by remember { mutableStateOf("") }
 
     val customColorScheme = lightColorScheme(
         surface = Color(0xFFFCECEC)
@@ -70,41 +72,25 @@ fun TextFieldAlertDialog(
                             modifier = Modifier.padding(bottom = 24.dp)
                         )
                         OutlinedTextField(
-                            modifier = outlinedInputParameters.modifier
-                                .padding(vertical = 16.dp)
+                            modifier = outlinedInputParameters1.modifier
                                 .focusRequester(focusRequester),
-                            value = textValue,
+                            value = textValue1,
                             onValueChange = {
-                                textValue = if (outlinedInputParameters.maxLength != null) {
-                                    it.substring(
-                                        0,
-                                        min(it.length, outlinedInputParameters.maxLength)
-                                    )
-                                } else {
-                                    it
-                                }
+                                textValue1 = it
                             },
                             trailingIcon = {
-                                if (outlinedInputParameters.suffix != null) {
+                                outlinedInputParameters1.suffix?.let {
                                     Text(
-                                        text = outlinedInputParameters.suffix,
+                                        it,
                                         style = MaterialTheme.typography.bodyLarge,
                                         modifier = Modifier.padding(end = 16.dp)
                                     )
                                 }
-                                if (outlinedInputParameters.maxLength != null) {
-                                    Text(
-                                        text = "${textValue.length}/${outlinedInputParameters.maxLength}",
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        modifier = Modifier.padding(end = 16.dp),
-                                        color = RedUISolid,
-                                    )
-                                }
                             },
-                            label = { Text(title) },
+                            label = { Text(outlinedInputParameters1.label) },
                             placeholder = {
                                 Text(
-                                    outlinedInputParameters.placeholder,
+                                    outlinedInputParameters1.placeholder,
                                     style = MaterialTheme.typography.bodyLarge,
                                 )
                             },
@@ -115,14 +101,45 @@ fun TextFieldAlertDialog(
                                 focusedLabelColor = RedUISolid
                             ),
                         )
+                        OutlinedTextField(
+                            modifier = outlinedInputParameters2.modifier
+                                .padding(top = 6.dp),
+                            value = textValue2,
+                            onValueChange = {
+                                textValue2 = it
+                            },
+                            trailingIcon = {
+                                outlinedInputParameters2.suffix?.let {
+                                    Text(
+                                        it,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.padding(end = 16.dp)
+                                    )
+                                }
+                            },
+                            label = { Text(outlinedInputParameters2.label) },
+                            placeholder = {
+                                Text(
+                                    outlinedInputParameters2.placeholder,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                            },
+                            colors = TextFieldDefaults.textFieldColors(
+                                focusedIndicatorColor = RedUISolid,
+                                placeholderColor = Color(0xFFA79C9E),
+                                containerColor = Color.Transparent,
+                                focusedLabelColor = RedUISolid
+                            ),
+                        )
+
                     }
                 },
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            onConfirm(textValue)
+                            onConfirm(textValue1, textValue2)
                         },
-                        enabled = textValue.isNotEmpty(),
+                        enabled = textValue1.isNotEmpty() && textValue2.isNotEmpty(),
                         colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)
                     ) {
                         Text("Done", style = MaterialTheme.typography.labelLarge)
@@ -140,28 +157,24 @@ fun TextFieldAlertDialog(
     }
 }
 
-data class OutlinedInputParameters(
-    val modifier: Modifier = Modifier,
-    val label: String,
-    val placeholder: String,
-    val suffix: String? = null,
-    val maxLength: Int? = null,
-)
-
 @Preview
 @Composable
-fun TextFieldAlertDialogPreview() {
+fun TwoTextFieldsAlertDialogPreview() {
     KDualTheme {
-        TextFieldAlertDialog(
+        TwoTextFieldsAlertDialog(
             isOpen = true,
-            onConfirm = { /* Preview doesn't handle interactions */ },
+            onConfirm = { _, _ -> {} },
             onDismiss = { /* Preview doesn't handle interactions */ },
             title = "Alert Title",
             description = "This is an alert description.",
-            outlinedInputParameters = OutlinedInputParameters(
-                label = "Label",
-                placeholder = "Placeholder",
-                maxLength = 10,
+            outlinedInputParameters1 = OutlinedInputParameters(
+                label = "Label1",
+                placeholder = "Placeholder1",
+            ),
+            outlinedInputParameters2 = OutlinedInputParameters(
+                label = "Label2",
+                placeholder = "Placeholder2",
+                suffix = "Suffix2"
             )
         )
     }
