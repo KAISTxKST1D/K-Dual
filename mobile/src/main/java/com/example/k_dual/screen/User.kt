@@ -229,7 +229,7 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
                         )
                         TwoTextFieldsAlertDialog(
                             isOpen = isDexcomURLDialogOpen,
-                            onConfirm = { isDexcomURLDialogOpen = false },
+                            onConfirm = { _, _ -> isDexcomURLDialogOpen = false },
                             onDismiss = { isDexcomURLDialogOpen = false },
                             title = "Dexcom Address",
                             description = "Enter the Dexcom ID and Password to retrieve the first user's blood glucose data.",
