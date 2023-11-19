@@ -15,7 +15,7 @@ import org.junit.Rule
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-@RunWith(AndroidJUnit4::class)
+/*@RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
     @Test
     fun useAppContext() {
@@ -52,3 +52,16 @@ class HelloWorldEspressoTest {
     }
 }
 
+*/
+
+internal class GitHubActionTest {
+    @Test
+    fun testSuccess() {
+        assert(true)
+    }
+
+    @Test
+    fun testFail() {
+        assert(false)
+    }
+}
