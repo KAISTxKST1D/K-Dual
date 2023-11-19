@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.graphics.toColorInt
+import com.example.k_dual.ui.theme.Signature
 
 @Composable
 fun Toggle(
@@ -25,7 +26,7 @@ fun Toggle(
     state: ToggleState,
     size: Dp = 24.dp,
     offStateColor: Color = Color("#E6E0E9".toColorInt()),
-    onStateColor: Color = Color("#A45050".toColorInt()),
+    onStateColor: Color = Signature,
     borderWidth: Dp = 1.dp,
     thumbOnColor: Color = Color.White,
     thumbOffColor: Color = Color("#79747E".toColorInt()),

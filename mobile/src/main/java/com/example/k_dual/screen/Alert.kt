@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,7 +29,6 @@ import com.example.k_dual.component.BackButtonTitleRow
 import com.example.k_dual.component.Divider
 import com.example.k_dual.component.MultipleRowWhiteBox
 import com.example.k_dual.component.OutlinedInputParameters
-import com.example.k_dual.component.SingleRowWhiteBox
 import com.example.k_dual.component.TextFieldAlertDialog
 import com.example.k_dual.component.Toggle
 import com.example.k_dual.component.ToggleState
@@ -63,53 +61,50 @@ fun AlertScreen(navController: NavController, isFirst: Boolean) {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "Vibration Alert Setting",
+                    text = "Alert Setting",
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(horizontal = 24.dp)
                 )
-                SingleRowWhiteBox(
-                    modifier = Modifier
-                        .clip(shape = RoundedCornerShape(24.dp))
-                        .clickable {
-                            isVibrationEnabled.value = !isVibrationEnabled.value
-                        }){
-                    Text(
-                        text = "Enabled",
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Toggle(
-                        state = isVibrationEnabled.value,
-                        onChange = {
-                            isVibrationEnabled.value = it
-                        },
-                    )
-                }
-            }
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(
-                    text = "Visual Alert Setting",
-                    style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.padding(horizontal = 24.dp)
-                )
-                SingleRowWhiteBox(
-                    modifier = Modifier
-                        .clip(shape = RoundedCornerShape(24.dp))
-                        .clickable {
-                            isVisualEnabled.value = !isVisualEnabled.value
-                        }) {
-                    Text(
-                        text = "Enabled",
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Toggle(
-                        state = isVisualEnabled.value,
-                        onChange = {
-                            isVisualEnabled.value = it
-                        },
-                    )
+                MultipleRowWhiteBox {
+                    Row(
+                        modifier = Modifier
+                            .clickable { isVibrationEnabled.value = !isVibrationEnabled.value }
+                            .fillMaxWidth()
+                            .padding(vertical = 20.dp, horizontal = 36.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = "Vibration",
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                        Toggle(
+                            state = isVibrationEnabled.value,
+                            onChange = {
+                                isVibrationEnabled.value = it
+                            },
+                        )
+                    }
+                    Divider(modifier = Modifier.padding(horizontal = 36.dp))
+                    Row(
+                        modifier = Modifier
+                            .clickable { isVisualEnabled.value = !isVisualEnabled.value }
+                            .fillMaxWidth()
+                            .padding(vertical = 20.dp, horizontal = 36.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = "Color Blink",
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                        Toggle(
+                            state = isVisualEnabled.value,
+                            onChange = {
+                                isVisualEnabled.value = it
+                            },
+                        )
+                    }
                 }
             }
             Column(
@@ -147,11 +142,13 @@ fun AlertScreen(navController: NavController, isFirst: Boolean) {
                             title = "Low Value",
                             description = "Enter the low value of blood glucose to receive vibration alert.",
                             outlinedInputParameters = OutlinedInputParameters(
-                                placeholder = "Enter the glucose value", suffix = "mg/dL"
+                                placeholder = "Enter the glucose value",
+                                suffix = "mg/dL",
+                                label = "Low Value"
                             )
                         )
                     }
-                    Divider()
+                    Divider(modifier = Modifier.padding(horizontal = 36.dp))
                     Row(
                         modifier = Modifier
                             .clickable { isHighValueDialogOpen = true }
@@ -176,7 +173,9 @@ fun AlertScreen(navController: NavController, isFirst: Boolean) {
                             title = "High Value",
                             description = "Enter the high value of blood glucose to receive vibration alert.",
                             outlinedInputParameters = OutlinedInputParameters(
-                                placeholder = "Enter the glucose value", suffix = "mg/dL"
+                                placeholder = "Enter the glucose value",
+                                suffix = "mg/dL",
+                                label = "High Value",
                             )
                         )
                     }

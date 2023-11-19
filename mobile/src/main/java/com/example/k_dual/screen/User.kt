@@ -8,16 +8,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,18 +33,23 @@ import com.example.k_dual.component.BackButtonTitleRow
 import com.example.k_dual.component.Divider
 import com.example.k_dual.component.MultipleRowWhiteBox
 import com.example.k_dual.component.OutlinedInputParameters
+import com.example.k_dual.component.SingleRowWhiteBox
 import com.example.k_dual.component.TextFieldAlertDialog
+import com.example.k_dual.component.TwoTextFieldsAlertDialog
 import com.example.k_dual.ui.theme.KDualTheme
 
 @Composable
 fun UserScreen(navController: NavController, isFirst: Boolean) {
     val name = "-"
-    val url = "-"
+    val nightscoutUrl = "-"
     val color = "Yellow"
     val alert = "On / On / 70-180"
+    val deviceTypes = arrayOf("Nightscout", "Dexcom")
+    var selectedDeviceTypeIndex by remember { mutableIntStateOf(0) }
 
     var isNameDialogOpen by remember { mutableStateOf(false) }
-    var isURLDialogOpen by remember { mutableStateOf(false) }
+    var isNightscoutURLDialogOpen by remember { mutableStateOf(false) }
+    var isDexcomURLDialogOpen by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -84,39 +95,11 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
                         description = "Enter the name of the first user.\n" +
                                 "(Minimum 1 character, maximum 10 characters limit.)",
                         outlinedInputParameters = OutlinedInputParameters(
-                            placeholder = "Enter Name", suffix = null
+                            placeholder = "Enter Name", suffix = null, label = "Name",
                         )
                     )
                 }
-                Divider()
-                Row(
-                    modifier = Modifier
-                        .clickable { isURLDialogOpen = true }
-                        .fillMaxWidth()
-                        .padding(vertical = 20.dp, horizontal = 36.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        text = "URL",
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Text(
-                        text = url,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF454545),
-                    )
-                    TextFieldAlertDialog(
-                        isOpen = isURLDialogOpen,
-                        onConfirm = { isURLDialogOpen = false },
-                        onDismiss = { isURLDialogOpen = false },
-                        title = "URL",
-                        description = "Enter the website link to retrieve the first user's blood glucose data.",
-                        outlinedInputParameters = OutlinedInputParameters(
-                            placeholder = "Enter or paste URL", suffix = null
-                        )
-                    )
-                }
-                Divider()
+                Divider(modifier = Modifier.padding(horizontal = 36.dp))
                 Row(
                     modifier = Modifier
                         .clickable { navController.navigate("user/${if (isFirst) 1 else 2}/color") }
@@ -134,7 +117,7 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
                         color = Color(0xFF454545),
                     )
                 }
-                Divider()
+                Divider(modifier = Modifier.padding(horizontal = 36.dp))
                 Row(
                     modifier = Modifier
                         .clickable { navController.navigate("user/${if (isFirst) 1 else 2}/alert") }
@@ -154,9 +137,116 @@ fun UserScreen(navController: NavController, isFirst: Boolean) {
                 }
             }
         }
-
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = "Device Type",
+                style = MaterialTheme.typography.labelLarge,
+                color = Color(0xFF454545),
+                modifier = Modifier.padding(start = 24.dp)
+            )
+            MultipleRowWhiteBox {
+                deviceTypes.mapIndexed { index, deviceType ->
+                    Row(
+                        modifier = Modifier
+                            .clickable { selectedDeviceTypeIndex = index }
+                            .fillMaxWidth()
+                            .padding(vertical = 20.dp, horizontal = 36.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(
+                            modifier = Modifier
+                                .size(24.dp),
+                            selected = selectedDeviceTypeIndex == index,
+                            onClick = { selectedDeviceTypeIndex = index },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = Color.Black,
+                            )
+                        )
+                        Text(
+                            text = deviceType,
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
+                    if (index != deviceTypes.lastIndex) Divider(
+                        modifier = Modifier.padding(
+                            horizontal = 36.dp
+                        )
+                    )
+                }
+            }
+            if (selectedDeviceTypeIndex == 0) {
+                SingleRowWhiteBox(
+                    modifier = Modifier
+                        .clip(shape = RoundedCornerShape(24.dp))
+                        .clickable { isNightscoutURLDialogOpen = true }) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(
+                            text = "Nightscout URL",
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                        Text(
+                            text = nightscoutUrl,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color(0xFF454545),
+                        )
+                        TextFieldAlertDialog(
+                            isOpen = isNightscoutURLDialogOpen,
+                            onConfirm = { isNightscoutURLDialogOpen = false },
+                            onDismiss = { isNightscoutURLDialogOpen = false },
+                            title = "Nightscout URL",
+                            description = "Enter the website link to retrieve the first user's blood glucose data.",
+                            outlinedInputParameters = OutlinedInputParameters(
+                                placeholder = "Enter or paste URL", suffix = null, label = "URL",
+                            )
+                        )
+                    }
+                }
+            } else if (selectedDeviceTypeIndex == 1) {
+                SingleRowWhiteBox(
+                    modifier = Modifier
+                        .clip(shape = RoundedCornerShape(24.dp))
+                        .clickable { isDexcomURLDialogOpen = true }) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(
+                            text = "Dexcom Address",
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                        Text(
+                            text = nightscoutUrl,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color(0xFF454545),
+                        )
+                        TwoTextFieldsAlertDialog(
+                            isOpen = isDexcomURLDialogOpen,
+                            onConfirm = { isDexcomURLDialogOpen = false },
+                            onDismiss = { isDexcomURLDialogOpen = false },
+                            title = "Dexcom Address",
+                            description = "Enter the Dexcom ID and Password to retrieve the first user's blood glucose data.",
+                            outlinedInputParameters1 = OutlinedInputParameters(
+                                placeholder = "ex. user123", suffix = null, label = "ID",
+                            ),
+                            outlinedInputParameters2 = OutlinedInputParameters(
+                                placeholder = "ex. 12345678", suffix = null, label = "Password",
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 }
+
 
 @Preview(showBackground = false, showSystemUi = true)
 @Composable
