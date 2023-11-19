@@ -7,13 +7,12 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
+  build:
 
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out Repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       - name: set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -23,5 +22,5 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Build with Gradle
+      - name: Test with Gradle
         run: ./gradlew test
