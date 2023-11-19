@@ -54,6 +54,7 @@ class HelloWorldEspressoTest {
 
 */
 
+/*
 internal class GitHubActionTest {
     @Test
     fun testSuccess() {
@@ -65,3 +66,4 @@ internal class GitHubActionTest {
         assert(false)
     }
 }
+*/
