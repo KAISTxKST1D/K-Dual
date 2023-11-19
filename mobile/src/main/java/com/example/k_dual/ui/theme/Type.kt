@@ -24,7 +24,7 @@ val fontFamily = FontFamily(
 // Set of Material typography styles to start with
 val Typography = Typography(
     headlineSmall = TextStyle(
-        fontSize = 24.sp,
+        fontSize = 21.sp,
         lineHeight = 32.sp,
         fontFamily = fontFamily,
         fontWeight = FontWeight.Normal,

@@ -94,7 +94,7 @@ fun TextFieldAlertDialog(
                             },
                             colors = TextFieldDefaults.textFieldColors(
                                 focusedIndicatorColor = RedUISolid,
-                                placeholderColor = Color(0xFFA79C9E),
+                                focusedPlaceholderColor = Color(0xFFA79C9E),
                                 containerColor = Color.Transparent,
                                 focusedLabelColor = RedUISolid
                             ),

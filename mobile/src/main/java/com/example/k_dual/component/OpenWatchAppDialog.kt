@@ -29,10 +29,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.Lifecycle
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.k_dual.R
 import com.example.k_dual.ui.theme.KDualTheme
 import com.example.k_dual.ui.theme.RedUISolid
+import kotlinx.coroutines.delay
 
 @Composable
 fun OpenWatchAppDialog(
@@ -43,7 +47,23 @@ fun OpenWatchAppDialog(
         surface = Color(0xFFFCECEC)
     )
 
-    if (isOpen) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.check_lottie))
+    val progress by animateLottieCompositionAsState(
+        composition, isPlaying = !isOpen,
+        iterations = 1
+    )
+    var animationFinished by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isOpen) {
+        if (!isOpen) {
+            while (progress < 1f) {
+                delay(16L)
+            }
+            animationFinished = true
+        }
+    }
+
+    if (isOpen || !animationFinished) {
         MaterialTheme(colorScheme = customColorScheme) {
             Dialog(
                 onDismissRequest = { onDismiss() },
@@ -67,8 +87,7 @@ fun OpenWatchAppDialog(
                             horizontalArrangement = Arrangement.End,
                         ) {
                             Image(
-                                // TODO. Change vector resource to close button
-                                imageVector = ImageVector.vectorResource(R.drawable.arrow_back_24px),
+                                imageVector = ImageVector.vectorResource(R.drawable.close_24px),
                                 contentDescription = "Back arrow icon",
                                 modifier = Modifier
                                     .clip(shape = RoundedCornerShape(100))
@@ -79,7 +98,7 @@ fun OpenWatchAppDialog(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 16.dp),
+                                .padding(vertical = 16.dp),
                             horizontalArrangement = Arrangement.Center,
                         ) {
                             Image(
@@ -88,22 +107,22 @@ fun OpenWatchAppDialog(
                             )
                         }
                         Text(
-                            // TODO. Change text
-                            text = "Open the K-Dual app\non your Galaxy Watch",
+                            text = "Connect your Galaxy Watch.",
                             style = MaterialTheme.typography.headlineSmall,
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
                         )
                         Text(
-                            // TODO. Change text
-                            text = "To set up the K-Dual app for the smart watch, the K-Dual app on your Galaxy Watch must be open at the same time. Please open this app on your Galaxy Watch as well.",
+                            text = "Ensure your Galaxy Watch is connected to your phone to set up the K-Dual app.",
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier
                                 .padding(bottom = 24.dp)
                                 .padding(top = 16.dp)
                         )
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 24.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -127,10 +146,18 @@ fun OpenWatchAppDialog(
                                     style = MaterialTheme.typography.bodyLarge,
                                 )
                             }
-                            CircularProgressIndicator(
-                                color = RedUISolid,
-                                modifier = Modifier.size(24.dp)
-                            )
+                            if (isOpen) {
+                                CircularProgressIndicator(
+                                    color = RedUISolid,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            } else {
+                                LottieAnimation(
+                                    composition = composition,
+                                    progress = { progress },
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
                         }
                     }
                 }
