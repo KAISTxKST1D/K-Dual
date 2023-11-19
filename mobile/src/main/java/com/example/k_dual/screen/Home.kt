@@ -57,9 +57,7 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
             SingleRowWhiteBox(
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(24.dp))
-                    .clickable {
-                        state.value = !state.value
-                    }) {
+                    .clickable { state.value = !state.value }) {
                 Text(
                     text = "Enabled dual mode",
                     style = MaterialTheme.typography.bodyLarge,
