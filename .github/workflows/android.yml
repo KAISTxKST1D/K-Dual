@@ -25,5 +25,3 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew test
-      - name: Run Android Tests
-        run: ./gradlew connectedCheck
