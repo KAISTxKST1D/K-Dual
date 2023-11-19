@@ -48,7 +48,7 @@ class HelloWorldEspressoTest {
 
     @Test fun listGoesOverTheFold() {
         //onView(withText("Hello world!")).check(matches(isDisplayed()))
-        assertEquals(4, 2 + 2)
+        assertEquals(4, 2 + 3)
     }
 }
 
