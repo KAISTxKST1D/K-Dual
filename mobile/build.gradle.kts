@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.k_dual"
+    namespace = "com.kaist.k_dual"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.k_dual"
+        applicationId = "com.kaist.k_dual"
         minSdk = 25
         targetSdk = 34
         versionCode = 1
