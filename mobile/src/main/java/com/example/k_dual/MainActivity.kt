@@ -26,8 +26,8 @@ import com.example.k_dual.screen.HomeScreen
 import com.example.k_dual.screen.UnitScreen
 import com.example.k_dual.screen.UserScreen
 import com.example.k_dual.ui.theme.KDualTheme
-import com.example.k_dual.util.findWearableNode
 import com.google.android.gms.wearable.Wearable
+import findWearableNode
 
 class MainActivity : ComponentActivity() {
     private val capabilityClient by lazy { Wearable.getCapabilityClient(this) }
