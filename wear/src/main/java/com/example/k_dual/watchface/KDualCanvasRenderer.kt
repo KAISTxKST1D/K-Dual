@@ -8,8 +8,10 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.BatteryManager
 import android.view.SurfaceHolder
+import androidx.core.content.ContextCompat.startActivity
 import androidx.wear.watchface.ComplicationSlot
 import androidx.wear.watchface.Renderer
 import androidx.wear.watchface.TapEvent
@@ -24,6 +26,7 @@ import kotlinx.coroutines.launch
 import kr.ac.kaist.k_canvas.KCanvas
 import kr.ac.kaist.k_canvas.KColor
 import java.time.ZonedDateTime
+
 
 class KDualCanvasRenderer(
     private val context: Context,
@@ -59,6 +62,8 @@ class KDualCanvasRenderer(
     private val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
     private val batteryReceiver = BatteryReceiver()
 
+    private lateinit var watchRect: Rect
+
     init {
         context.registerReceiver(batteryReceiver, intentFilter)
     }
@@ -80,6 +85,9 @@ class KDualCanvasRenderer(
     override fun render(
         canvas: Canvas, bounds: Rect, zonedDateTime: ZonedDateTime, sharedAssets: KDualAssets
     ) {
+        if (!::watchRect.isInitialized) {
+            watchRect = bounds
+        }
         canvas.drawColor(Color.BLACK)
 
         KCanvas.drawDigitalClock(canvas, zonedDateTime.hour, zonedDateTime.minute, robotoMedium)
@@ -103,13 +111,37 @@ class KDualCanvasRenderer(
             KCanvas.drawBloodGlucose(canvas, null, 144, robotoMedium)
             KCanvas.drawDiffArrowBox(canvas, context,null, isUser1AlertOn, KColor.PURPLE, 4, robotoRegular)
         }
+
     }
 
     override fun onTapEvent(tapType: Int, tapEvent: TapEvent, complicationSlot: ComplicationSlot?) {
         // For test blink effect
-        if (tapType == TapType.DOWN) {
-            blinkEffect(1)
+        if (isDualMode && tapEvent.yPos > watchRect.height()/2 ) {
+            if (tapType == TapType.DOWN) {
+                blinkEffect(2)
+            } else if (tapType == TapType.UP) {
+                openWearApp(2)
+            }
+        } else {
+            if (tapType == TapType.DOWN) {
+                blinkEffect(1)
+            } else if (tapType == TapType.UP) {
+                openWearApp(1)
+            }
         }
+    }
+    
+    private fun openWearApp(userId: Int) {
+        val packageName = "com.example.k_dual"
+        val className = "com.example.k_dual.presentation.MainActivity"
+
+        val intent = Intent(Intent.ACTION_MAIN)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        intent.addCategory(Intent.CATEGORY_LAUNCHER)
+        intent.setClassName(packageName, className)
+        intent.putExtra("routeGraph", userId)
+
+        startActivity(context, intent, null)
     }
 
     // Function for low/high alert highlights

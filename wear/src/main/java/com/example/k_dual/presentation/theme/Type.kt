@@ -32,6 +32,12 @@ val Typography = Typography(
         fontWeight = FontWeight(500),
         fontSize = 12.sp,
         color = Color(0xFFBDC1C6)
-    )
+    ),
+    body1 = TextStyle(
+        fontFamily = robotoFamily,
+        fontWeight = FontWeight(500),
+        fontSize = 10.sp,
+        color = Color(0xB2FFFFFF)
+    ),
 
 )

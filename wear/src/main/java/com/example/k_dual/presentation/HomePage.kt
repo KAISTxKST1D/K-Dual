@@ -11,14 +11,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.compose.rememberNavController
 import androidx.wear.compose.material.MaterialTheme
 import com.example.k_dual.R
 import com.example.k_dual.presentation.theme.KDualTheme
@@ -26,7 +31,7 @@ import kr.ac.kaist.k_canvas.KColor
 
 @Composable
 fun HomePage(
-    navigateToGraphPage: (userId: Number) -> Unit
+    navController: NavController
 ) {
     Box(
         modifier = Modifier
@@ -53,7 +58,11 @@ fun HomePage(
                 modifier = Modifier
                     .height(52.dp)
                     .width(172.dp)
-                    .clickable { navigateToGraphPage(1) },
+                    .clip(RoundedCornerShape(92.129.dp))
+                    .clickable {
+                        if (navController.currentDestination != NavDestination("graph/${1}")) {
+                            navController.navigate("graph/${1}")
+                        } },
                 name = "Minha",
                 color = KColor.YELLOW,
                 server = "Libre",
@@ -63,7 +72,11 @@ fun HomePage(
                     .padding(top = 4.dp)
                     .height(52.dp)
                     .width(172.dp)
-                    .clickable { navigateToGraphPage(2) },
+                    .clip(RoundedCornerShape(92.129.dp))
+                    .clickable {
+                        if (navController.currentDestination != NavDestination("graph/${2}")) {
+                            navController.navigate("graph/${2}")
+                        } },
                 name = "Jaewon",
                 color = KColor.BLUE,
                 server = "Dexcom",
@@ -79,6 +92,6 @@ fun HomePagePreview() {
         println("hi")
     }
     KDualTheme {
-        HomePage(navigateToGraphPage = { num -> test(num) } )
+        HomePage(navController = rememberNavController())
     }
 }

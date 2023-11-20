@@ -63,6 +63,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.wear.compose:compose-material:1.1.2")
     implementation("androidx.wear.compose:compose-foundation:1.1.2")
+    implementation("androidx.wear.compose:compose-navigation:1.1.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.6.1")
     implementation("androidx.wear.watchface:watchface:1.1.1")

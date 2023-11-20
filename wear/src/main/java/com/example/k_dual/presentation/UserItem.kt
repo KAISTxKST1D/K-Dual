@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -28,7 +29,8 @@ import kr.ac.kaist.k_canvas.KColor
 fun UserItem(modifier: Modifier, name: String, color: KColor, server: String, isAlertOn: Boolean) {
     Row(
         modifier = modifier
-            .background(Color(0xFF202124), RoundedCornerShape(92.129.dp))
+            .clip(RoundedCornerShape(92.129.dp))
+            .background(Color(0xFF202124))
             .padding(14.dp, 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
