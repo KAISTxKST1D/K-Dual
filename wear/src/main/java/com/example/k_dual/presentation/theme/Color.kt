@@ -2,7 +2,7 @@ package com.example.k_dual.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 import androidx.wear.compose.material.Colors
-import kr.ac.kaist.k_canvas.KColor
+import com.kaist.k_canvas.KColor
 
 val Purple200 = Color(0xFFBB86FC)
 val Purple500 = Color(0xFF6200EE)

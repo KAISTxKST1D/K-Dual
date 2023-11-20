@@ -23,7 +23,7 @@ import androidx.wear.compose.material.Text
 import com.example.k_dual.R
 import com.example.k_dual.presentation.theme.Colors
 import com.example.k_dual.presentation.theme.KDualTheme
-import kr.ac.kaist.k_canvas.KColor
+import com.kaist.k_canvas.KColor
 
 @Composable
 fun UserItem(modifier: Modifier, name: String, color: KColor, server: String, isAlertOn: Boolean) {

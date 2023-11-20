@@ -27,7 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.wear.compose.material.MaterialTheme
 import com.example.k_dual.R
 import com.example.k_dual.presentation.theme.KDualTheme
-import kr.ac.kaist.k_canvas.KColor
+import com.kaist.k_canvas.KColor
 
 @Composable
 fun HomePage(

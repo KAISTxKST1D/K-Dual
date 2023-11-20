@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "kr.ac.kaist.k_canvas"
+    namespace = "com.kaist.k_canvas"
     compileSdk = 33
 
     defaultConfig {

@@ -25,8 +25,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.example.k_dual.R
@@ -48,8 +46,8 @@ import com.patrykandpatrick.vico.core.chart.copy
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.entryModelOf
-import kr.ac.kaist.k_canvas.KCanvas
-import kr.ac.kaist.k_canvas.KColor
+import com.kaist.k_canvas.KCanvas
+import com.kaist.k_canvas.KColor
 
 @Composable
 fun GraphPage(isFirst: Boolean) {

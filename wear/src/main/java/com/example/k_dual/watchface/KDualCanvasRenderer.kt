@@ -8,7 +8,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
-import android.net.Uri
 import android.os.BatteryManager
 import android.view.SurfaceHolder
 import androidx.core.content.ContextCompat.startActivity
@@ -23,8 +22,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kr.ac.kaist.k_canvas.KCanvas
-import kr.ac.kaist.k_canvas.KColor
+import com.kaist.k_canvas.KCanvas
+import com.kaist.k_canvas.KColor
 import java.time.ZonedDateTime
 
 

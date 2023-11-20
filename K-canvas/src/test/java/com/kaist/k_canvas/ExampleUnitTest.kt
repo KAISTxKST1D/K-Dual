@@ -1,4 +1,4 @@
-package kr.ac.kaist.k_canvas
+package com.kaist.k_canvas
 
 import org.junit.Test
 
