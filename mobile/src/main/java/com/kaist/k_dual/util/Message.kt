@@ -57,11 +57,18 @@ private fun scheduleRetry(
     }, RETRY_DELAY_SECONDS, TimeUnit.SECONDS)
 }
 
-fun sendMessageToWearable(context: Context, path: String, data: ByteArray?, onFailure: () -> Unit) {
+fun sendMessageToWearable(
+    context: Context,
+    path: String,
+    data: ByteArray?,
+    onSuccess: () -> Unit = {},
+    onFailure: () -> Unit = {}
+) {
     connectedNodeID?.let { nodeId ->
         Wearable.getMessageClient(context).sendMessage(nodeId, path, data)
             .addOnSuccessListener {
                 Log.d("PhoneApp", "Message sent successfully")
+                onSuccess()
             }
             .addOnFailureListener { e ->
                 Log.e("PhoneApp", "Failed to send message", e)

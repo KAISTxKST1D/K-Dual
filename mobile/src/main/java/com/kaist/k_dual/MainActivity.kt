@@ -43,25 +43,53 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     var isDialogOpen by remember { mutableStateOf(false) }
+                    var isConnected by remember { mutableStateOf(false) }
+                    var userClosed by remember { mutableStateOf(false) }
 
                     LaunchedEffect(Unit) {
                         findWearableNode(
                             capabilityClient = capabilityClient,
-                            onSuccess = { isDialogOpen = false },
-                            onFailure = { isDialogOpen = true }
+                            onSuccess = {
+                                isConnected = true
+                                userClosed = false
+                                isDialogOpen = false
+                            },
+                            onFailure = {
+                                if (!userClosed) {
+                                    isDialogOpen = true
+                                }
+                                isConnected = false
+                            }
                         )
                     }
 
-                    OpenWatchAppDialog(isOpen = isDialogOpen, onDismiss = { isDialogOpen = false })
+                    OpenWatchAppDialog(
+                        isOpen = isDialogOpen,
+                        isConnected = isConnected,
+                        onDismiss = {
+                            userClosed = true
+                            isDialogOpen = false
+                        },
+                    )
 
                     val navController = rememberNavController()
 
                     val onSendMessageFailed = {
+                        userClosed = false
                         isDialogOpen = true
                         findWearableNode(
                             capabilityClient = capabilityClient,
-                            onSuccess = { isDialogOpen = false },
-                            onFailure = { isDialogOpen = true }
+                            onSuccess = {
+                                isConnected = true
+                                userClosed = false
+                                isDialogOpen = false
+                            },
+                            onFailure = {
+                                if (!userClosed) {
+                                    isDialogOpen = true
+                                }
+                                isConnected = false
+                            }
                         )
                     }
 

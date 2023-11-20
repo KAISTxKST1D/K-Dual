@@ -19,8 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.kaist.k_dual.component.Divider
@@ -30,12 +32,15 @@ import com.kaist.k_dual.component.Toggle
 import com.kaist.k_dual.component.ToggleState
 import com.kaist.k_dual.component.WatchFacePreview
 import com.kaist.k_dual.ui.theme.KDualTheme
+import sendMessageToWearable
 
 @Composable
 fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
     val firstUserName = "Minha"
     val secondUserName = "Jaewon"
     val units = "mg/dL"
+
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -48,6 +53,15 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             val state = remember { mutableStateOf<ToggleState>(ToggleState.Right) }
+            val onClickToggle = {
+                sendMessageToWearable(
+                    context = context,
+                    path = "",
+                    data = null,
+                    onFailure = onSendMessageFailed,
+                    onSuccess = { state.value = !state.value }
+                )
+            }
             Text(
                 text = "Connected Devices",
                 style = MaterialTheme.typography.labelLarge,
@@ -57,23 +71,25 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
             SingleRowWhiteBox(
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(24.dp))
-                    .clickable { state.value = !state.value }) {
+                    .clickable { onClickToggle() }) {
                 Text(
                     text = "Enabled dual mode",
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 Toggle(
                     state = state.value,
-                    onChange = {
-                        state.value = it
-                    },
+                    onChange = { onClickToggle() },
                 )
             }
 
             if (state.value == ToggleState.Left) {
                 SingleRowWhiteBox(modifier = Modifier
                     .clip(shape = RoundedCornerShape(24.dp))
-                    .clickable { navController.navigate("user/1") }) {
+                    .clickable {
+                        if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+                            navController.navigate("user/1")
+                        }
+                    }) {
                     Text(
                         text = "First User",
                         style = MaterialTheme.typography.bodyLarge,
@@ -88,7 +104,11 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { navController.navigate("user/1") }
+                            .clickable {
+                                if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+                                    navController.navigate("user/1")
+                                }
+                            }
                             .padding(horizontal = 36.dp, vertical = 20.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
@@ -109,7 +129,11 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
                     )
                     Row(
                         modifier = Modifier
-                            .clickable { navController.navigate("user/2") }
+                            .clickable {
+                                if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+                                    navController.navigate("user/2")
+                                }
+                            }
                             .fillMaxWidth()
                             .padding(vertical = 20.dp, horizontal = 36.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -141,7 +165,11 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
             SingleRowWhiteBox(
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(24.dp))
-                    .clickable { navController.navigate("unit") }) {
+                    .clickable {
+                        if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+                            navController.navigate("unit")
+                        }
+                    }) {
                 Text(
                     text = "Blood Glucose Units",
                     style = MaterialTheme.typography.bodyLarge,

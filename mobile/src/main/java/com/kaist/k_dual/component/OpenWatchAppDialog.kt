@@ -41,6 +41,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun OpenWatchAppDialog(
     isOpen: Boolean,
+    isConnected: Boolean,
     onDismiss: () -> Unit,
 ) {
     val customColorScheme = lightColorScheme(
@@ -54,8 +55,8 @@ fun OpenWatchAppDialog(
     )
     var animationFinished by remember { mutableStateOf(false) }
 
-    LaunchedEffect(isOpen) {
-        if (!isOpen) {
+    LaunchedEffect(isOpen, isConnected) {
+        if (isConnected && !isOpen) {
             while (progress < 1f) {
                 delay(16L)
             }
@@ -63,7 +64,7 @@ fun OpenWatchAppDialog(
         }
     }
 
-    if (isOpen || !animationFinished) {
+    if (isOpen || (isConnected && !animationFinished)) {
         MaterialTheme(colorScheme = customColorScheme) {
             Dialog(
                 onDismissRequest = { onDismiss() },
@@ -173,6 +174,7 @@ fun OpenWatchAppDialogPreview() {
     KDualTheme {
         OpenWatchAppDialog(
             isOpen = true,
+            isConnected = false,
             onDismiss = { /* Preview doesn't handle interactions */ },
         )
     }

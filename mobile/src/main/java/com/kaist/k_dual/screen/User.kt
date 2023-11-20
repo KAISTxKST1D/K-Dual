@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.kaist.k_dual.component.BackButtonTitleRow
@@ -108,7 +109,11 @@ fun UserScreen(
                 Divider(modifier = Modifier.padding(horizontal = 36.dp))
                 Row(
                     modifier = Modifier
-                        .clickable { navController.navigate("user/${if (isFirst) 1 else 2}/color") }
+                        .clickable {
+                            if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+                                navController.navigate("user/${if (isFirst) 1 else 2}/color")
+                            }
+                        }
                         .fillMaxWidth()
                         .padding(vertical = 20.dp, horizontal = 36.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -126,7 +131,11 @@ fun UserScreen(
                 Divider(modifier = Modifier.padding(horizontal = 36.dp))
                 Row(
                     modifier = Modifier
-                        .clickable { navController.navigate("user/${if (isFirst) 1 else 2}/alert") }
+                        .clickable {
+                            if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+                                navController.navigate("user/${if (isFirst) 1 else 2}/alert")
+                            }
+                        }
                         .fillMaxWidth()
                         .padding(vertical = 20.dp, horizontal = 36.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
