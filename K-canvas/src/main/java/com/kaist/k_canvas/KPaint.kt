@@ -1,4 +1,4 @@
-package com.kaist.k_dual.watchface
+package com.kaist.k_canvas
 
 import android.graphics.Color
 import android.graphics.LinearGradient
@@ -10,11 +10,7 @@ import android.graphics.RectF
 import android.graphics.Shader
 import android.graphics.Typeface
 
-enum class CustomColor {
-    RED, YELLOW, GREEN, BLUE, PURPLE
-}
-
-class CustomPaint {
+class KPaint {
     companion object {
         fun clockAndBatteryPaint(unitF: Float, font: Typeface) = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.WHITE
@@ -28,7 +24,7 @@ class CustomPaint {
 
             val matrix = Matrix()
             matrix.setRotate(angle-90f, bound.width()/2, bound.top+bound.height()/2)
-            
+
             val gradientShader = LinearGradient(bound.left, bound.top, bound.right, bound.bottom, colors, positions, Shader.TileMode.CLAMP)
             gradientShader.setLocalMatrix(matrix)
 
@@ -46,25 +42,25 @@ class CustomPaint {
             return createGradientPaint(bound, colors)
         }
 
-        fun backgroundPaint(colorName: CustomColor, bound: RectF): Paint {
+        fun backgroundPaint(colorName: KColor, bound: RectF): Paint {
             val colors =  when (colorName) {
-                CustomColor.RED -> intArrayOf(
+                KColor.RED -> intArrayOf(
                     Color.argb(54, 254, 156, 148),
                     Color.argb(164, 254, 156, 148)
                 )
-                CustomColor.YELLOW -> intArrayOf(
+                KColor.YELLOW -> intArrayOf(
                     Color.argb(48, 255, 233, 164),
                     Color.argb(128, 244, 210, 106)
                 )
-                CustomColor.GREEN -> intArrayOf(
+                KColor.GREEN -> intArrayOf(
                     Color.argb(61, 103, 205, 125),
                     Color.argb(147, 100, 214, 125)
                 )
-                CustomColor.BLUE -> intArrayOf(
+                KColor.BLUE -> intArrayOf(
                     Color.argb(77, 159, 201, 255),
                     Color.argb(140, 101, 165, 247)
                 )
-                CustomColor.PURPLE -> intArrayOf(
+                KColor.PURPLE -> intArrayOf(
                     Color.argb(61, 206, 147, 250),
                     Color.argb(140, 207, 148, 254)
                 )
@@ -72,37 +68,37 @@ class CustomPaint {
             return createGradientPaint(bound, colors)
         }
 
-        fun iconPaint(colorName: CustomColor): Paint {
+        fun iconPaint(colorName: KColor): Paint {
             val paint = Paint(Paint.ANTI_ALIAS_FLAG)
             paint.style = Paint.Style.FILL
 
             when (colorName) {
-                CustomColor.RED -> paint.color = Color.parseColor("#EE675C")
-                CustomColor.YELLOW -> paint.color = Color.parseColor("#FDD663")
-                CustomColor.GREEN -> paint.color = Color.parseColor("#2AAB46")
-                CustomColor.BLUE -> paint.color = Color.parseColor("#1B6BD5")
-                CustomColor.PURPLE -> paint.color = Color.parseColor("#AE5CEE")
+                KColor.RED -> paint.color = Color.parseColor("#EE675C")
+                KColor.YELLOW -> paint.color = Color.parseColor("#FDD663")
+                KColor.GREEN -> paint.color = Color.parseColor("#2AAB46")
+                KColor.BLUE -> paint.color = Color.parseColor("#1B6BD5")
+                KColor.PURPLE -> paint.color = Color.parseColor("#AE5CEE")
             }
             return paint
         }
 
-        fun namePaint(colorName: CustomColor, unitF: Float, isDualMode: Boolean, font: Typeface): Paint {
+        fun namePaint(colorName: KColor, unitF: Float, isDualMode: Boolean, font: Typeface): Paint {
             val paint = Paint(Paint.ANTI_ALIAS_FLAG)
             paint.textSize = if (isDualMode) { unitF * 14f } else { unitF * 18f }
             paint.typeface = font
 
             when (colorName) {
-                CustomColor.RED -> paint.color = Color.parseColor("#FE9C94")
-                CustomColor.YELLOW -> paint.color = Color.parseColor("#FDE293")
-                CustomColor.GREEN -> paint.color = Color.parseColor("#7FD892")
-                CustomColor.BLUE -> paint.color = Color.parseColor("#A1BBE5")
-                CustomColor.PURPLE -> paint.color = Color.parseColor("#CF94FE")
+                KColor.RED -> paint.color = Color.parseColor("#FE9C94")
+                KColor.YELLOW -> paint.color = Color.parseColor("#FDE293")
+                KColor.GREEN -> paint.color = Color.parseColor("#7FD892")
+                KColor.BLUE -> paint.color = Color.parseColor("#A1BBE5")
+                KColor.PURPLE -> paint.color = Color.parseColor("#CF94FE")
             }
 
             return paint
         }
 
-        fun arrowBoxPaint(colorName: CustomColor?, unitF: Float): Paint {
+        fun arrowBoxPaint(colorName: KColor?, unitF: Float): Paint {
             return if (colorName != null) {
                 val paint = iconPaint(colorName)
                 paint.style = Paint.Style.STROKE
@@ -116,13 +112,13 @@ class CustomPaint {
             }
         }
 
-        fun arrowPaint(colorName: CustomColor): Paint {
+        fun arrowPaint(colorName: KColor): Paint {
             val color = when (colorName) {
-                CustomColor.RED -> Color.parseColor("#EE675C")
-                CustomColor.YELLOW -> Color.parseColor("#FDD663")
-                CustomColor.GREEN -> Color.parseColor("#2AAB46")
-                CustomColor.BLUE -> Color.parseColor("#1B6BD5")
-                CustomColor.PURPLE -> Color.parseColor("#AE5CEE")
+                KColor.RED -> Color.parseColor("#EE675C")
+                KColor.YELLOW -> Color.parseColor("#FDD663")
+                KColor.GREEN -> Color.parseColor("#2AAB46")
+                KColor.BLUE -> Color.parseColor("#1B6BD5")
+                KColor.PURPLE -> Color.parseColor("#AE5CEE")
             }
             val filter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP)
             return Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -130,7 +126,7 @@ class CustomPaint {
             }
         }
 
-        fun differenceTextPaint(unitF: Float, font: Typeface, colorName: CustomColor?): Paint {
+        fun differenceTextPaint(unitF: Float, font: Typeface, colorName: KColor?): Paint {
             val paint = if (colorName != null) {
                 iconPaint(colorName)
             } else {

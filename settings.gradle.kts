@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "K-Dual"
 include(":mobile")
 include(":wear")
+include(":K-canvas")
