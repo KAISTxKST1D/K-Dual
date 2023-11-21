@@ -53,7 +53,7 @@ fun HomePage(
                 .align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // TODO. userItem 여러번 터치하면 다음 화면 여러개 생성됨
+            // TODO. navigate 화면 전환 animation
             UserItem(
                 modifier = Modifier
                     .height(52.dp)
