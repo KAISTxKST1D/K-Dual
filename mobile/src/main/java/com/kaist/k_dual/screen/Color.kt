@@ -33,7 +33,7 @@ import com.kaist.k_dual.component.WatchFacePreview
 import com.kaist.k_dual.ui.theme.KDualTheme
 
 @Composable
-fun ColorScreen(navController: NavController, isFirst: Boolean) {
+fun ColorScreen(navController: NavController, isFirst: Boolean, onSendMessageFailed: () -> Unit) {
     val colors = arrayOf("Red", "Yellow", "Green", "Blue", "Purple")
     var selectedColorIndex by remember { mutableIntStateOf(0) }
 
@@ -100,6 +100,6 @@ fun ColorScreenPreview() {
                 .fillMaxSize()
                 .safeContentPadding(),
             color = MaterialTheme.colorScheme.background
-        ) { ColorScreen(navController, isFirst = true) }
+        ) { ColorScreen(navController = navController, isFirst = true, onSendMessageFailed = {}) }
     }
 }

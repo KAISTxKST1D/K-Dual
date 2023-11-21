@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
@@ -60,10 +61,20 @@ class KDualCanvasRenderer(
     private val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
     private val batteryReceiver = BatteryReceiver()
 
+    // Shared Preferences
+    private val sharedPref = context.getSharedPreferences(
+        "MyPrefs",
+        Context.MODE_PRIVATE
+    )
+    private val sharedPrefChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
+            invalidate()
+        }
     private lateinit var watchRect: Rect
 
     init {
         context.registerReceiver(batteryReceiver, intentFilter)
+        sharedPref.registerOnSharedPreferenceChangeListener(sharedPrefChangeListener)
     }
 
     override fun onDestroy() {

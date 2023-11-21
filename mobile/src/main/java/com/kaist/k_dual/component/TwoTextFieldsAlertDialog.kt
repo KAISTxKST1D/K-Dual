@@ -21,7 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaist.k_dual.ui.theme.RedUISolid
-import com.kaist.k_dual.component.OutlinedInputParameters
 import com.kaist.k_dual.ui.theme.KDualTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,7 +95,7 @@ fun TwoTextFieldsAlertDialog(
                             },
                             colors = TextFieldDefaults.textFieldColors(
                                 focusedIndicatorColor = RedUISolid,
-                                placeholderColor = Color(0xFFA79C9E),
+                                focusedPlaceholderColor = Color(0xFFA79C9E),
                                 containerColor = Color.Transparent,
                                 focusedLabelColor = RedUISolid
                             ),
@@ -126,7 +125,7 @@ fun TwoTextFieldsAlertDialog(
                             },
                             colors = TextFieldDefaults.textFieldColors(
                                 focusedIndicatorColor = RedUISolid,
-                                placeholderColor = Color(0xFFA79C9E),
+                                focusedPlaceholderColor = Color(0xFFA79C9E),
                                 containerColor = Color.Transparent,
                                 focusedLabelColor = RedUISolid
                             ),

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,14 +28,13 @@ import com.kaist.k_dual.component.BackButtonTitleRow
 import com.kaist.k_dual.component.Divider
 import com.kaist.k_dual.component.MultipleRowWhiteBox
 import com.kaist.k_dual.component.OutlinedInputParameters
-import com.kaist.k_dual.component.SingleRowWhiteBox
 import com.kaist.k_dual.component.TextFieldAlertDialog
 import com.kaist.k_dual.component.Toggle
 import com.kaist.k_dual.component.ToggleState
 import com.kaist.k_dual.ui.theme.KDualTheme
 
 @Composable
-fun AlertScreen(navController: NavController, isFirst: Boolean) {
+fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFailed: () -> Unit) {
     val isVibrationEnabled = remember { mutableStateOf<ToggleState>(ToggleState.Left) }
     val isVisualEnabled = remember { mutableStateOf<ToggleState>(ToggleState.Left) }
     val lowValue by remember { mutableIntStateOf(70) }
@@ -196,6 +194,6 @@ fun AlertScreenPreview() {
                 .fillMaxSize()
                 .safeContentPadding(),
             color = MaterialTheme.colorScheme.background
-        ) { AlertScreen(navController, isFirst = true) }
+        ) { AlertScreen(navController = navController, isFirst = true, onSendMessageFailed = {}) }
     }
 }
