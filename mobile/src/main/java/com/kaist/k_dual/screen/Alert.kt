@@ -221,7 +221,7 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                             description = "Enter the low value of blood glucose to receive vibration alert.",
                             outlinedInputParameters = OutlinedInputParameters(
                                 placeholder = "Enter the glucose value",
-                                suffix = "mg/dL",
+                                suffix = ManageSetting.settings.glucoseUnits.label,
                                 label = "Low Value"
                                 // TODO. Allow only int value
                             )
