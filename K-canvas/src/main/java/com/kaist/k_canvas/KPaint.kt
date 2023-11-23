@@ -68,6 +68,15 @@ class KPaint {
             return createGradientPaint(bound, colors)
         }
 
+        fun setupInfoPaint(infoNum: Number, unitF: Float, font: Typeface): Paint {
+            val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+            paint.color = if (infoNum == 1) { Color.WHITE } else { Color.parseColor("#BDC1C6") }
+            paint.textSize = if (infoNum == 1) { unitF * 20f } else { unitF * 10f }
+            paint.typeface = font
+            paint.textAlign = Paint.Align.CENTER
+            return paint
+        }
+
         fun iconPaint(colorName: KColor): Paint {
             val paint = Paint(Paint.ANTI_ALIAS_FLAG)
             paint.style = Paint.Style.FILL

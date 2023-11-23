@@ -56,7 +56,7 @@ class KCanvas {
             canvas.drawText(batteryText, width / 2 - textWidth / 2, height.toFloat() - 10, batteryPaint)
         }
 
-        fun drawBackgroundBox(canvas: Canvas, position: String?, isAlertOn: Boolean, color: KColor) {
+        fun drawBackgroundBox(canvas: Canvas, position: String?, isAlertOn: Boolean, color: KColor?) {
             val width = canvas.width
             val height = canvas.height
             val unitF = getUnitF(width)
@@ -86,7 +86,7 @@ class KCanvas {
             }
 
             val backgroundPaint = if (isAlertOn) {
-                KPaint.backgroundPaint(color, rect)
+                KPaint.backgroundPaint(color!!, rect)
             } else {
                 KPaint.backgroundPaint(rect)
             }
@@ -94,6 +94,54 @@ class KCanvas {
                 addRoundRect(rect, corners, Path.Direction.CW)
             }
             canvas.drawPath(path, backgroundPaint)
+        }
+
+        fun drawSetupInfo(
+            canvas: Canvas,
+            context: Context,
+            typeface: Typeface
+        ) {
+            val width = canvas.width
+            val height = canvas.height
+            val unitF = getUnitF(width)
+            val mVertical = getMVertical(unitF)
+
+            // Draw logo icon
+            val logoBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.logo)
+            val pTop = unitF * 8.69f
+            val logoWidth = unitF * 17.92f
+            val logoHeight = unitF * 20.31f
+            val logoRect = RectF(
+                width/2 - logoWidth/2,
+                mVertical + pTop,
+                width/2 + logoWidth/2,
+                mVertical + pTop + logoHeight
+            )
+            canvas.drawBitmap(logoBitmap, null, logoRect, null)
+
+            // Draw info text
+            val textBounds = Rect()
+            val info1 = "Requires\nUser Setup"
+            val info2 = "Return to the mobile app\non your smartphone\nto complete setup."
+            val info1Paint = KPaint.setupInfoPaint(1, unitF, typeface)
+            val info2Paint = KPaint.setupInfoPaint(2, unitF, typeface)
+            val info1LineHeight = unitF * 24f
+            val info2LineHeight = unitF * 12.5f
+
+            var yPos = mVertical + unitF * (37f + 20f)
+
+            for (line in info1.split("\n")) {
+                info1Paint.getTextBounds(info1, 0, line.length, textBounds)
+                canvas.drawText(line, width/2f, yPos, info1Paint)
+                yPos += info1LineHeight
+            }
+
+            yPos = mVertical + unitF * (91f + 10f)
+            for (line in info2.split("\n")) {
+                info2Paint.getTextBounds(info2, 0, line.length, textBounds)
+                canvas.drawText(line, width/2f, yPos, info2Paint)
+                yPos += info2LineHeight
+            }
         }
 
         fun drawIconAndUserName(
@@ -247,12 +295,12 @@ class KCanvas {
             canvas.drawRoundRect(rectF, rectRoundness, rectRoundness, backgroundPaint)
 
             // Draw arrow source bitmap
-            // TODO. apply real arrow image
             val arrowSrc: Bitmap
             var differenceText: String = difference.toString()
 
-            val arrowUp = BitmapFactory.decodeResource(context.resources, R.drawable.arrow_up)
+            val arrowUp = BitmapFactory.decodeResource(context.resources, R.drawable.arrow_forty_five_up)
 
+            // TODO. Real rule for arrow
             if (difference > 0) {
                 arrowSrc = arrowUp
                 differenceText = "+$difference"

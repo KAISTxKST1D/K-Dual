@@ -42,6 +42,7 @@ class KDualCanvasRenderer(
     interactiveDrawModeUpdateDelayMillis,
     clearWithBackgroundTintBeforeRenderingHighlightLayer = true
 ), WatchFace.TapListener {
+    private val isSetupDone: Boolean = false
     private val isDualMode: Boolean = true
     private var isUser1AlertOn: Boolean = false
     private var isUser2AlertOn: Boolean = false
@@ -102,7 +103,11 @@ class KDualCanvasRenderer(
         KCanvas.drawDigitalClock(canvas, zonedDateTime.hour, zonedDateTime.minute, robotoMedium)
         KCanvas.drawRemainingBattery(canvas, batteryReceiver.batteryStat, robotoMedium)
 
-        if (isDualMode) {
+        if (!isSetupDone) {
+            KCanvas.drawBackgroundBox(canvas, null, false, null)
+            KCanvas.drawSetupInfo(canvas, context, robotoMedium)
+        }
+        else if (isDualMode) {
             KCanvas.drawBackgroundBox(canvas, "up", isUser1AlertOn, KColor.YELLOW)
             KCanvas.drawBackgroundBox(canvas, "down", isUser2AlertOn, KColor.BLUE)
 
