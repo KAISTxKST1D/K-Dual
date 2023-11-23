@@ -46,7 +46,11 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        WatchFacePreview(modifier = Modifier.padding(top = 24.dp))
+        WatchFacePreview(
+            modifier = Modifier.padding(top = 24.dp),
+            isFirstHighLight = false,
+            isSecondHighLight = false
+        )
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp)

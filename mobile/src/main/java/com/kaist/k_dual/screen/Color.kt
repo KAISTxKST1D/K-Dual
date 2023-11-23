@@ -50,7 +50,10 @@ fun ColorScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
             navController = navController,
             title = (if (isFirst) "First User" else "Second User") + " - Color"
         )
-        WatchFacePreview()
+        WatchFacePreview(
+            isFirstHighLight = isFirst,
+            isSecondHighLight = !isFirst
+        )
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.Start,
