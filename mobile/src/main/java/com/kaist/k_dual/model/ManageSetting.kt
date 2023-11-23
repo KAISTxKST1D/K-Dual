@@ -28,7 +28,7 @@ object ManageSetting {
 
         sendMessageToWearable(
             context = context,
-            path = "",
+            path = MESSAGE_PATH,
             data = settingsJson.toByteArray(),
             onFailure = onSendMessageFailed,
             onSuccess = onSendMessageSuccess
