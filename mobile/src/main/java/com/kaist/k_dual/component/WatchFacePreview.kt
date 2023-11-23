@@ -19,19 +19,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaist.k_canvas.KCanvas
 import com.kaist.k_canvas.KColor
+import com.kaist.k_dual.model.ManageSetting
 import com.kaist.k_dual.ui.theme.KDualTheme
 
 @Composable
 fun WatchFacePreview(
     modifier: Modifier = Modifier,
     isFirstHighLight: Boolean,
-    isSecondHighLight: Boolean) {
+    isSecondHighLight: Boolean
+) {
     Box(
         modifier = modifier
             .width(192.dp)
             .height(192.dp)
             .background(color = Color.Black, shape = CircleShape)
-    ){
+    ) {
         val context = LocalContext.current
         val robotoMedium = Typeface.createFromAsset(context.assets, "Roboto-Medium.ttf")
         val robotoRegular = Typeface.createFromAsset(context.assets, "Roboto-Regular.ttf")
@@ -46,16 +48,67 @@ fun WatchFacePreview(
                 KCanvas.drawDigitalClock(canvas, 12, 33, robotoMedium)
                 KCanvas.drawRemainingBattery(canvas, 100, robotoMedium)
 
-                KCanvas.drawBackgroundBox(canvas, "up", isFirstHighLight, KColor.YELLOW)
-                KCanvas.drawIconAndUserName(canvas, 1, "Minha", KColor.YELLOW, robotoMedium)
-                KCanvas.drawDiffArrowBox(canvas, context, 1, isFirstHighLight, KColor.YELLOW, 4, robotoRegular)
-                KCanvas.drawBloodGlucose(canvas, 1, 144, robotoMedium)
+                val firstUserColor = ManageSetting.settings.firstUserSetting.color
+                val secondUserColor = ManageSetting.settings.secondUserSetting.color
 
-                // dual모드인 것도 check
-                KCanvas.drawBackgroundBox(canvas, "down", isSecondHighLight, KColor.BLUE)
-                KCanvas.drawIconAndUserName(canvas, 2, "Jaewon", KColor.BLUE, robotoMedium)
-                KCanvas.drawDiffArrowBox(canvas, context, 2, isSecondHighLight, KColor.BLUE, 4, robotoRegular)
-                KCanvas.drawBloodGlucose(canvas, 2, 144, robotoMedium)
+                if (ManageSetting.settings.enableDualMode) {
+                    KCanvas.drawBackgroundBox(canvas, "up", isFirstHighLight, firstUserColor)
+                    KCanvas.drawIconAndUserName(
+                        canvas,
+                        1,
+                        ManageSetting.settings.firstUserSetting.name,
+                        firstUserColor,
+                        robotoMedium
+                    )
+                    KCanvas.drawDiffArrowBox(
+                        canvas,
+                        context,
+                        1,
+                        isFirstHighLight,
+                        firstUserColor,
+                        4,
+                        robotoRegular
+                    )
+                    KCanvas.drawBloodGlucose(canvas, 1, 144, robotoMedium)
+                    KCanvas.drawBackgroundBox(canvas, "down", isSecondHighLight, secondUserColor)
+                    KCanvas.drawIconAndUserName(
+                        canvas,
+                        2,
+                        ManageSetting.settings.secondUserSetting.name,
+                        secondUserColor,
+                        robotoMedium
+                    )
+                    KCanvas.drawDiffArrowBox(
+                        canvas,
+                        context,
+                        2,
+                        isSecondHighLight,
+                        secondUserColor,
+                        4,
+                        robotoRegular
+                    )
+                    KCanvas.drawBloodGlucose(canvas, 2, 144, robotoMedium)
+                } else {
+                    KCanvas.drawBackgroundBox(canvas, null, isFirstHighLight, firstUserColor)
+                    KCanvas.drawIconAndUserName(
+                        canvas,
+                        null,
+                        ManageSetting.settings.firstUserSetting.name,
+                        firstUserColor,
+                        robotoMedium
+                    )
+                    KCanvas.drawBloodGlucose(canvas, null, 144, robotoMedium)
+                    KCanvas.drawDiffArrowBox(
+                        canvas,
+                        context,
+                        null,
+                        isFirstHighLight,
+                        firstUserColor,
+                        4,
+                        robotoRegular
+                    )
+
+                }
             }
         }
     }
