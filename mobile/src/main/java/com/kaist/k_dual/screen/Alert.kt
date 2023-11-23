@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -31,14 +32,15 @@ import com.kaist.k_dual.component.OutlinedInputParameters
 import com.kaist.k_dual.component.TextFieldAlertDialog
 import com.kaist.k_dual.component.Toggle
 import com.kaist.k_dual.component.ToggleState
+import com.kaist.k_dual.model.ManageSetting
 import com.kaist.k_dual.ui.theme.KDualTheme
 
 @Composable
 fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFailed: () -> Unit) {
-    val isVibrationEnabled = remember { mutableStateOf<ToggleState>(ToggleState.Left) }
-    val isVisualEnabled = remember { mutableStateOf<ToggleState>(ToggleState.Left) }
-    val lowValue by remember { mutableIntStateOf(70) }
-    val highValue by remember { mutableIntStateOf(110) }
+    val context = LocalContext.current
+    val userSetting =
+        if (isFirst) ManageSetting.settings.firstUserSetting else ManageSetting.settings.secondUserSetting
+
     var isLowValueDialogOpen by remember { mutableStateOf(false) }
     var isHighValueDialogOpen by remember { mutableStateOf(false) }
 
@@ -65,9 +67,48 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                     modifier = Modifier.padding(horizontal = 24.dp)
                 )
                 MultipleRowWhiteBox {
+                    val onClickVibration = {
+                        if (isFirst) {
+                            ManageSetting.saveSettings(
+                                settings = ManageSetting.settings.copy(
+                                    firstUserSetting = userSetting.copy(vibrationEnabled = !userSetting.vibrationEnabled)
+                                ),
+                                context = context,
+                                onSendMessageFailed = onSendMessageFailed
+                            )
+                        } else {
+                            ManageSetting.saveSettings(
+                                settings = ManageSetting.settings.copy(
+                                    secondUserSetting = userSetting.copy(vibrationEnabled = !userSetting.vibrationEnabled)
+                                ),
+                                context = context,
+                                onSendMessageFailed = onSendMessageFailed
+                            )
+                        }
+                    }
+                    val onClickColorBlink = {
+                        if (isFirst) {
+                            ManageSetting.saveSettings(
+                                settings = ManageSetting.settings.copy(
+                                    firstUserSetting = userSetting.copy(colorBlinkEnabled = !userSetting.colorBlinkEnabled)
+                                ),
+                                context = context,
+                                onSendMessageFailed = onSendMessageFailed
+                            )
+                        } else {
+                            ManageSetting.saveSettings(
+                                settings = ManageSetting.settings.copy(
+                                    secondUserSetting = userSetting.copy(colorBlinkEnabled = !userSetting.colorBlinkEnabled)
+                                ),
+                                context = context,
+                                onSendMessageFailed = onSendMessageFailed
+                            )
+                        }
+                    }
+
                     Row(
                         modifier = Modifier
-                            .clickable { isVibrationEnabled.value = !isVibrationEnabled.value }
+                            .clickable { onClickVibration() }
                             .fillMaxWidth()
                             .padding(vertical = 20.dp, horizontal = 36.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -78,16 +119,14 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                             style = MaterialTheme.typography.bodyLarge,
                         )
                         Toggle(
-                            state = isVibrationEnabled.value,
-                            onChange = {
-                                isVibrationEnabled.value = it
-                            },
+                            state = if (userSetting.vibrationEnabled) ToggleState.Right else ToggleState.Left,
+                            onChange = { onClickVibration() },
                         )
                     }
                     Divider(modifier = Modifier.padding(horizontal = 36.dp))
                     Row(
                         modifier = Modifier
-                            .clickable { isVisualEnabled.value = !isVisualEnabled.value }
+                            .clickable { onClickColorBlink() }
                             .fillMaxWidth()
                             .padding(vertical = 20.dp, horizontal = 36.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -98,10 +137,8 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                             style = MaterialTheme.typography.bodyLarge,
                         )
                         Toggle(
-                            state = isVisualEnabled.value,
-                            onChange = {
-                                isVisualEnabled.value = it
-                            },
+                            state = if (userSetting.colorBlinkEnabled) ToggleState.Right else ToggleState.Left,
+                            onChange = { onClickColorBlink() },
                         )
                     }
                 }
@@ -116,6 +153,45 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                     modifier = Modifier.padding(horizontal = 24.dp)
                 )
                 MultipleRowWhiteBox {
+                    val onChangeLowValue = { lowValue: Int ->
+                        if (isFirst) {
+                            ManageSetting.saveSettings(
+                                settings = ManageSetting.settings.copy(
+                                    firstUserSetting = userSetting.copy(lowValue = lowValue)
+                                ),
+                                context = context,
+                                onSendMessageFailed = onSendMessageFailed
+                            )
+                        } else {
+                            ManageSetting.saveSettings(
+                                settings = ManageSetting.settings.copy(
+                                    secondUserSetting = userSetting.copy(lowValue = lowValue)
+                                ),
+                                context = context,
+                                onSendMessageFailed = onSendMessageFailed
+                            )
+                        }
+                    }
+                    val onChangeHighValue = { highValue: Int ->
+                        if (isFirst) {
+                            ManageSetting.saveSettings(
+                                settings = ManageSetting.settings.copy(
+                                    firstUserSetting = userSetting.copy(highValue = highValue)
+                                ),
+                                context = context,
+                                onSendMessageFailed = onSendMessageFailed
+                            )
+                        } else {
+                            ManageSetting.saveSettings(
+                                settings = ManageSetting.settings.copy(
+                                    secondUserSetting = userSetting.copy(highValue = highValue)
+                                ),
+                                context = context,
+                                onSendMessageFailed = onSendMessageFailed
+                            )
+                        }
+                    }
+
                     Row(
                         modifier = Modifier
                             .clickable { isLowValueDialogOpen = true }
@@ -130,13 +206,16 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
 
                             )
                         Text(
-                            text = lowValue.toString(),
+                            text = userSetting.lowValue.toString(),
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFF454545)
                         )
                         TextFieldAlertDialog(
                             isOpen = isLowValueDialogOpen,
-                            onConfirm = { isLowValueDialogOpen = false },
+                            onConfirm = {
+                                onChangeLowValue(it.toInt())
+                                isLowValueDialogOpen = false
+                            },
                             onDismiss = { isLowValueDialogOpen = false },
                             title = "Low Value",
                             description = "Enter the low value of blood glucose to receive vibration alert.",
@@ -144,6 +223,7 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                                 placeholder = "Enter the glucose value",
                                 suffix = "mg/dL",
                                 label = "Low Value"
+                                // TODO. Allow only int value
                             )
                         )
                     }
@@ -161,20 +241,24 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                             style = MaterialTheme.typography.bodyLarge,
                         )
                         Text(
-                            text = highValue.toString(),
+                            text = userSetting.highValue.toString(),
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFF454545)
                         )
                         TextFieldAlertDialog(
                             isOpen = isHighValueDialogOpen,
-                            onConfirm = { isHighValueDialogOpen = false },
+                            onConfirm = {
+                                onChangeHighValue(it.toInt())
+                                isHighValueDialogOpen = false
+                            },
                             onDismiss = { isHighValueDialogOpen = false },
                             title = "High Value",
                             description = "Enter the high value of blood glucose to receive vibration alert.",
                             outlinedInputParameters = OutlinedInputParameters(
                                 placeholder = "Enter the glucose value",
-                                suffix = "mg/dL",
+                                suffix = ManageSetting.settings.glucoseUnits.label,
                                 label = "High Value",
+                                // TODO. Allow only int value
                             )
                         )
                     }

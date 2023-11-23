@@ -78,7 +78,7 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
                 )
             }
 
-            if (enabledDualMode) {
+            if (!enabledDualMode) {
                 SingleRowWhiteBox(modifier = Modifier
                     .clip(shape = RoundedCornerShape(24.dp))
                     .clickable {

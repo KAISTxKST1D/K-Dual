@@ -20,9 +20,9 @@ data class UserSetting(
     val lowValue: Int,
     val highValue: Int,
     val deviceType: DeviceType,
-    val nightscoutUrl: String? = null,
-    val dexcomId: String? = null,
-    val dexcomPassword: String? = null
+    val nightscoutUrl: String = "",
+    val dexcomId: String = "",
+    val dexcomPassword: String = ""
 )
 
 data class Setting(
@@ -39,7 +39,7 @@ val DefaultSetting = Setting(
         color = KColor.YELLOW,
         colorBlinkEnabled = true,
         vibrationEnabled = true,
-        highValue = 110,
+        highValue = 180,
         lowValue = 70,
         deviceType = DeviceType.Nightscout
     ),
@@ -48,7 +48,7 @@ val DefaultSetting = Setting(
         color = KColor.BLUE,
         colorBlinkEnabled = true,
         vibrationEnabled = true,
-        highValue = 110,
+        highValue = 180,
         lowValue = 70,
         deviceType = DeviceType.Nightscout
     ),
