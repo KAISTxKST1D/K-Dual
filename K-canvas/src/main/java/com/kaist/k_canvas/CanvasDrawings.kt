@@ -11,14 +11,17 @@ import android.graphics.RectF
 import android.graphics.Typeface
 
 private fun getUnitF(width: Int): Float { return width / 192f }
-private fun getMHorizontal(unitF: Float): Float { return unitF * 12f }
-private fun getMVertical(unitF: Float): Float { return unitF * 20.5f }
+private fun getMHorizontal(unitF: Float, isDualMode: Boolean): Float {
+    return if (isDualMode) { unitF * 6f }
+    else { unitF * 3f }
+}
+private fun getMVertical(unitF: Float): Float { return unitF * 20f }
 private fun getPHorizontal(unitF: Float): Float { return unitF * 17.5f }
 private fun getPTop(unitF: Float, isDualMode: Boolean): Float {
-    return if (isDualMode) { unitF * 8f }
-    else { unitF * 20f }
+    return if (isDualMode) { unitF * 11f }
+    else { unitF * 22.8f }
 }
-private fun getPBottom(unitF: Float): Float { return unitF * 14f }
+private fun getPBottom(unitF: Float): Float { return unitF * 11f }
 private fun getGap(unitF: Float): Float { return unitF * 1.5f }
 
 // TODO. singleton for paint objects
@@ -58,16 +61,16 @@ class KCanvas {
             val height = canvas.height
             val unitF = getUnitF(width)
             val isDualMode = position != null
-            val mHorizontal = getMHorizontal(unitF)
+            val mHorizontal = getMHorizontal(unitF, isDualMode)
             val mVertical = getMVertical(unitF)
             val gap = getGap(unitF)
 
             val smallR = if (isDualMode) {
-                unitF * 24f
+                unitF * 25.7f
             } else {
-                unitF * 120f
+                unitF * 128f
             }
-            val bigR = unitF * 120f
+            val bigR = unitF * 128f
 
             var corners = floatArrayOf(
                 bigR, bigR, bigR, bigR, smallR, smallR, smallR, smallR
@@ -199,8 +202,9 @@ class KCanvas {
             val width = canvas.width
             val height = canvas.height
             val unitF = getUnitF(width)
+            val isDualMode = order != null
             val mVertical = getMVertical(unitF)
-            val mHorizontal = getMHorizontal(unitF)
+            val mHorizontal = getMHorizontal(unitF, isDualMode)
             val pBottom = getPBottom(unitF)
             val pHorizontal = getPHorizontal(unitF)
             val gap = getGap(unitF)
@@ -295,7 +299,7 @@ class KCanvas {
             val height = canvas.height
             val unitF = getUnitF(width)
             val isDualMode = order != null
-            val mHorizontal = getMHorizontal(unitF)
+            val mHorizontal = getMHorizontal(unitF, isDualMode)
             val pBottom = getPBottom(unitF)
             val pHorizontal = getPHorizontal(unitF)
             val gap = getGap(unitF)
