@@ -1,16 +1,25 @@
 package com.kaist.k_dual.watchface
 
+import android.Manifest
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.BatteryManager
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.SurfaceHolder
+//import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
 import androidx.wear.watchface.ComplicationSlot
 import androidx.wear.watchface.Renderer
@@ -26,6 +35,8 @@ import kotlinx.coroutines.launch
 import com.kaist.k_canvas.KCanvas
 import com.kaist.k_canvas.KColor
 import java.time.ZonedDateTime
+import androidx.core.app.ActivityCompat
+
 
 class KDualCanvasRenderer(
     private val context: Context,
@@ -128,6 +139,7 @@ class KDualCanvasRenderer(
         if (isDualMode && tapEvent.yPos > watchRect.height()/2 ) {
             if (tapType == TapType.DOWN) {
                 blinkEffect(2)
+                vibrateDevice()
             } else if (tapType == TapType.UP) {
                 openWearApp(2)
             }
@@ -137,6 +149,51 @@ class KDualCanvasRenderer(
             } else if (tapType == TapType.UP) {
                 openWearApp(1)
             }
+        }
+    }
+
+    private fun vibrateDevice() {
+        // Check if vibration permission is granted
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
+            // Permission is granted, proceed with vibration
+            performVibration()
+        } else {
+            // Permission is not granted, request for permission
+            ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.VIBRATE), VIBRATION_PERMISSION_REQUEST_CODE)
+        }
+    }
+
+    private fun performVibration() {
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Use VibrationEffect for API Level 26 and higher
+            val effect = VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE)
+            vibrator.vibrate(effect)
+        } else {
+            // Deprecated method for older versions
+            vibrator.vibrate(1000)
+        }
+    }
+
+    companion object {
+        private const val VIBRATION_PERMISSION_REQUEST_CODE = 1
+    }
+
+    // Override this method in the Activity that hosts your watch face
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            VIBRATION_PERMISSION_REQUEST_CODE -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // Vibration permission was granted, proceed with vibration
+                    performVibration()
+                } else {
+                    // Permission was denied, handle the case where the user denies permission
+                }
+                return
+            }
+            // Add other 'when' lines to check for other permissions this app might request
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 
