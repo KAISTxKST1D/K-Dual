@@ -166,7 +166,12 @@ class KDualCanvasRenderer(
     private fun performVibration() {
         val vibrator = getSystemService(context, Vibrator::class.java) as Vibrator
 
-        val effect = VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE)
+        val pattern = longArrayOf(0, 500, 200, 500, 200)
+        val amplitude = VibrationEffect.DEFAULT_AMPLITUDE
+
+        //val effect = VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE)
+        val effect = VibrationEffect.createWaveform(pattern, amplitude)
+
         if (vibrator.hasVibrator()) {
             vibrator.vibrate(effect)
         }
