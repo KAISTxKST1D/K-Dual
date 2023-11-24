@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -213,7 +215,10 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                         TextFieldAlertDialog(
                             isOpen = isLowValueDialogOpen,
                             onConfirm = {
-                                onChangeLowValue(it.toInt())
+                                try {
+                                    onChangeLowValue(it.toInt())
+                                } catch (_: NumberFormatException) {
+                                }
                                 isLowValueDialogOpen = false
                             },
                             onDismiss = { isLowValueDialogOpen = false },
@@ -222,8 +227,16 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                             outlinedInputParameters = OutlinedInputParameters(
                                 placeholder = "Enter the glucose value",
                                 suffix = ManageSetting.settings.glucoseUnits.label,
-                                label = "Low Value"
-                                // TODO. Allow only int value
+                                label = "Low Value",
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                validation = {
+                                    try {
+                                        it.toInt()
+                                        true
+                                    } catch (_: NumberFormatException) {
+                                        false
+                                    }
+                                }
                             )
                         )
                     }
@@ -248,7 +261,11 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                         TextFieldAlertDialog(
                             isOpen = isHighValueDialogOpen,
                             onConfirm = {
-                                onChangeHighValue(it.toInt())
+                                try {
+                                    onChangeHighValue(it.toInt())
+                                } catch (_: NumberFormatException) {
+                                }
+
                                 isHighValueDialogOpen = false
                             },
                             onDismiss = { isHighValueDialogOpen = false },
@@ -258,7 +275,15 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                                 placeholder = "Enter the glucose value",
                                 suffix = ManageSetting.settings.glucoseUnits.label,
                                 label = "High Value",
-                                // TODO. Allow only int value
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                validation = {
+                                    try {
+                                        it.toInt()
+                                        true
+                                    } catch (_: NumberFormatException) {
+                                        false
+                                    }
+                                }
                             )
                         )
                     }

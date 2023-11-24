@@ -41,6 +41,7 @@ import com.kaist.k_dual.component.TwoTextFieldsAlertDialog
 import com.kaist.k_dual.model.DeviceType
 import com.kaist.k_dual.model.ManageSetting
 import com.kaist.k_dual.ui.theme.KDualTheme
+import com.kaist.k_dual.urlPattern
 
 @Composable
 fun UserScreen(
@@ -276,7 +277,7 @@ fun UserScreen(
                             outlinedInputParameters = OutlinedInputParameters(
                                 placeholder = "Enter or paste URL",
                                 label = "URL",
-                                // TODO. Check url regex
+                                validation = { urlPattern.matches(it) }
                             )
                         )
                     }

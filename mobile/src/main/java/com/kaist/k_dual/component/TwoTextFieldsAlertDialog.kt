@@ -93,12 +93,19 @@ fun TwoTextFieldsAlertDialog(
                                     style = MaterialTheme.typography.bodyLarge,
                                 )
                             },
-                            colors = TextFieldDefaults.textFieldColors(
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                errorContainerColor = Color.Transparent,
                                 focusedIndicatorColor = RedUISolid,
+                                focusedLabelColor = RedUISolid,
                                 focusedPlaceholderColor = Color(0xFFA79C9E),
-                                containerColor = Color.Transparent,
-                                focusedLabelColor = RedUISolid
                             ),
+                            keyboardOptions = outlinedInputParameters1.keyboardOptions,
+                            isError = textValue1.isNotEmpty() && !outlinedInputParameters1.validation(
+                                textValue1
+                            )
                         )
                         OutlinedTextField(
                             modifier = outlinedInputParameters2.modifier
@@ -123,12 +130,19 @@ fun TwoTextFieldsAlertDialog(
                                     style = MaterialTheme.typography.bodyLarge,
                                 )
                             },
-                            colors = TextFieldDefaults.textFieldColors(
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                errorContainerColor = Color.Transparent,
                                 focusedIndicatorColor = RedUISolid,
+                                focusedLabelColor = RedUISolid,
                                 focusedPlaceholderColor = Color(0xFFA79C9E),
-                                containerColor = Color.Transparent,
-                                focusedLabelColor = RedUISolid
                             ),
+                            keyboardOptions = outlinedInputParameters2.keyboardOptions,
+                            isError = textValue2.isNotEmpty() && !outlinedInputParameters2.validation(
+                                textValue2
+                            )
                         )
 
                     }
