@@ -9,6 +9,7 @@ import android.graphics.PathMeasure
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Typeface
+import kotlin.math.abs
 
 private fun getUnitF(width: Int): Float { return width / 192f }
 private fun getMHorizontal(unitF: Float, isDualMode: Boolean): Float {
@@ -36,7 +37,7 @@ class KCanvas {
             val paint = KPaint.clockAndBatteryPaint(unitF, typeface)
             val timeText = String.format("%02d:%02d", hour, minute)
             val path = Path().apply {
-                arcTo(width / 2 - 40f, 20f, width / 2 + 40f, 40f, -150f, 120f, false)
+                arcTo(width / 2 - 40f, unitF * 10f, width / 2 + 40f, unitF * 20f, -150f, 120f, false)
             }
             val arcLength = PathMeasure(path, false).length
             val textWidth = paint.measureText(timeText)
@@ -53,7 +54,7 @@ class KCanvas {
             val batteryPaint = KPaint.clockAndBatteryPaint(unitF, typeface)
             val batteryText = "$remainingBattery%"
             val textWidth = batteryPaint.measureText(batteryText)
-            canvas.drawText(batteryText, width / 2 - textWidth / 2, height.toFloat() - 10, batteryPaint)
+            canvas.drawText(batteryText, width / 2 - textWidth / 2, height.toFloat() - unitF * 6.5f, batteryPaint)
         }
 
         fun drawBackgroundBox(canvas: Canvas, position: String?, isAlertOn: Boolean, color: KColor?) {
@@ -102,7 +103,6 @@ class KCanvas {
             typeface: Typeface
         ) {
             val width = canvas.width
-            val height = canvas.height
             val unitF = getUnitF(width)
             val mVertical = getMVertical(unitF)
 
@@ -164,11 +164,16 @@ class KCanvas {
             val namePaint = KPaint.namePaint(color, unitF, isDualMode, typeface)
 
             namePaint.getTextBounds(name, 0, name.length, textBounds)
+            val textHeight = when {
+                name.isEmpty() && order == null -> unitF * 18f
+                name.isEmpty() -> unitF * 14f
+                else -> textBounds.height().toFloat()
+            }
             val centerX = width / 2f
             val centerY = if (order == null || order == 1) {
-                mVertical + pTop + textBounds.height() / 2
+                mVertical + pTop + textHeight / 2
             } else {
-                height - mVertical - pTop - textBounds.height() / 2
+                height - mVertical - pTop - textHeight / 2
             }
 
             val icWidth = if (isDualMode) {
@@ -234,7 +239,6 @@ class KCanvas {
                 )
                 close()
             }
-
             canvas.drawPath(waterDropPath, iconPaint)
         }
 
@@ -261,7 +265,7 @@ class KCanvas {
 
             // Draw rounded rect
             val rectHeight = unitF * 27f
-            val rectWidth = if (difference < 10 && difference > -10) {
+            val rectWidth = if (abs(difference) < 10) {
                 unitF * 56f
             } else {
                 unitF * 61f
@@ -294,21 +298,24 @@ class KCanvas {
             }
             canvas.drawRoundRect(rectF, rectRoundness, rectRoundness, backgroundPaint)
 
-            // Draw arrow source bitmap
-            val arrowSrc: Bitmap
-            var differenceText: String = difference.toString()
-
-            val arrowUp = BitmapFactory.decodeResource(context.resources, R.drawable.arrow_forty_five_up)
-
-            // TODO. Real rule for arrow
-            if (difference > 0) {
-                arrowSrc = arrowUp
-                differenceText = "+$difference"
-            } else if (difference == 0) {
-                arrowSrc = arrowUp
-            } else {
-                arrowSrc = arrowUp
+            // Draw arrow source bitmap (Use rule of nightscout)
+            val arrowSrc: Bitmap = when {
+                abs(difference) <= 5 ->
+                    BitmapFactory.decodeResource(context.resources, R.drawable.arrow_flat)
+                abs(difference) <= 9 -> {
+                    if (difference > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_forty_five_up)
+                    else BitmapFactory.decodeResource(context.resources, R.drawable.arrow_forty_five_down)
+                }
+                abs(difference) <= 19 -> {
+                    if (difference > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_single_up)
+                    else BitmapFactory.decodeResource(context.resources, R.drawable.arrow_single_down)
+                }
+                else -> {
+                    if (difference > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_double_up)
+                    else BitmapFactory.decodeResource(context.resources, R.drawable.arrow_double_down)
+                }
             }
+            val differenceText: String = if (difference > 0) {"+$difference"} else {"$difference"}
 
             val arrowPaint = if (isAlertOn) {
                 KPaint.arrowPaint(color!!)
@@ -353,7 +360,6 @@ class KCanvas {
             val gap = getGap(unitF)
 
             val textBounds = Rect()
-
             val paint = KPaint.bloodGlucoseTextPaint(unitF, isDualMode, typeface)
             val valueText = value.toString()
             paint.getTextBounds(valueText, 0, valueText.length, textBounds)
@@ -373,11 +379,7 @@ class KCanvas {
                 textX = width / 2f
                 textY = height / 2f + textBounds.height() / 2f
             }
-
             canvas.drawText(valueText, textX, textY, paint)
         }
-
     }
-
-
 }
