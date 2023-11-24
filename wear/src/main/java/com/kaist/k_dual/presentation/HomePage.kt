@@ -88,9 +88,6 @@ fun HomePage(
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
 @Composable
 fun HomePagePreview() {
-    fun test(num: Number) {
-        println("hi")
-    }
     KDualTheme {
         HomePage(navController = rememberNavController())
     }
