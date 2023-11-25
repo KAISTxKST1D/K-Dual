@@ -1,5 +1,6 @@
 package com.kaist.k_dual.model
 
+import android.util.Log
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -41,7 +42,7 @@ data class ConfigurationProps(
     val server: DexcomServer
 )
 
-data class LatestGlucoseProps (
+data class LatestGlucoseProps(
     val minutes: Int,
     val maxCount: Int
 )
@@ -79,17 +80,52 @@ class DexcomClient(configurationProps: ConfigurationProps) {
 
     private val service: DexcomApiService = retrofit.create(DexcomApiService::class.java)
 
-    suspend fun getAccountId(): String {
+    suspend fun getAccountId(): String? {
         return withContext(Dispatchers.IO) {
             try {
-                val response = service.authenticate(mapOf(
-                    "applicationId" to APPLICATION_ID,
-                    "accountName" to username,
-                    "password" to password
-                ))
+                val response = service.authenticate(
+                    mapOf(
+                        "applicationId" to APPLICATION_ID,
+                        "accountName" to username,
+                        "password" to password
+                    )
+                )
 
                 if (!response.isSuccessful) {
-                    throw Exception("Dexcom server responded with status: ${response.code()}, data: ${response.errorBody()?.string()}")
+                    throw Exception(
+                        "Dexcom server responded with status: ${response.code()}, data: ${
+                            response.errorBody()?.string()
+                        }"
+                    )
+                }
+
+                response.body() ?: throw Exception("Response body is null")
+            } catch (e: Exception) {
+                Log.e("getAccountId", "Request failed with error: ${e.message}")
+                null
+            }
+        }
+    }
+
+    suspend fun getSessionId(): String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val accountId = getAccountId() ?: return@withContext null
+
+                val response = service.login(
+                    mapOf(
+                        "applicationId" to APPLICATION_ID,
+                        "accountId" to accountId,
+                        "password" to password
+                    )
+                )
+
+                if (!response.isSuccessful) {
+                    throw Exception(
+                        "Dexcom server responded with status: ${response.code()}, data: ${
+                            response.errorBody()?.string()
+                        }"
+                    )
                 }
 
                 response.body() ?: throw Exception("Response body is null")
@@ -99,41 +135,25 @@ class DexcomClient(configurationProps: ConfigurationProps) {
         }
     }
 
-    suspend fun getSessionId(): String {
+    suspend fun getEstimatedGlucoseValues(latestGlucoseProps: LatestGlucoseProps): List<GlucoseEntry>? {
         return withContext(Dispatchers.IO) {
             try {
-                val accountId = getAccountId()
+                val sessionId = getSessionId() ?: return@withContext null
 
-                val response = service.login(mapOf(
-                    "applicationId" to APPLICATION_ID,
-                    "accountId" to accountId,
-                    "password" to password
-                ))
-
-                if (!response.isSuccessful) {
-                    throw Exception("Dexcom server responded with status: ${response.code()}, data: ${response.errorBody()?.string()}")
-                }
-
-                response.body() ?: throw Exception("Response body is null")
-            } catch (e: Exception) {
-                throw Exception("Request failed with error: ${e.message}")
-            }
-        }
-    }
-
-    suspend fun getEstimatedGlucoseValues(latestGlucoseProps: LatestGlucoseProps): List<GlucoseEntry> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val sessionId = getSessionId()
-
-                val response = service.getEstimatedGlucoseValues(mapOf(
-                    "maxCount" to latestGlucoseProps.maxCount,
-                    "minutes" to latestGlucoseProps.minutes,
-                    "sessionId" to sessionId
-                ))
+                val response = service.getEstimatedGlucoseValues(
+                    mapOf(
+                        "maxCount" to latestGlucoseProps.maxCount,
+                        "minutes" to latestGlucoseProps.minutes,
+                        "sessionId" to sessionId
+                    )
+                )
 
                 if (!response.isSuccessful) {
-                    throw Exception("Dexcom server responded with status: ${response.code()}, data: ${response.errorBody()?.string()}")
+                    throw Exception(
+                        "Dexcom server responded with status: ${response.code()}, data: ${
+                            response.errorBody()?.string()
+                        }"
+                    )
                 }
 
                 val dexcomEntries = response.body() ?: throw Exception("Response body is null")

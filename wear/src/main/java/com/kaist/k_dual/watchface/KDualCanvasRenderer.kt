@@ -41,7 +41,6 @@ import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import com.kaist.k_dual.presentation.UseBloodGlucose
 
 class KDualCanvasRenderer(
@@ -91,6 +90,7 @@ class KDualCanvasRenderer(
     private val sharedPrefChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
             updateSettings()
+            updateBloodGlucoseTask.run()
             invalidate()
         }
     private val updateSettings: () -> Unit = {
@@ -111,7 +111,7 @@ class KDualCanvasRenderer(
     private val handler = Handler(Looper.getMainLooper())
     private val updateInterval = 5 * 60 * 1000L
 
-    private val updateTask = object : Runnable {
+    private val updateBloodGlucoseTask = object : Runnable {
         override fun run() {
             UseBloodGlucose.updateBloodGlucose(context)
             invalidate()
@@ -124,13 +124,14 @@ class KDualCanvasRenderer(
         context.registerReceiver(batteryReceiver, intentFilter)
         sharedPref.registerOnSharedPreferenceChangeListener(sharedPrefChangeListener)
         updateSettings()
-        handler.post(updateTask)
+        updateBloodGlucoseTask.run()
+        handler.post(updateBloodGlucoseTask)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         context.unregisterReceiver(batteryReceiver)
-        handler.removeCallbacks(updateTask)
+        handler.removeCallbacks(updateBloodGlucoseTask)
     }
 
     override suspend fun createSharedAssets(): KDualAssets {
@@ -257,10 +258,18 @@ class KDualCanvasRenderer(
     }
 
     private fun vibrateDevice() {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.VIBRATE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             performVibration()
         } else {
-            ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.VIBRATE), VIBRATION_PERMISSION_REQUEST_CODE)
+            ActivityCompat.requestPermissions(
+                context as Activity,
+                arrayOf(Manifest.permission.VIBRATE),
+                VIBRATION_PERMISSION_REQUEST_CODE
+            )
         }
     }
 
