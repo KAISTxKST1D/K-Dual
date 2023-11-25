@@ -349,7 +349,7 @@ class KCanvas {
             )
         }
 
-        fun drawBloodGlucose(canvas: Canvas, order: Number?, value: Int, typeface: Typeface) {
+        fun drawBloodGlucose(canvas: Canvas, order: Number?, value: String, typeface: Typeface) {
             val width = canvas.width
             val height = canvas.height
             val unitF = getUnitF(width)
@@ -361,7 +361,7 @@ class KCanvas {
 
             val textBounds = Rect()
             val paint = KPaint.bloodGlucoseTextPaint(unitF, isDualMode, typeface)
-            val valueText = value.toString()
+            val valueText = value
             paint.getTextBounds(valueText, 0, valueText.length, textBounds)
 
             val textX: Float
