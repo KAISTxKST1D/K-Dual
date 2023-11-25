@@ -103,15 +103,13 @@ class KDualCanvasRenderer(
     }
 
     private val handler = Handler(Looper.getMainLooper())
-    private val updateInterval = 60 * 1000L
+    private val updateInterval = 5 * 60 * 1000L
 
     private val updateTask = object : Runnable {
         override fun run() {
             UseBloodGlucose.updateBloodGlucose(context)
             invalidate()
             handler.postDelayed(this, updateInterval)
-            Log.d("canvasRenderer", "5 minutes")
-            Log.d("canvasRenderer", "${UseBloodGlucose.firstUser}, ${UseBloodGlucose.secondUser}")
         }
     }
 
@@ -191,7 +189,7 @@ class KDualCanvasRenderer(
                     1,
                     isUser1AlertOn,
                     it.firstUserSetting.color,
-                    84,
+                    UseBloodGlucose.firstUserDiff,
                     robotoRegular
                 )
                 KCanvas.drawDiffArrowBox(
@@ -200,7 +198,7 @@ class KDualCanvasRenderer(
                     2,
                     isUser2AlertOn,
                     it.secondUserSetting.color,
-                    -8,
+                    UseBloodGlucose.secondUserDiff,
                     robotoRegular
                 )
 
@@ -227,7 +225,7 @@ class KDualCanvasRenderer(
                     null,
                     isUser1AlertOn,
                     it.firstUserSetting.color,
-                    4,
+                    UseBloodGlucose.firstUserDiff,
                     robotoRegular
                 )
             }

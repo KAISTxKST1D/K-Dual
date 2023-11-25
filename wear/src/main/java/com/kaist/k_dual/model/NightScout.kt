@@ -46,12 +46,10 @@ class NightScout {
             ) {
                 body = response.body() ?: throw Exception("Response body is null")
                 val data = body?.get(0).toString()
-                Log.d("nightscout response", "$data")
                 done = 1
             }
 
             override fun onFailure(call: Call<List<nightScoutData>>, t: Throwable) {
-                Log.e("nightscout fail", t.toString())
                 done = 1
                 throw Exception(t.toString())
             }
