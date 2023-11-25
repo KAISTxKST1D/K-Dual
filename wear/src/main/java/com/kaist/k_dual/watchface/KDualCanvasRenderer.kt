@@ -39,6 +39,10 @@ import androidx.core.app.ActivityCompat
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import com.kaist.k_dual.presentation.UseBloodGlucose
 
 class KDualCanvasRenderer(
     private val context: Context,
@@ -104,15 +108,31 @@ class KDualCanvasRenderer(
         }
     }
 
+    private val handler = Handler(Looper.getMainLooper())
+    private val updateInterval = 60 * 1000L
+
+    private val updateTask = object : Runnable {
+        override fun run() {
+            UseBloodGlucose.updateBloodGlucose(context)
+            invalidate()
+            handler.postDelayed(this, updateInterval)
+            Log.d("canvasRenderer", "5 minutes")
+            Log.d("canvasRenderer", "${UseBloodGlucose.firstUser}, ${UseBloodGlucose.secondUser}")
+        }
+    }
+
+
     init {
         context.registerReceiver(batteryReceiver, intentFilter)
         sharedPref.registerOnSharedPreferenceChangeListener(sharedPrefChangeListener)
         updateSettings()
+        handler.post(updateTask)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         context.unregisterReceiver(batteryReceiver)
+        handler.removeCallbacks(updateTask)
     }
 
     override suspend fun createSharedAssets(): KDualAssets {
@@ -190,8 +210,8 @@ class KDualCanvasRenderer(
                     robotoRegular
                 )
 
-                KCanvas.drawBloodGlucose(canvas, 1, 144, robotoMedium)
-                KCanvas.drawBloodGlucose(canvas, 2, 94, robotoMedium)
+                KCanvas.drawBloodGlucose(canvas, 1, UseBloodGlucose.firstUser, robotoMedium)
+                KCanvas.drawBloodGlucose(canvas, 2, UseBloodGlucose.secondUser, robotoMedium)
             } else {
                 KCanvas.drawBackgroundBox(
                     canvas,
@@ -206,7 +226,7 @@ class KDualCanvasRenderer(
                     it.firstUserSetting.color,
                     robotoMedium
                 )
-                KCanvas.drawBloodGlucose(canvas, null, 144, robotoMedium)
+                KCanvas.drawBloodGlucose(canvas, null, UseBloodGlucose.firstUser, robotoMedium)
                 KCanvas.drawDiffArrowBox(
                     canvas,
                     context,
