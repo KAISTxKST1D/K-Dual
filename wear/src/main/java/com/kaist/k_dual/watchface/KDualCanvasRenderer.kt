@@ -80,10 +80,10 @@ class KDualCanvasRenderer(
     )
     private val sharedPrefChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
-            updatePref()
+            updateSettings()
             invalidate()
         }
-    private val updatePref: () -> Unit = {
+    private val updateSettings: () -> Unit = {
         val jsonString = sharedPref.getString(SETTINGS_KEY, null)
         settings = if (jsonString != null) {
             try {
@@ -101,7 +101,7 @@ class KDualCanvasRenderer(
     init {
         context.registerReceiver(batteryReceiver, intentFilter)
         sharedPref.registerOnSharedPreferenceChangeListener(sharedPrefChangeListener)
-        updatePref()
+        updateSettings()
     }
 
     override fun onDestroy() {

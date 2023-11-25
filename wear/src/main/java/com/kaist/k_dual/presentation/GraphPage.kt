@@ -48,6 +48,7 @@ import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.kaist.k_canvas.KCanvas
 import com.kaist.k_canvas.KColor
+import com.kaist.k_dual.presentation.theme.Colors
 
 @Composable
 fun GraphPage(isFirst: Boolean) {
@@ -68,6 +69,8 @@ fun GraphPage(isFirst: Boolean) {
         val robotoMedium = Typeface.createFromAsset(context.assets, "Roboto-Medium.ttf")
         val robotoRegular = Typeface.createFromAsset(context.assets, "Roboto-Regular.ttf")
 
+        val color = if (isFirst) UseSetting.settings.firstUserSetting.color else UseSetting.settings.secondUserSetting.color
+
         Canvas(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -75,7 +78,7 @@ fun GraphPage(isFirst: Boolean) {
                 val canvas = it.nativeCanvas
                 // TODO. show real time
                 KCanvas.drawDigitalClock(canvas, 12, 33, robotoMedium)
-                KCanvas.drawIconAndUserName(canvas, 1, isFirst.toString(), KColor.YELLOW, robotoMedium)
+                KCanvas.drawIconAndUserName(canvas, 1, isFirst.toString(), color, robotoMedium)
                 KCanvas.drawDiffArrowBox(canvas, context, 1, false, null, 4, robotoRegular)
                 KCanvas.drawBloodGlucose(canvas, 1, 144, robotoMedium)
             }
@@ -94,7 +97,7 @@ fun GraphPage(isFirst: Boolean) {
                         defaultLines -> defaultLines.copy(
                     pointConnector = DefaultPointConnector(cubicStrength = 0f),
                     lineBackgroundShader = null,
-                    lineColor = 0xFFFDD663.toInt(),
+                    lineColor = Colors.icon(color).hashCode(),
                     lineThicknessDp = 2.5f)
                 },
                 axisValuesOverrider = AxisValuesOverrider.fixed(

@@ -27,7 +27,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.wear.compose.material.MaterialTheme
 import com.kaist.k_dual.R
 import com.kaist.k_dual.presentation.theme.KDualTheme
-import com.kaist.k_canvas.KColor
 
 @Composable
 fun HomePage(
@@ -62,11 +61,13 @@ fun HomePage(
                     .clickable {
                         if (navController.currentDestination != NavDestination("graph/${1}")) {
                             navController.navigate("graph/${1}")
-                        } },
-                name = "Minha",
-                color = KColor.YELLOW,
-                server = "Libre",
-                isAlertOn = true)
+                        }
+                    },
+                name = UseSetting.settings.firstUserSetting.name,
+                color = UseSetting.settings.firstUserSetting.color,
+                server = UseSetting.settings.firstUserSetting.deviceType.label,
+                isAlertOn = UseSetting.settings.firstUserSetting.colorBlinkEnabled || UseSetting.settings.firstUserSetting.vibrationEnabled
+            )
             UserItem(
                 modifier = Modifier
                     .padding(top = 4.dp)
@@ -76,11 +77,13 @@ fun HomePage(
                     .clickable {
                         if (navController.currentDestination != NavDestination("graph/${2}")) {
                             navController.navigate("graph/${2}")
-                        } },
-                name = "Jaewon",
-                color = KColor.BLUE,
-                server = "Dexcom",
-                isAlertOn = false)
+                        }
+                    },
+                name = UseSetting.settings.secondUserSetting.name,
+                color = UseSetting.settings.secondUserSetting.color,
+                server = UseSetting.settings.secondUserSetting.deviceType.label,
+                isAlertOn = UseSetting.settings.secondUserSetting.colorBlinkEnabled || UseSetting.settings.secondUserSetting.vibrationEnabled
+            )
         }
     }
 }
