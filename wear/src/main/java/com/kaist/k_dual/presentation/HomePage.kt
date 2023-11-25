@@ -70,39 +70,41 @@ fun HomePage(
                     .align(Alignment.Center),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val settings = UseSetting.settings!!
                 // TODO. navigate 화면 전환 animation
-                UserItem(
-                    modifier = Modifier
-                        .height(52.dp)
-                        .width(172.dp)
-                        .clip(RoundedCornerShape(92.129.dp))
-                        .clickable {
-                            if (navController.currentDestination != NavDestination("graph/${1}")) {
-                                navController.navigate("graph/${1}")
-                            }
-                        },
-                    name = settings.firstUserSetting.name,
-                    color = settings.firstUserSetting.color,
-                    server = settings.firstUserSetting.deviceType.label,
-                    isAlertOn = settings.firstUserSetting.colorBlinkEnabled || settings.firstUserSetting.vibrationEnabled
-                )
-                UserItem(
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .height(52.dp)
-                        .width(172.dp)
-                        .clip(RoundedCornerShape(92.129.dp))
-                        .clickable {
-                            if (navController.currentDestination != NavDestination("graph/${2}")) {
-                                navController.navigate("graph/${2}")
-                            }
-                        },
-                    name = settings.secondUserSetting.name,
-                    color = settings.secondUserSetting.color,
-                    server = settings.secondUserSetting.deviceType.label,
-                    isAlertOn = settings.secondUserSetting.colorBlinkEnabled || settings.secondUserSetting.vibrationEnabled
-                )
+                val settings = UseSetting.settings
+                settings?.let {
+                    UserItem(
+                        modifier = Modifier
+                            .height(52.dp)
+                            .width(172.dp)
+                            .clip(RoundedCornerShape(92.129.dp))
+                            .clickable {
+                                if (navController.currentDestination != NavDestination("graph/${1}")) {
+                                    navController.navigate("graph/${1}")
+                                }
+                            },
+                        name = settings.firstUserSetting.name,
+                        color = settings.firstUserSetting.color,
+                        server = settings.firstUserSetting.deviceType.label,
+                        isAlertOn = settings.firstUserSetting.colorBlinkEnabled || settings.firstUserSetting.vibrationEnabled
+                    )
+                    UserItem(
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .height(52.dp)
+                            .width(172.dp)
+                            .clip(RoundedCornerShape(92.129.dp))
+                            .clickable {
+                                if (navController.currentDestination != NavDestination("graph/${2}")) {
+                                    navController.navigate("graph/${2}")
+                                }
+                            },
+                        name = settings.secondUserSetting.name,
+                        color = settings.secondUserSetting.color,
+                        server = settings.secondUserSetting.deviceType.label,
+                        isAlertOn = settings.secondUserSetting.colorBlinkEnabled || settings.secondUserSetting.vibrationEnabled
+                    )
+                }
             }
         }
     }
