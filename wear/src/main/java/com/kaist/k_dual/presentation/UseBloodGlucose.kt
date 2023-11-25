@@ -59,6 +59,7 @@ object UseBloodGlucose {
 
         if (settings == null) return
 
+        // TODO. Avoid !! operator
         val glucoseUnit = settings!!.glucoseUnits
         if (settings!!.enableDualMode) {
             val firstUserDevice: DeviceType = settings!!.firstUserSetting.deviceType
