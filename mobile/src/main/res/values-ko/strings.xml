@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">K-Dual</string>
+    <string name="app_name" translatable="true">K-Dual</string>
 
     <!-- alert.kt-->
     <string name="alert.alert_setting">알림 설정</string>
