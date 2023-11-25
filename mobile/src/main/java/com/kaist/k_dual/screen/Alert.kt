@@ -81,7 +81,7 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                             state = isVibrationEnabled.value,
                             onChange = {
                                 isVibrationEnabled.value = it
-                            },
+                            }
                         )
                     }
                     Divider(modifier = Modifier.padding(horizontal = 36.dp))

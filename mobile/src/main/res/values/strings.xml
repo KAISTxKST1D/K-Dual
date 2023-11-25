@@ -1,3 +1,51 @@
 <resources>
+
     <string name="app_name">K-Dual</string>
+
+    <!-- alert.kt-->
+    <string name="alert.alert_setting">Alert Setting</string>
+    <string name="alert.vibration">Vibration</string>
+    <string name="alert.color_blink">Color Blink</string>
+    <string name="alert.value_setting">Value Setting</string>
+    <string name="alert.low_value">Low Value</string>
+    <string name="alert.high_value">High Value</string>
+
+    <!-- Color.kt-->
+    <string name="color.color">Color</string>
+
+    <!-- Home.kt-->
+    <string name="home.connected_devices">Connected Devices</string>
+    <string name="home.enabled_dual_mode">Enabled dual mode</string>
+    <string name="home.first_user">First User</string>
+    <string name="home.second_user">Second User</string>
+    <string name="home.setting">Setting</string>
+    <string name="home.blood_glucose_units">Blood Glucose Units</string>
+
+    <!-- Unit.kt-->
+    <string name="unit.units">Units</string>
+
+    <!-- User.kt-->
+    <string name="user.general_setting">General Setting</string>
+    <string name="user.name">Name</string>
+    <string name="user.color">Color</string>
+    <string name="user.alert">Alert</string>
+    <string name="user.device_type">Device Type</string>
+    <string name="user.nightscout_url">Nightscout URL</string>
+    <string name="user.dexcom_address">Dexcom Address</string>
+
+    <!-- OpenWatchAppDialog.kt-->
+    <string name="open_watch_app_dialog.connect_your_galaxy_watch.">Connect your Galaxy Watch.</string>
+    <string name="open_watch_app_dialog.to_set_up">Ensure your Galaxy Watch is connected to your phone to set up the K-Dual app.</string>
+    <string name="open_watch_app_dialog.connection_status">Connection Status</string>
+
+    <!-- TextFieldAlertDialog.kt-->
+    <string name="text_field_alert_dialog.done">Done</string>
+    <string name="text_field_alert_dialog.cancel">Cancel</string>
+
+    <!-- TwoTextFieldsAlertDialog.kt-->
+    <string name="two_text_fields_alert_dialog.done">Done</string>
+    <string name="two_text_fields_alert_dialog.cancel">Cancel</string>
+
+
+
 </resources>
