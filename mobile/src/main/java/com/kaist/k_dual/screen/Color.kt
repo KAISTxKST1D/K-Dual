@@ -22,20 +22,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.kaist.k_canvas.KColor
 import com.kaist.k_dual.component.BackButtonTitleRow
 import com.kaist.k_dual.component.Divider
 import com.kaist.k_dual.component.MultipleRowWhiteBox
 import com.kaist.k_dual.component.WatchFacePreview
+import com.kaist.k_dual.model.ManageSetting
 import com.kaist.k_dual.ui.theme.KDualTheme
 
 @Composable
 fun ColorScreen(navController: NavController, isFirst: Boolean, onSendMessageFailed: () -> Unit) {
-    val colors = arrayOf("Red", "Yellow", "Green", "Blue", "Purple")
-    var selectedColorIndex by remember { mutableIntStateOf(0) }
+    val context = LocalContext.current
+    val userSetting =
+        if (isFirst) ManageSetting.settings.firstUserSetting else ManageSetting.settings.secondUserSetting
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -46,7 +50,10 @@ fun ColorScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
             navController = navController,
             title = (if (isFirst) "First User" else "Second User") + " - Color"
         )
-        WatchFacePreview()
+        WatchFacePreview(
+            isFirstHighLight = isFirst,
+            isSecondHighLight = !isFirst
+        )
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.Start,
@@ -59,10 +66,29 @@ fun ColorScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                 modifier = Modifier.padding(start = 24.dp)
             )
             MultipleRowWhiteBox {
-                colors.mapIndexed { index, color ->
+                val onClick = { color: KColor ->
+                    if (isFirst) {
+                        ManageSetting.saveSettings(
+                            settings = ManageSetting.settings.copy(
+                                firstUserSetting = userSetting.copy(color = color)
+                            ),
+                            context = context,
+                            onSendMessageFailed = onSendMessageFailed
+                        )
+                    } else {
+                        ManageSetting.saveSettings(
+                            settings = ManageSetting.settings.copy(
+                                secondUserSetting = userSetting.copy(color = color)
+                            ),
+                            context = context,
+                            onSendMessageFailed = onSendMessageFailed
+                        )
+                    }
+                }
+                KColor.values().mapIndexed { index, color ->
                     Row(
                         modifier = Modifier
-                            .clickable { selectedColorIndex = index }
+                            .clickable { onClick(color) }
                             .fillMaxWidth()
                             .padding(vertical = 20.dp, horizontal = 36.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -71,18 +97,18 @@ fun ColorScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                         RadioButton(
                             modifier = Modifier
                                 .size(24.dp),
-                            selected = selectedColorIndex == index,
-                            onClick = { selectedColorIndex = index },
+                            selected = userSetting.color == color,
+                            onClick = { onClick(color) },
                             colors = RadioButtonDefaults.colors(
                                 selectedColor = Color.Black,
                             )
                         )
                         Text(
-                            text = color,
+                            text = color.label,
                             style = MaterialTheme.typography.bodyLarge,
                         )
                     }
-                    if (index != colors.lastIndex) Divider()
+                    if (index != KColor.values().lastIndex) Divider()
                 }
             }
         }

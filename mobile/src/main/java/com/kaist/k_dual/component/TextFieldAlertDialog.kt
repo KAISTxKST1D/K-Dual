@@ -3,6 +3,7 @@ package com.kaist.k_dual.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -108,12 +109,19 @@ fun TextFieldAlertDialog(
                                     style = MaterialTheme.typography.bodyLarge,
                                 )
                             },
-                            colors = TextFieldDefaults.textFieldColors(
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                errorContainerColor = Color.Transparent,
                                 focusedIndicatorColor = RedUISolid,
+                                focusedLabelColor = RedUISolid,
                                 focusedPlaceholderColor = Color(0xFFA79C9E),
-                                containerColor = Color.Transparent,
-                                focusedLabelColor = RedUISolid
                             ),
+                            keyboardOptions = outlinedInputParameters.keyboardOptions,
+                            isError = textValue.isNotEmpty() && !outlinedInputParameters.validation(
+                                textValue
+                            )
                         )
                     }
                 },
@@ -122,7 +130,9 @@ fun TextFieldAlertDialog(
                         onClick = {
                             onConfirm(textValue)
                         },
-                        enabled = textValue.isNotEmpty(),
+                        enabled = textValue.isNotEmpty() && outlinedInputParameters.validation(
+                            textValue
+                        ),
                         colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)
                     ) {
                         Text("Done", style = MaterialTheme.typography.labelLarge)
@@ -146,6 +156,8 @@ data class OutlinedInputParameters(
     val placeholder: String,
     val suffix: String? = null,
     val maxLength: Int? = null,
+    val keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    val validation: (String) -> Boolean = { _ -> true },
 )
 
 @Preview
