@@ -263,9 +263,14 @@ class KCanvas {
 
             val textBounds = Rect()
 
+            var differenceVal = difference.toFloatOrNull()
+            if(differenceVal == null) {
+                differenceVal = 0.0f
+            }
+
             // Draw rounded rect
             val rectHeight = unitF * 27f
-            val rectWidth = if (abs(difference.toFloat()) < 10) {
+            val rectWidth = if (abs(differenceVal) < 10) {
                 unitF * 56f
             } else {
                 unitF * 61f
@@ -300,22 +305,22 @@ class KCanvas {
 
             // Draw arrow source bitmap (Use rule of nightscout)
             val arrowSrc: Bitmap = when {
-                abs(difference.toFloat()) <= 5 ->
+                abs(differenceVal) <= 5 ->
                     BitmapFactory.decodeResource(context.resources, R.drawable.arrow_flat)
-                abs(difference.toFloat()) <= 9 -> {
-                    if (difference.toFloat() > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_forty_five_up)
+                abs(differenceVal) <= 9 -> {
+                    if (differenceVal > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_forty_five_up)
                     else BitmapFactory.decodeResource(context.resources, R.drawable.arrow_forty_five_down)
                 }
-                abs(difference.toFloat()) <= 19 -> {
-                    if (difference.toFloat() > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_single_up)
+                abs(differenceVal) <= 19 -> {
+                    if (differenceVal > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_single_up)
                     else BitmapFactory.decodeResource(context.resources, R.drawable.arrow_single_down)
                 }
                 else -> {
-                    if (difference.toFloat() > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_double_up)
+                    if (differenceVal > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_double_up)
                     else BitmapFactory.decodeResource(context.resources, R.drawable.arrow_double_down)
                 }
             }
-            val differenceText: String = if (difference.toFloat() > 0) {"+$difference"} else {"$difference"}
+            val differenceText: String = if (differenceVal > 0) {"+$difference"} else {"$difference"}
 
             val arrowPaint = if (isAlertOn && color != null) {
                 KPaint.arrowPaint(color)
