@@ -57,9 +57,7 @@ fun GraphPage(isFirst: Boolean) {
             .fillMaxSize()
             .background(Color.Black),
     ) {
-        if (UseSetting.settings == null) {
-            return
-        }
+        val settings = UseSetting.settings ?: return
 
         Image(
             modifier = Modifier
@@ -75,7 +73,7 @@ fun GraphPage(isFirst: Boolean) {
         val robotoRegular = Typeface.createFromAsset(context.assets, "Roboto-Regular.ttf")
 
         val userSetting =
-            if (isFirst) UseSetting.settings!!.firstUserSetting else UseSetting.settings!!.secondUserSetting
+            if (isFirst) settings.firstUserSetting else settings.secondUserSetting
 
         Canvas(
             modifier = Modifier.fillMaxSize()
