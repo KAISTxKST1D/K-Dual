@@ -33,7 +33,6 @@ object UseBloodGlucose {
     var firstUserDiff: String = "0"
     var secondUserDiff: String = "0"
     fun updateBloodGlucose(context: Context) {
-        Log.d("updateBloodGlucose", "inside function")
         val latestGlucoseProps: LatestGlucoseProps = LatestGlucoseProps(180, 36)
 
         val sharedPref = context.getSharedPreferences(
@@ -75,7 +74,6 @@ object UseBloodGlucose {
                                 GlucoseUnits.mg_dL -> {
                                     firstUser = recentGlucoseData.toString()
                                     firstUserDiff=(recentGlucoseData-secondGlucoseData).toString()
-                                    Log.d("updateBloodGlucosediff", "$firstUserDiff")
                                 }
                                 GlucoseUnits.mmol_L -> {
                                     val recentGlucoseDataMmol = mgdlToMmol(recentGlucoseData)
@@ -83,8 +81,7 @@ object UseBloodGlucose {
                                     val secondGlucoseDataMmol = mgdlToMmol(secondGlucoseData)
                                     val secondRounded = round(secondGlucoseDataMmol * 100) / 100
                                     firstUser = rounded.toString()
-                                    firstUserDiff = (rounded-secondRounded).toString()
-                                    Log.d("updateBloodGlucosediff", "$firstUserDiff")
+                                    firstUserDiff = (round((rounded - secondRounded)*10)).toString()
                                 }
                             }
                         }.start()
@@ -117,7 +114,7 @@ object UseBloodGlucose {
                                     val rounded = round(currentGlucoseData.mmol * 100) / 100
                                     val secondRounded = round(secondGlucoseData.mmol * 100) / 100
                                     firstUser = rounded.toString()
-                                    firstUserDiff = (rounded - secondRounded).toString()
+                                    firstUserDiff = (round((rounded - secondRounded)*10)).toString()
                                 }
 
                             }
@@ -146,7 +143,7 @@ object UseBloodGlucose {
                                     val secondGlucoseDataMmol = mgdlToMmol(secondGlucoseData)
                                     val secondRounded = round(secondGlucoseDataMmol * 100) / 100
                                     secondUser = rounded.toString()
-                                    secondUserDiff = (rounded-secondRounded).toString()
+                                    secondUserDiff = (round((rounded - secondRounded)*10)).toString()
                                 }
                             }
                         }.start()
@@ -180,7 +177,7 @@ object UseBloodGlucose {
                                     val rounded = round(currentGlucoseData.mmol * 100) / 100
                                     val secondRounded = round(secondGlucoseData.mmol * 100) / 100
                                     secondUser = rounded.toString()
-                                    secondUserDiff = (rounded-secondRounded).toString()
+                                    secondUserDiff = (round((rounded - secondRounded)*10)).toString()
                                 }
                             }
                         }
@@ -211,7 +208,7 @@ object UseBloodGlucose {
                                     val rounded = round(recentGlucoseDataMmol * 100) / 100
                                     val secondRounded = round(secondGlucoseDataMmol * 100) / 100
                                     firstUser = rounded.toString()
-                                    firstUserDiff = (rounded - secondRounded).toString()
+                                    firstUserDiff = (round((rounded - secondRounded)*10)).toString()
                                 }
                             }
                         }.start()
@@ -244,7 +241,7 @@ object UseBloodGlucose {
                                     val rounded = round(currentGlucoseData.mmol * 100) / 100
                                     val secondRounded = round(secondGlucoseData.mmol * 100) / 100
                                     firstUser = rounded.toString()
-                                    firstUserDiff = (rounded - secondRounded).toString()
+                                    firstUserDiff = (round((rounded - secondRounded)*10)).toString()
                                 }
                             }
                         }

@@ -66,7 +66,7 @@ fun WatchFacePreview(
                         1,
                         isFirstHighLight,
                         firstUserColor,
-                        4,
+                        "4",
                         robotoRegular
                     )
                     KCanvas.drawBloodGlucose(canvas, 1, "144", robotoMedium)
@@ -84,7 +84,7 @@ fun WatchFacePreview(
                         2,
                         isSecondHighLight,
                         secondUserColor,
-                        4,
+                        "4",
                         robotoRegular
                     )
                     KCanvas.drawBloodGlucose(canvas, 2, "144", robotoMedium)
@@ -104,7 +104,7 @@ fun WatchFacePreview(
                         null,
                         isFirstHighLight,
                         firstUserColor,
-                        4,
+                        "4",
                         robotoRegular
                     )
 
