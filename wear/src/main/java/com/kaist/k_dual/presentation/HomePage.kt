@@ -56,8 +56,9 @@ fun HomePage(
             // TODO. navigate 화면 전환 animation
             UserItem(
                 modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth()
                     .height(52.dp)
-                    .width(172.dp)
                     .clip(RoundedCornerShape(92.129.dp))
                     .clickable {
                         if (navController.currentDestination != NavDestination("graph/${1}")) {
@@ -69,9 +70,9 @@ fun HomePage(
                 isAlertOn = true)
             UserItem(
                 modifier = Modifier
-                    .padding(top = 4.dp)
+                    .padding(top = 4.dp, start = 10.dp, end = 10.dp)
+                    .fillMaxWidth()
                     .height(52.dp)
-                    .width(172.dp)
                     .clip(RoundedCornerShape(92.129.dp))
                     .clickable {
                         if (navController.currentDestination != NavDestination("graph/${2}")) {
@@ -79,12 +80,13 @@ fun HomePage(
                         } },
                 name = "Jaewon",
                 color = KColor.BLUE,
-                server = "Dexcom",
+                server = "Nightscout",
                 isAlertOn = false)
         }
     }
 }
 
+@Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
 @Composable
 fun HomePagePreview() {

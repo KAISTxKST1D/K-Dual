@@ -15,7 +15,6 @@ import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.kaist.k_dual.presentation.theme.KDualTheme
 
-
 class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
@@ -26,11 +25,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-//TODO. 반응형으로 제작
-
 @Composable
 fun WearApp(userId: Int) {
     val navController = rememberSwipeDismissableNavController()
+    var isSetupDone = true
+
     KDualTheme {
         SwipeDismissableNavHost(
             navController = navController,
@@ -38,7 +37,11 @@ fun WearApp(userId: Int) {
             ) {
             composable("home") {
                 Box(modifier = Modifier.fillMaxSize()) {
-                    HomePage(navController)
+                    if (isSetupDone) {
+                        HomePage(navController)
+                    } else {
+                        SetupInfoPage()
+                    }
                 }
             }
             composable("graph/{userId}",

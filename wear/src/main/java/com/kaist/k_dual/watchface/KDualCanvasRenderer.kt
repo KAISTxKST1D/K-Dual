@@ -42,7 +42,7 @@ class KDualCanvasRenderer(
     interactiveDrawModeUpdateDelayMillis,
     clearWithBackgroundTintBeforeRenderingHighlightLayer = true
 ), WatchFace.TapListener {
-    private val isSetupDone: Boolean = false
+    private val isSetupDone: Boolean = true
     private val isDualMode: Boolean = true
     private var isUser1AlertOn: Boolean = false
     private var isUser2AlertOn: Boolean = false
@@ -111,8 +111,8 @@ class KDualCanvasRenderer(
             KCanvas.drawBackgroundBox(canvas, "up", isUser1AlertOn, KColor.YELLOW)
             KCanvas.drawBackgroundBox(canvas, "down", isUser2AlertOn, KColor.BLUE)
 
-            KCanvas.drawIconAndUserName(canvas, 1, "Minha", KColor.YELLOW, robotoMedium)
-            KCanvas.drawIconAndUserName(canvas, 2, "Jaewon", KColor.BLUE, robotoMedium)
+            KCanvas.drawIconAndUserName(canvas, 1, "MMMMMMMM", KColor.YELLOW, robotoMedium)
+            KCanvas.drawIconAndUserName(canvas, 2, "냠냠냠냠냠냠냠냠", KColor.BLUE, robotoMedium)
 
             KCanvas.drawDiffArrowBox(canvas, context, 1, isUser1AlertOn, KColor.YELLOW, 84, robotoRegular)
             KCanvas.drawDiffArrowBox(canvas, context, 2, isUser2AlertOn, KColor.BLUE, -8, robotoRegular)
@@ -130,17 +130,19 @@ class KDualCanvasRenderer(
 
     override fun onTapEvent(tapType: Int, tapEvent: TapEvent, complicationSlot: ComplicationSlot?) {
         // For test blink effect
-        if (isDualMode && tapEvent.yPos > watchRect.height()/2 ) {
-            if (tapType == TapType.DOWN) {
-                blinkEffect(2)
-            } else if (tapType == TapType.UP) {
-                openWearApp(2)
-            }
-        } else {
-            if (tapType == TapType.DOWN) {
-                blinkEffect(1)
-            } else if (tapType == TapType.UP) {
-                openWearApp(1)
+        if (isSetupDone) {
+            if (isDualMode && tapEvent.yPos > watchRect.height()/2 ) {
+                if (tapType == TapType.DOWN) {
+                    blinkEffect(2)
+                } else if (tapType == TapType.UP) {
+                    openWearApp(2)
+                }
+            } else {
+                if (tapType == TapType.DOWN) {
+                    blinkEffect(1)
+                } else if (tapType == TapType.UP) {
+                    openWearApp(1)
+                }
             }
         }
     }
