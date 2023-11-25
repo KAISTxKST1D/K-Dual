@@ -1,5 +1,5 @@
-<resources>
 
+<resources>
     <string name="app_name">K-Dual</string>
 
     <!-- alert.kt-->
@@ -45,7 +45,5 @@
     <!-- TwoTextFieldsAlertDialog.kt-->
     <string name="two_text_fields_alert_dialog.done">Done</string>
     <string name="two_text_fields_alert_dialog.cancel">Cancel</string>
-
-
 
 </resources>

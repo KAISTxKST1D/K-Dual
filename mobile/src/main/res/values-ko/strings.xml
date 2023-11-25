@@ -6,19 +6,19 @@
     <!-- alert.kt-->
     <string name="alert.alert_setting">알림 설정</string>
     <string name="alert.vibration">진동</string>
-    <string name="alert.color_blink">색상 알림</string>
+    <string name="alert.color_blink">색상 깜빡임</string>
     <string name="alert.value_setting">경곗값 설정</string>
-    <string name="alert.low_value">최솟값</string>
-    <string name="alert.high_value">최댓값</string>
+    <string name="alert.low_value">하한값</string>
+    <string name="alert.high_value">상한값</string>
 
     <!-- Color.kt-->
     <string name="color.color">색상</string>
 
     <!-- Home.kt-->
-    <string name="home.connected_devices">장치 연결됨</string>
-    <string name="home.enabled_dual_mode">듀얼 모드 활성화</string>
-    <string name="home.first_user">1번 유저</string>
-    <string name="home.second_user">2번 유저</string>
+    <string name="home.connected_devices">연결 모드</string>
+    <string name="home.enabled_dual_mode">듀얼 모드</string>
+    <string name="home.first_user">사용자 1</string>
+    <string name="home.second_user">사용자 2</string>
     <string name="home.setting">설정</string>
     <string name="home.blood_glucose_units">혈당 단위</string>
 
@@ -26,12 +26,12 @@
     <string name="unit.units">단위</string>
 
     <!-- User.kt-->
-    <string name="user.general_setting">일반 설정</string>
+    <string name="user.general_setting">기본 설정</string>
     <string name="user.name">이름</string>
     <string name="user.color">색상</string>
     <string name="user.alert">알림</string>
-    <string name="user.device_type">장치 타입</string>
-    <string name="user.nightscout_url">Nightscout URL</string>
+    <string name="user.device_type">장치 종류</string>
+    <string name="user.nightscout_url">Nightscout 주소</string>
     <string name="user.dexcom_address">Dexcom 주소</string>
 
     <!-- OpenWatchAppDialog.kt-->
@@ -40,11 +40,11 @@
     <string name="open_watch_app_dialog.connection_status">연결 상태</string>
 
     <!-- TextFieldAlertDialog.kt-->
-    <string name="text_field_alert_dialog.done">완료</string>
+    <string name="text_field_alert_dialog.done">확인</string>
     <string name="text_field_alert_dialog.cancel">취소</string>
 
     <!-- TwoTextFieldsAlertDialog.kt-->
-    <string name="two_text_fields_alert_dialog.done">완료</string>
+    <string name="two_text_fields_alert_dialog.done">확인</string>
     <string name="two_text_fields_alert_dialog.cancel">취소</string>
 
 </resources>
