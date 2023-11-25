@@ -63,13 +63,15 @@ fun GraphPage(isFirst: Boolean) {
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter),
             painter = painterResource(id = R.drawable.graph_background),
-            contentDescription = "background")
+            contentDescription = "background"
+        )
 
         val context = LocalContext.current
         val robotoMedium = Typeface.createFromAsset(context.assets, "Roboto-Medium.ttf")
         val robotoRegular = Typeface.createFromAsset(context.assets, "Roboto-Regular.ttf")
 
-        val color = if (isFirst) UseSetting.settings.firstUserSetting.color else UseSetting.settings.secondUserSetting.color
+        val userSetting =
+            if (isFirst) UseSetting.settings.firstUserSetting else UseSetting.settings.secondUserSetting
 
         Canvas(
             modifier = Modifier.fillMaxSize()
@@ -78,13 +80,20 @@ fun GraphPage(isFirst: Boolean) {
                 val canvas = it.nativeCanvas
                 // TODO. show real time
                 KCanvas.drawDigitalClock(canvas, 12, 33, robotoMedium)
-                KCanvas.drawIconAndUserName(canvas, 1, isFirst.toString(), color, robotoMedium)
+                KCanvas.drawIconAndUserName(
+                    canvas,
+                    1,
+                    userSetting.name,
+                    userSetting.color,
+                    robotoMedium
+                )
                 KCanvas.drawDiffArrowBox(canvas, context, 1, false, null, 4, robotoRegular)
                 KCanvas.drawBloodGlucose(canvas, 1, 144, robotoMedium)
             }
         }
 
-        val chartEntryModel: ChartEntryModel = entryModelOf(80, 100, 77, 90, 100, 90, 80, 100, 77, 90, 100, 90)
+        val chartEntryModel: ChartEntryModel =
+            entryModelOf(80, 100, 77, 90, 100, 90, 80, 100, 77, 90, 100, 90)
 
         Chart(
             modifier = Modifier
@@ -93,12 +102,13 @@ fun GraphPage(isFirst: Boolean) {
                 .fillMaxHeight(0.45f)
                 .align(Alignment.BottomCenter),
             chart = lineChart(
-                currentChartStyle.lineChart.lines.map {
-                        defaultLines -> defaultLines.copy(
-                    pointConnector = DefaultPointConnector(cubicStrength = 0f),
-                    lineBackgroundShader = null,
-                    lineColor = Colors.icon(color).hashCode(),
-                    lineThicknessDp = 2.5f)
+                currentChartStyle.lineChart.lines.map { defaultLines ->
+                    defaultLines.copy(
+                        pointConnector = DefaultPointConnector(cubicStrength = 0f),
+                        lineBackgroundShader = null,
+                        lineColor = Colors.icon(userSetting.color).hashCode(),
+                        lineThicknessDp = 2.5f
+                    )
                 },
                 axisValuesOverrider = AxisValuesOverrider.fixed(
                     minY = 50f,
@@ -113,24 +123,26 @@ fun GraphPage(isFirst: Boolean) {
                 axis = lineComponent(
                     color = Color(0x33FFFFFF),
                     thickness = 0.5.dp,
-                    ),
+                ),
                 horizontalLabelPosition = VerticalAxis.HorizontalLabelPosition.Inside,
                 guideline = axisGuidelineComponent(
                     thickness = 0.5.dp,
                     color = Color(0x33FFFFFF),
                 ),
-                tickLength = 0.dp),
+                tickLength = 0.dp
+            ),
             bottomAxis = rememberBottomAxis(
                 label = null,
                 guideline = axisGuidelineComponent(
                     thickness = 0.5.dp,
                     color = Color(0x33FFFFFF)
                 ),
-                tickLength = 0.dp),
+                tickLength = 0.dp
+            ),
             fadingEdges = rememberFadingEdges(),
             chartScrollState = rememberChartScrollState()
         )
-        Column (
+        Column(
             modifier = Modifier
                 .padding(start = 12.dp, bottom = 30.dp)
                 .fillMaxWidth()
@@ -141,16 +153,20 @@ fun GraphPage(isFirst: Boolean) {
         ) {
             StartAxisLabelBox(
                 modifier = Modifier.padding(start = 0.dp),
-                startLabel = "200")
+                startLabel = "200"
+            )
             StartAxisLabelBox(
                 modifier = Modifier.padding(start = 3.dp),
-                startLabel = "150")
+                startLabel = "150"
+            )
             StartAxisLabelBox(
                 modifier = Modifier.padding(start = 12.dp),
-                startLabel = "100")
+                startLabel = "100"
+            )
             StartAxisLabelBox(
                 modifier = Modifier.padding(start = 27.dp),
-                startLabel = "50")
+                startLabel = "50"
+            )
         }
     }
 }
