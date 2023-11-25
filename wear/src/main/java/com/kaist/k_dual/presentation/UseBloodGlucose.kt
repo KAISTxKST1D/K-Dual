@@ -105,8 +105,8 @@ object UseBloodGlucose {
     }
 
 
-    fun getNightScoutData(isFirst: Boolean, glucoseUnit: GlucoseUnits){
-        if(isFirst){
+    fun getNightScoutData(isFirst: Boolean, glucoseUnit: GlucoseUnits) {
+        if (isFirst) {
             var firstUserNightScoutUrl = settings!!.firstUserSetting.nightscoutUrl
             firstUserNightScoutUrl = firstUserNightScoutUrl.plus("/")
             if (firstUserNightScoutUrl != "/") {
@@ -136,8 +136,7 @@ object UseBloodGlucose {
                     }
                 }
             }
-        }
-        else{
+        } else {
             var secondUserNightScoutUrl = settings!!.secondUserSetting.nightscoutUrl
             secondUserNightScoutUrl = secondUserNightScoutUrl.plus("/")
             if (secondUserNightScoutUrl != "/") {
@@ -168,8 +167,13 @@ object UseBloodGlucose {
             }
         }
     }
-    fun getDexcomData(isFirst : Boolean, latestGlucoseProps: LatestGlucoseProps, glucoseUnit : GlucoseUnits) {
-        if(isFirst){
+
+    fun getDexcomData(
+        isFirst: Boolean,
+        latestGlucoseProps: LatestGlucoseProps,
+        glucoseUnit: GlucoseUnits
+    ) {
+        if (isFirst) {
             val firstUserDexcomId = settings!!.firstUserSetting.dexcomId
             val firstUserDexcomPassword = settings!!.firstUserSetting.dexcomPassword
             val firstUserConfigurationProps: ConfigurationProps = ConfigurationProps(
@@ -204,8 +208,7 @@ object UseBloodGlucose {
                     }
                 }
             }
-        }
-        else{
+        } else {
             val secondUserDexcomId = settings!!.secondUserSetting.dexcomId
             val secondUserDexcomPassword = settings!!.secondUserSetting.dexcomPassword
             val secondUserConfigurationProps: ConfigurationProps = ConfigurationProps(
