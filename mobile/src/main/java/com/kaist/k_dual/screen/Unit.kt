@@ -15,10 +15,6 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,7 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.kaist.k_dual.component.BackButtonTitleRow
 import com.kaist.k_dual.component.Divider
 import com.kaist.k_dual.component.MultipleRowWhiteBox
-import com.kaist.k_dual.model.GlucoseUnits
+import com.kaist.k_canvas.GlucoseUnits
 import com.kaist.k_dual.model.ManageSetting
 import com.kaist.k_dual.ui.theme.KDualTheme
 
