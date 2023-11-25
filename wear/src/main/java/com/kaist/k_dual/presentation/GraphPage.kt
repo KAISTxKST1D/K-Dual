@@ -14,11 +14,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
@@ -36,7 +41,6 @@ import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.edges.rememberFadingEdges
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
-import com.patrykandpatrick.vico.compose.chart.scroll.rememberChartScrollState
 import com.patrykandpatrick.vico.compose.component.lineComponent
 import com.patrykandpatrick.vico.compose.style.currentChartStyle
 import com.patrykandpatrick.vico.core.axis.AxisPosition
@@ -47,8 +51,14 @@ import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.kaist.k_canvas.KCanvas
-import com.kaist.k_canvas.KColor
+import com.patrykandpatrick.vico.compose.chart.scroll.rememberChartScrollSpec
+import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
+import kotlinx.coroutines.delay
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import com.kaist.k_dual.presentation.theme.Colors
+import kotlinx.coroutines.isActive
 
 @Composable
 fun GraphPage(isFirst: Boolean) {
@@ -75,13 +85,30 @@ fun GraphPage(isFirst: Boolean) {
         val userSetting =
             if (isFirst) settings.firstUserSetting else settings.secondUserSetting
 
+        val currentHour = remember { mutableStateOf(0) }
+        val currentMinute = remember { mutableStateOf(0) }
+
+        LaunchedEffect(Unit) {
+            while (isActive) {
+                val date = Date()
+                currentHour.value = SimpleDateFormat("HH", Locale.getDefault()).format(date).toInt()
+                currentMinute.value =
+                    SimpleDateFormat("mm", Locale.getDefault()).format(date).toInt()
+                delay(1000)
+            }
+        }
+
         Canvas(
             modifier = Modifier.fillMaxSize()
         ) {
             drawIntoCanvas {
                 val canvas = it.nativeCanvas
-                // TODO. show real time
-                KCanvas.drawDigitalClock(canvas, 12, 33, robotoMedium)
+                KCanvas.drawDigitalClock(
+                    canvas,
+                    currentHour.value,
+                    currentMinute.value,
+                    robotoMedium
+                )
                 KCanvas.drawIconAndUserName(
                     canvas,
                     1,
@@ -94,12 +121,53 @@ fun GraphPage(isFirst: Boolean) {
             }
         }
 
-        val chartEntryModel: ChartEntryModel =
-            entryModelOf(80, 100, 77, 90, 100, 90, 80, 100, 77, 90, 100, 90)
-
+        val configuration = LocalConfiguration.current
+        val screenWidthDp = configuration.screenWidthDp // Width in dp
+        val chartEntryModel: ChartEntryModel = entryModelOf(
+            80,
+            100,
+            77,
+            90,
+            100,
+            90,
+            80,
+            100,
+            77,
+            90,
+            100,
+            90,
+            80,
+            100,
+            77,
+            90,
+            100,
+            90,
+            80,
+            100,
+            77,
+            90,
+            100,
+            90,
+            80,
+            100,
+            77,
+            90,
+            100,
+            90,
+            80,
+            100,
+            77,
+            90,
+            100,
+            90
+        )
         Chart(
             modifier = Modifier
-                .padding(bottom = 30.dp, start = 25.dp, end = 26.dp)
+                .padding(
+                    bottom = 30.dp,
+                    start = (screenWidthDp * 0.15).dp,
+                    end = (screenWidthDp * 0.15).dp
+                )
                 .fillMaxWidth()
                 .fillMaxHeight(0.45f)
                 .align(Alignment.BottomCenter),
@@ -120,6 +188,35 @@ fun GraphPage(isFirst: Boolean) {
                 targetVerticalAxisPosition = AxisPosition.Vertical.End
             ),
             model = chartEntryModel,
+            fadingEdges = rememberFadingEdges(),
+            chartScrollSpec = rememberChartScrollSpec(
+                isScrollEnabled = false
+            )
+        )
+
+        // Fake chart to draw background grid
+        val fakeChartEntryModel: ChartEntryModel = entryModelOf(0, 0, 0, 0, 0, 0, 0, 0)
+        Chart(
+            modifier = Modifier
+                .padding(bottom = 30.dp, start = 26.dp, end = 26.dp)
+                .fillMaxWidth()
+                .fillMaxHeight(0.45f)
+                .align(Alignment.BottomCenter)
+                .clip(RoundedCornerShape(bottomStartPercent = 40, bottomEndPercent = 40)),
+            chart = lineChart(
+                currentChartStyle.lineChart.lines.map { defaultLines ->
+                    defaultLines.copy(
+                        lineBackgroundShader = null,
+                        lineColor = 0xFFFFFFFF.toInt()
+                    )
+                },
+                axisValuesOverrider = AxisValuesOverrider.fixed(
+                    minY = 50f,
+                    maxY = 200f,
+                ),
+                spacing = 18.dp,
+                targetVerticalAxisPosition = AxisPosition.Vertical.End
+            ),
             startAxis = rememberStartAxis(
                 label = rememberStartAxisLabel(),
                 axis = lineComponent(
@@ -131,7 +228,8 @@ fun GraphPage(isFirst: Boolean) {
                     thickness = 0.5.dp,
                     color = Color(0x33FFFFFF),
                 ),
-                tickLength = 0.dp
+                tickLength = 0.dp,
+                itemPlacer = AxisItemPlacer.Vertical.default(maxItemCount = 4)
             ),
             bottomAxis = rememberBottomAxis(
                 label = null,
@@ -141,8 +239,11 @@ fun GraphPage(isFirst: Boolean) {
                 ),
                 tickLength = 0.dp
             ),
+            model = fakeChartEntryModel,
             fadingEdges = rememberFadingEdges(),
-            chartScrollState = rememberChartScrollState()
+            chartScrollSpec = rememberChartScrollSpec(
+                isScrollEnabled = false
+            )
         )
         Column(
             modifier = Modifier
@@ -158,15 +259,15 @@ fun GraphPage(isFirst: Boolean) {
                 startLabel = "200"
             )
             StartAxisLabelBox(
-                modifier = Modifier.padding(start = 3.dp),
+                modifier = Modifier.padding(start = (screenWidthDp * 0.03).dp),
                 startLabel = "150"
             )
             StartAxisLabelBox(
-                modifier = Modifier.padding(start = 12.dp),
+                modifier = Modifier.padding(start = (screenWidthDp * 0.07).dp),
                 startLabel = "100"
             )
             StartAxisLabelBox(
-                modifier = Modifier.padding(start = 27.dp),
+                modifier = Modifier.padding(start = (screenWidthDp * 0.15).dp),
                 startLabel = "50"
             )
         }
@@ -199,6 +300,7 @@ fun rememberStartAxisLabel() = axisLabelComponent(
     verticalMargin = 4.5.dp
 )
 
+@Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
 @Composable
 fun GraphPagePreview() {

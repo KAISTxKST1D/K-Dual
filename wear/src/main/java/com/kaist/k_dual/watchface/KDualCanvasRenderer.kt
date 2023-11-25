@@ -239,10 +239,18 @@ class KDualCanvasRenderer(
     }
 
     private fun vibrateDevice() {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.VIBRATE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             performVibration()
         } else {
-            ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.VIBRATE), VIBRATION_PERMISSION_REQUEST_CODE)
+            ActivityCompat.requestPermissions(
+                context as Activity,
+                arrayOf(Manifest.permission.VIBRATE),
+                VIBRATION_PERMISSION_REQUEST_CODE
+            )
         }
     }
 

@@ -27,11 +27,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-//TODO. 반응형으로 제작
-
 @Composable
 fun WearApp(userId: Int) {
     val navController = rememberSwipeDismissableNavController()
+
     KDualTheme {
         SwipeDismissableNavHost(
             navController = navController,
