@@ -17,7 +17,7 @@ import com.kaist.k_canvas.Setting
 object UseSetting {
     private lateinit var sharedPreferences: SharedPreferences
     private val gson = Gson()
-    var settings by mutableStateOf(DefaultSetting)
+    var settings: Setting? by mutableStateOf(null)
 
     private fun updateSettings() {
         val jsonString = sharedPreferences.getString(SETTINGS_KEY, null)
@@ -26,12 +26,12 @@ object UseSetting {
             try {
                 gson.fromJson(jsonString, Setting::class.java)
             } catch (e: JsonSyntaxException) {
-                DefaultSetting
+                null
             } catch (e: JsonParseException) {
-                DefaultSetting
+                null
             }
         } else {
-            DefaultSetting
+            null
         }
     }
 
