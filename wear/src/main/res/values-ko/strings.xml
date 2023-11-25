@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="user_item.on">화면 킴</string>
+    <string name="user_item.off">화면 끔</string>
+</resources>

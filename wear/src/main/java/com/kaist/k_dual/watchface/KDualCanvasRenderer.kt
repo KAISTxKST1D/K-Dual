@@ -292,7 +292,7 @@ class KDualCanvasRenderer(
 
 // TODO. K-Canvas library에서 사용하는 법?
 class KDualAssets(context: Context) : Renderer.SharedAssets {
-//    val arrowUp: Bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.arrow_up)
+//    val arrowUp: Bitmap = BitmapFactory.decodeResource(context:w.resources, R.drawable.arrow_up)
 
     override fun onDestroy() {
         TODO("Not yet implemented")
