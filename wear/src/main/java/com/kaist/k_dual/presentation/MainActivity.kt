@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
@@ -20,6 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onStart()
         val userId = intent.getIntExtra("routeGraph", 0)
         setContent {
+            UseSetting.initialize(LocalContext.current)
             WearApp(userId)
         }
     }
@@ -28,27 +30,24 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun WearApp(userId: Int) {
     val navController = rememberSwipeDismissableNavController()
-    var isSetupDone = true
 
     KDualTheme {
         SwipeDismissableNavHost(
             navController = navController,
             startDestination = "home",
-            ) {
+        ) {
             composable("home") {
                 Box(modifier = Modifier.fillMaxSize()) {
-                    if (isSetupDone) {
-                        HomePage(navController)
-                    } else {
-                        SetupInfoPage()
-                    }
+                    HomePage(navController)
                 }
             }
-            composable("graph/{userId}",
+            composable(
+                "graph/{userId}",
                 arguments = listOf(
                     navArgument("userId") {
                         type = NavType.IntType
-                    })) {
+                    })
+            ) {
                 GraphPage(it.arguments?.getInt("userId") == 1)
             }
         }

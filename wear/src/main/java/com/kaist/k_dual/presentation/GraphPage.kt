@@ -58,6 +58,7 @@ import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.kaist.k_dual.presentation.theme.Colors
 
 @Composable
 fun GraphPage(isFirst: Boolean) {
@@ -66,22 +67,28 @@ fun GraphPage(isFirst: Boolean) {
             .fillMaxSize()
             .background(Color.Black),
     ) {
+        val settings = UseSetting.settings ?: return
+
         Image(
             modifier = Modifier
                 .padding(10.dp)
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter),
             painter = painterResource(id = R.drawable.graph_background),
-            contentDescription = "background")
+            contentDescription = "background"
+        )
 
         val context = LocalContext.current
         val robotoMedium = Typeface.createFromAsset(context.assets, "Roboto-Medium.ttf")
         val robotoRegular = Typeface.createFromAsset(context.assets, "Roboto-Regular.ttf")
 
+        val userSetting =
+            if (isFirst) settings.firstUserSetting else settings.secondUserSetting
+
         val currentHour = remember { mutableStateOf(0) }
         val currentMinute = remember { mutableStateOf(0) }
 
-        LaunchedEffect(key1 = Unit) {
+        LaunchedEffect(Unit) {
             while (true) {
                 val date = Date()
                 currentHour.value = SimpleDateFormat("HH", Locale.getDefault()).format(date).toInt()
@@ -96,7 +103,13 @@ fun GraphPage(isFirst: Boolean) {
             drawIntoCanvas {
                 val canvas = it.nativeCanvas
                 KCanvas.drawDigitalClock(canvas, currentHour.value, currentMinute.value, robotoMedium)
-                KCanvas.drawIconAndUserName(canvas, 1, isFirst.toString(), KColor.YELLOW, robotoMedium)
+                KCanvas.drawIconAndUserName(
+                    canvas,
+                    1,
+                    userSetting.name,
+                    userSetting.color,
+                    robotoMedium
+                )
                 KCanvas.drawDiffArrowBox(canvas, context, 1, false, null, 4, robotoRegular)
                 KCanvas.drawBloodGlucose(canvas, 1, 144, robotoMedium)
             }
@@ -115,12 +128,13 @@ fun GraphPage(isFirst: Boolean) {
                 .fillMaxHeight(0.45f)
                 .align(Alignment.BottomCenter),
             chart = lineChart(
-                currentChartStyle.lineChart.lines.map {
-                        defaultLines -> defaultLines.copy(
-                    pointConnector = DefaultPointConnector(cubicStrength = 0f),
-                    lineBackgroundShader = null,
-                    lineColor = 0xFFFDD663.toInt(),
-                    lineThicknessDp = 2.5f)
+                currentChartStyle.lineChart.lines.map { defaultLines ->
+                    defaultLines.copy(
+                        pointConnector = DefaultPointConnector(cubicStrength = 0f),
+                        lineBackgroundShader = null,
+                        lineColor = Colors.icon(userSetting.color).hashCode(),
+                        lineThicknessDp = 2.5f
+                    )
                 },
                 axisValuesOverrider = AxisValuesOverrider.fixed(
                     minY = 50f,

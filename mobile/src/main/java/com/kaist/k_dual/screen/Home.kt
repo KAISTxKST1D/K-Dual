@@ -13,8 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,14 +29,15 @@ import com.kaist.k_dual.component.SingleRowWhiteBox
 import com.kaist.k_dual.component.Toggle
 import com.kaist.k_dual.component.ToggleState
 import com.kaist.k_dual.component.WatchFacePreview
+import com.kaist.k_dual.model.ManageSetting
 import com.kaist.k_dual.ui.theme.KDualTheme
-import sendMessageToWearable
 
 @Composable
 fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
-    val firstUserName = "Minha"
-    val secondUserName = "Jaewon"
-    val units = "mg/dL"
+    val firstUserName = ManageSetting.settings.firstUserSetting.name
+    val secondUserName = ManageSetting.settings.secondUserSetting.name
+    val units = ManageSetting.settings.glucoseUnits
+    val enabledDualMode = ManageSetting.settings.enableDualMode
 
     val context = LocalContext.current
 
@@ -56,14 +55,11 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            val state = remember { mutableStateOf<ToggleState>(ToggleState.Right) }
             val onClickToggle = {
-                sendMessageToWearable(
+                ManageSetting.saveSettings(
+                    settings = ManageSetting.settings.copy(enableDualMode = !enabledDualMode),
                     context = context,
-                    path = "",
-                    data = null,
-                    onFailure = onSendMessageFailed,
-                    onSuccess = { state.value = !state.value }
+                    onSendMessageFailed = onSendMessageFailed
                 )
             }
             Text(
@@ -81,12 +77,12 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 Toggle(
-                    state = state.value,
+                    state = if (enabledDualMode) ToggleState.Right else ToggleState.Left,
                     onChange = { onClickToggle() },
                 )
             }
 
-            if (state.value == ToggleState.Left) {
+            if (!enabledDualMode) {
                 SingleRowWhiteBox(modifier = Modifier
                     .clip(shape = RoundedCornerShape(24.dp))
                     .clickable {
@@ -179,7 +175,7 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 Text(
-                    text = units,
+                    text = units.label,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFF454545)
                 )
