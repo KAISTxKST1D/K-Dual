@@ -1,16 +1,23 @@
 package com.kaist.k_dual.watchface
 
+import android.Manifest
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.BatteryManager
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.SurfaceHolder
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
 import androidx.wear.watchface.ComplicationSlot
 import androidx.wear.watchface.Renderer
@@ -19,17 +26,16 @@ import androidx.wear.watchface.TapType
 import androidx.wear.watchface.WatchFace
 import androidx.wear.watchface.WatchState
 import androidx.wear.watchface.style.CurrentUserStyleRepository
-import com.kaist.k_canvas.DefaultSetting
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.kaist.k_canvas.KCanvas
-import com.kaist.k_canvas.KColor
 import com.kaist.k_canvas.PREFERENCES_FILE_KEY
 import com.kaist.k_canvas.SETTINGS_KEY
 import com.kaist.k_canvas.Setting
 import java.time.ZonedDateTime
+import androidx.core.app.ActivityCompat
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
@@ -237,6 +243,7 @@ class KDualCanvasRenderer(
         if (settings?.enableDualMode == true && tapEvent.yPos > watchRect.height() / 2) {
             if (tapType == TapType.DOWN) {
                 blinkEffect(2)
+                vibrateDevice()
             } else if (tapType == TapType.UP) {
                 openWearApp(2)
             }
@@ -247,6 +254,31 @@ class KDualCanvasRenderer(
                 openWearApp(1)
             }
         }
+    }
+
+    private fun vibrateDevice() {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
+            performVibration()
+        } else {
+            ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.VIBRATE), VIBRATION_PERMISSION_REQUEST_CODE)
+        }
+    }
+
+    private fun performVibration() {
+        val vibrator = getSystemService(context, Vibrator::class.java) as Vibrator
+
+        val pattern = longArrayOf(0, 500, 200, 500, 200)
+        val amplitude = VibrationEffect.DEFAULT_AMPLITUDE
+
+        val effect = VibrationEffect.createWaveform(pattern, amplitude)
+
+        if (vibrator.hasVibrator()) {
+            vibrator.vibrate(effect)
+        }
+    }
+
+    companion object {
+        private const val VIBRATION_PERMISSION_REQUEST_CODE = 1
     }
 
     private fun openWearApp(userId: Int) {
