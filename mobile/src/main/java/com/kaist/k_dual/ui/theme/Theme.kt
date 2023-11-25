@@ -1,6 +1,7 @@
 package com.kaist.k_dual.ui.theme
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
@@ -29,6 +30,7 @@ fun KDualTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
 //    dynamicColor: Boolean = true,
+    isKorean: Boolean = true,
     content: @Composable () -> Unit
 ) {
 //    val colorScheme = when {
@@ -49,10 +51,11 @@ fun KDualTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
+    Log.d("Theme", "isKorean $isKorean")
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = if (isKorean) KoreanTypography else EnglishTypography,
         content = content,
     )
 }

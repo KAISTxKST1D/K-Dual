@@ -73,7 +73,7 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
                     .clip(shape = RoundedCornerShape(24.dp))
                     .clickable { onClickToggle() }) {
                 Text(
-                    text = "Enabled dual mode",
+                    text = "Enabled dual mode 안녕",
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 Toggle(
