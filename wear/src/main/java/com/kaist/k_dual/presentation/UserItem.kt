@@ -42,7 +42,8 @@ fun UserItem(modifier: Modifier, name: String, color: KColor, server: String, is
                 .width(26.dp),
             painter = painterResource(id = R.drawable.waterdrop_outline),
             contentDescription = "",
-            colorFilter = ColorFilter.tint(Colors.icon(color)))
+            colorFilter = ColorFilter.tint(Colors.icon(color))
+        )
         Column {
             Text(
                 text = name,
@@ -52,7 +53,8 @@ fun UserItem(modifier: Modifier, name: String, color: KColor, server: String, is
             Text(
                 modifier = Modifier.padding(bottom = 1.dp),
                 text = "$server • Alert ${if (isAlertOn) "ON" else "OFF"}",
-                style = MaterialTheme.typography.title2)
+                style = MaterialTheme.typography.title2
+            )
         }
     }
 }

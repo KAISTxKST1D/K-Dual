@@ -51,7 +51,6 @@ import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.kaist.k_canvas.KCanvas
-import com.kaist.k_canvas.KColor
 import com.patrykandpatrick.vico.compose.chart.scroll.rememberChartScrollSpec
 import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
 import kotlinx.coroutines.delay
@@ -59,6 +58,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import com.kaist.k_dual.presentation.theme.Colors
+import kotlinx.coroutines.isActive
 
 @Composable
 fun GraphPage(isFirst: Boolean) {
@@ -89,10 +89,11 @@ fun GraphPage(isFirst: Boolean) {
         val currentMinute = remember { mutableStateOf(0) }
 
         LaunchedEffect(Unit) {
-            while (true) {
+            while (isActive) {
                 val date = Date()
                 currentHour.value = SimpleDateFormat("HH", Locale.getDefault()).format(date).toInt()
-                currentMinute.value = SimpleDateFormat("mm", Locale.getDefault()).format(date).toInt()
+                currentMinute.value =
+                    SimpleDateFormat("mm", Locale.getDefault()).format(date).toInt()
                 delay(1000)
             }
         }
@@ -102,7 +103,12 @@ fun GraphPage(isFirst: Boolean) {
         ) {
             drawIntoCanvas {
                 val canvas = it.nativeCanvas
-                KCanvas.drawDigitalClock(canvas, currentHour.value, currentMinute.value, robotoMedium)
+                KCanvas.drawDigitalClock(
+                    canvas,
+                    currentHour.value,
+                    currentMinute.value,
+                    robotoMedium
+                )
                 KCanvas.drawIconAndUserName(
                     canvas,
                     1,
@@ -117,13 +123,51 @@ fun GraphPage(isFirst: Boolean) {
 
         val configuration = LocalConfiguration.current
         val screenWidthDp = configuration.screenWidthDp // Width in dp
-        val chartEntryModel: ChartEntryModel = entryModelOf(80, 100, 77, 90, 100, 90, 80, 100, 77, 90, 100, 90, 80, 100, 77, 90, 100, 90, 80, 100, 77, 90, 100, 90, 80, 100, 77, 90, 100, 90, 80, 100, 77, 90, 100, 90)
+        val chartEntryModel: ChartEntryModel = entryModelOf(
+            80,
+            100,
+            77,
+            90,
+            100,
+            90,
+            80,
+            100,
+            77,
+            90,
+            100,
+            90,
+            80,
+            100,
+            77,
+            90,
+            100,
+            90,
+            80,
+            100,
+            77,
+            90,
+            100,
+            90,
+            80,
+            100,
+            77,
+            90,
+            100,
+            90,
+            80,
+            100,
+            77,
+            90,
+            100,
+            90
+        )
         Chart(
             modifier = Modifier
                 .padding(
                     bottom = 30.dp,
                     start = (screenWidthDp * 0.15).dp,
-                    end = (screenWidthDp * 0.15).dp)
+                    end = (screenWidthDp * 0.15).dp
+                )
                 .fillMaxWidth()
                 .fillMaxHeight(0.45f)
                 .align(Alignment.BottomCenter),
@@ -151,7 +195,7 @@ fun GraphPage(isFirst: Boolean) {
         )
 
         // Fake chart to draw background grid
-        val fakeChartEntryModel: ChartEntryModel = entryModelOf(0,0,0,0,0,0,0,0)
+        val fakeChartEntryModel: ChartEntryModel = entryModelOf(0, 0, 0, 0, 0, 0, 0, 0)
         Chart(
             modifier = Modifier
                 .padding(bottom = 30.dp, start = 26.dp, end = 26.dp)
@@ -160,10 +204,11 @@ fun GraphPage(isFirst: Boolean) {
                 .align(Alignment.BottomCenter)
                 .clip(RoundedCornerShape(bottomStartPercent = 40, bottomEndPercent = 40)),
             chart = lineChart(
-                currentChartStyle.lineChart.lines.map {
-                        defaultLines -> defaultLines.copy(
-                    lineBackgroundShader = null,
-                    lineColor = 0xFFFFFFFF.toInt())
+                currentChartStyle.lineChart.lines.map { defaultLines ->
+                    defaultLines.copy(
+                        lineBackgroundShader = null,
+                        lineColor = 0xFFFFFFFF.toInt()
+                    )
                 },
                 axisValuesOverrider = AxisValuesOverrider.fixed(
                     minY = 50f,
@@ -184,21 +229,23 @@ fun GraphPage(isFirst: Boolean) {
                     color = Color(0x33FFFFFF),
                 ),
                 tickLength = 0.dp,
-                itemPlacer = AxisItemPlacer.Vertical.default(maxItemCount = 4)),
+                itemPlacer = AxisItemPlacer.Vertical.default(maxItemCount = 4)
+            ),
             bottomAxis = rememberBottomAxis(
                 label = null,
                 guideline = axisGuidelineComponent(
                     thickness = 0.5.dp,
                     color = Color(0x33FFFFFF)
                 ),
-                tickLength = 0.dp),
+                tickLength = 0.dp
+            ),
             model = fakeChartEntryModel,
             fadingEdges = rememberFadingEdges(),
             chartScrollSpec = rememberChartScrollSpec(
                 isScrollEnabled = false
             )
         )
-        Column (
+        Column(
             modifier = Modifier
                 .padding(start = 12.dp, bottom = 30.dp)
                 .fillMaxWidth()
@@ -209,16 +256,20 @@ fun GraphPage(isFirst: Boolean) {
         ) {
             StartAxisLabelBox(
                 modifier = Modifier.padding(start = 0.dp),
-                startLabel = "200")
+                startLabel = "200"
+            )
             StartAxisLabelBox(
                 modifier = Modifier.padding(start = (screenWidthDp * 0.03).dp),
-                startLabel = "150")
+                startLabel = "150"
+            )
             StartAxisLabelBox(
                 modifier = Modifier.padding(start = (screenWidthDp * 0.07).dp),
-                startLabel = "100")
+                startLabel = "100"
+            )
             StartAxisLabelBox(
                 modifier = Modifier.padding(start = (screenWidthDp * 0.15).dp),
-                startLabel = "50")
+                startLabel = "50"
+            )
         }
     }
 }
