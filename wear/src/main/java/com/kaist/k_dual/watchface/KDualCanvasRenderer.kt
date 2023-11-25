@@ -153,12 +153,9 @@ class KDualCanvasRenderer(
     }
 
     private fun vibrateDevice() {
-        // Check if vibration permission is granted
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
-            // Permission is granted, proceed with vibration
             performVibration()
         } else {
-            // Permission is not granted, request for permission
             ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.VIBRATE), VIBRATION_PERMISSION_REQUEST_CODE)
         }
     }
@@ -169,7 +166,6 @@ class KDualCanvasRenderer(
         val pattern = longArrayOf(0, 500, 200, 500, 200)
         val amplitude = VibrationEffect.DEFAULT_AMPLITUDE
 
-        //val effect = VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE)
         val effect = VibrationEffect.createWaveform(pattern, amplitude)
 
         if (vibrator.hasVibrator()) {
@@ -180,23 +176,6 @@ class KDualCanvasRenderer(
     companion object {
         private const val VIBRATION_PERMISSION_REQUEST_CODE = 1
     }
-
-    // Override this method in the Activity that hosts your watch face
-//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-//        when (requestCode) {
-//            VIBRATION_PERMISSION_REQUEST_CODE -> {
-//                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-//                    // Vibration permission was granted, proceed with vibration
-//                    performVibration()
-//                } else {
-//                    // Permission was denied, handle the case where the user denies permission
-//                }
-//                return
-//            }
-//            // Add other 'when' lines to check for other permissions this app might request
-//            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        }
-//    }
 
     private fun openWearApp(userId: Int) {
         val packageName = "com.kaist.k_dual"
