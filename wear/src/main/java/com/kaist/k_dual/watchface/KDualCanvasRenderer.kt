@@ -1,16 +1,23 @@
 package com.kaist.k_dual.watchface
 
+import android.Manifest
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.BatteryManager
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.SurfaceHolder
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
 import androidx.wear.watchface.ComplicationSlot
 import androidx.wear.watchface.Renderer
@@ -24,8 +31,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.kaist.k_canvas.KCanvas
-import com.kaist.k_canvas.KColor
+import com.kaist.k_canvas.PREFERENCES_FILE_KEY
+import com.kaist.k_canvas.SETTINGS_KEY
+import com.kaist.k_canvas.Setting
 import java.time.ZonedDateTime
+import androidx.core.app.ActivityCompat
+import com.google.gson.Gson
+import com.google.gson.JsonParseException
+import com.google.gson.JsonSyntaxException
 
 class KDualCanvasRenderer(
     private val context: Context,
@@ -42,7 +55,9 @@ class KDualCanvasRenderer(
     interactiveDrawModeUpdateDelayMillis,
     clearWithBackgroundTintBeforeRenderingHighlightLayer = true
 ), WatchFace.TapListener {
-    private val isDualMode: Boolean = true
+    private val gson = Gson()
+    private var settings: Setting? = null
+
     private var isUser1AlertOn: Boolean = false
     private var isUser2AlertOn: Boolean = false
 
@@ -58,23 +73,41 @@ class KDualCanvasRenderer(
             batteryStat = intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: 0
         }
     }
+
     private val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
     private val batteryReceiver = BatteryReceiver()
 
+    private lateinit var watchRect: Rect
+
     // Shared Preferences
     private val sharedPref = context.getSharedPreferences(
-        "MyPrefs",
+        PREFERENCES_FILE_KEY,
         Context.MODE_PRIVATE
     )
     private val sharedPrefChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
+            updateSettings()
             invalidate()
         }
-    private lateinit var watchRect: Rect
+    private val updateSettings: () -> Unit = {
+        val jsonString = sharedPref.getString(SETTINGS_KEY, null)
+        settings = if (jsonString != null) {
+            try {
+                gson.fromJson(jsonString, Setting::class.java)
+            } catch (e: JsonSyntaxException) {
+                null
+            } catch (e: JsonParseException) {
+                null
+            }
+        } else {
+            null
+        }
+    }
 
     init {
         context.registerReceiver(batteryReceiver, intentFilter)
         sharedPref.registerOnSharedPreferenceChangeListener(sharedPrefChangeListener)
+        updateSettings()
     }
 
     override fun onDestroy() {
@@ -102,32 +135,97 @@ class KDualCanvasRenderer(
         KCanvas.drawDigitalClock(canvas, zonedDateTime.hour, zonedDateTime.minute, robotoMedium)
         KCanvas.drawRemainingBattery(canvas, batteryReceiver.batteryStat, robotoMedium)
 
-        if (isDualMode) {
-            KCanvas.drawBackgroundBox(canvas, "up", isUser1AlertOn, KColor.YELLOW)
-            KCanvas.drawBackgroundBox(canvas, "down", isUser2AlertOn, KColor.BLUE)
-
-            KCanvas.drawIconAndUserName(canvas, 1, "Minha", KColor.YELLOW, robotoMedium)
-            KCanvas.drawIconAndUserName(canvas, 2, "Jaewon", KColor.BLUE, robotoMedium)
-
-            KCanvas.drawDiffArrowBox(canvas, context, 1, isUser1AlertOn, KColor.YELLOW, 84, robotoRegular)
-            KCanvas.drawDiffArrowBox(canvas, context, 2, isUser2AlertOn, KColor.BLUE, -8, robotoRegular)
-
-            KCanvas.drawBloodGlucose(canvas, 1, 144, robotoMedium)
-            KCanvas.drawBloodGlucose(canvas, 2, 94, robotoMedium)
-        } else {
-            KCanvas.drawBackgroundBox(canvas, null, isUser1AlertOn, KColor.PURPLE)
-            KCanvas.drawIconAndUserName(canvas, null, "Minha", KColor.PURPLE, robotoMedium)
-            KCanvas.drawBloodGlucose(canvas, null, 144, robotoMedium)
-            KCanvas.drawDiffArrowBox(canvas, context,null, isUser1AlertOn, KColor.PURPLE, 4, robotoRegular)
+        if (settings == null) {
+            KCanvas.drawBackgroundBox(canvas, null, false, null)
+            KCanvas.drawSetupInfo(canvas, context, robotoMedium)
+            return
         }
 
+        settings?.let {
+            if (it.enableDualMode) {
+                KCanvas.drawBackgroundBox(
+                    canvas,
+                    "up",
+                    isUser1AlertOn,
+                    it.firstUserSetting.color
+                )
+                KCanvas.drawBackgroundBox(
+                    canvas,
+                    "down",
+                    isUser2AlertOn,
+                    it.secondUserSetting.color
+                )
+
+                KCanvas.drawIconAndUserName(
+                    canvas,
+                    1,
+                    it.firstUserSetting.name,
+                    it.firstUserSetting.color,
+                    robotoMedium
+                )
+                KCanvas.drawIconAndUserName(
+                    canvas,
+                    2,
+                    it.secondUserSetting.name,
+                    it.secondUserSetting.color,
+                    robotoMedium
+                )
+
+                KCanvas.drawDiffArrowBox(
+                    canvas,
+                    context,
+                    1,
+                    isUser1AlertOn,
+                    it.firstUserSetting.color,
+                    84,
+                    robotoRegular
+                )
+                KCanvas.drawDiffArrowBox(
+                    canvas,
+                    context,
+                    2,
+                    isUser2AlertOn,
+                    it.secondUserSetting.color,
+                    -8,
+                    robotoRegular
+                )
+
+                KCanvas.drawBloodGlucose(canvas, 1, 144, robotoMedium)
+                KCanvas.drawBloodGlucose(canvas, 2, 94, robotoMedium)
+            } else {
+                KCanvas.drawBackgroundBox(
+                    canvas,
+                    null,
+                    isUser1AlertOn,
+                    it.firstUserSetting.color
+                )
+                KCanvas.drawIconAndUserName(
+                    canvas,
+                    null,
+                    it.firstUserSetting.name,
+                    it.firstUserSetting.color,
+                    robotoMedium
+                )
+                KCanvas.drawBloodGlucose(canvas, null, 144, robotoMedium)
+                KCanvas.drawDiffArrowBox(
+                    canvas,
+                    context,
+                    null,
+                    isUser1AlertOn,
+                    it.firstUserSetting.color,
+                    4,
+                    robotoRegular
+                )
+            }
+        }
     }
 
     override fun onTapEvent(tapType: Int, tapEvent: TapEvent, complicationSlot: ComplicationSlot?) {
         // For test blink effect
-        if (isDualMode && tapEvent.yPos > watchRect.height()/2 ) {
+        if (settings?.enableDualMode == true && tapEvent.yPos > watchRect.height() / 2) {
             if (tapType == TapType.DOWN) {
                 blinkEffect(2)
+                vibrateDevice()
             } else if (tapType == TapType.UP) {
                 openWearApp(2)
             }
@@ -138,6 +236,31 @@ class KDualCanvasRenderer(
                 openWearApp(1)
             }
         }
+    }
+
+    private fun vibrateDevice() {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
+            performVibration()
+        } else {
+            ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.VIBRATE), VIBRATION_PERMISSION_REQUEST_CODE)
+        }
+    }
+
+    private fun performVibration() {
+        val vibrator = getSystemService(context, Vibrator::class.java) as Vibrator
+
+        val pattern = longArrayOf(0, 500, 200, 500, 200)
+        val amplitude = VibrationEffect.DEFAULT_AMPLITUDE
+
+        val effect = VibrationEffect.createWaveform(pattern, amplitude)
+
+        if (vibrator.hasVibrator()) {
+            vibrator.vibrate(effect)
+        }
+    }
+
+    companion object {
+        private const val VIBRATION_PERMISSION_REQUEST_CODE = 1
     }
 
     private fun openWearApp(userId: Int) {

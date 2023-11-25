@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,6 +27,7 @@ import com.kaist.k_dual.screen.UnitScreen
 import com.kaist.k_dual.screen.UserScreen
 import com.kaist.k_dual.ui.theme.KDualTheme
 import com.google.android.gms.wearable.Wearable
+import com.kaist.k_dual.model.ManageSetting
 import findWearableNode
 
 class MainActivity : ComponentActivity() {
@@ -46,6 +48,8 @@ class MainActivity : ComponentActivity() {
                     var isConnected by remember { mutableStateOf(false) }
                     var userClosed by remember { mutableStateOf(false) }
 
+                    val context = LocalContext.current
+
                     LaunchedEffect(Unit) {
                         findWearableNode(
                             capabilityClient = capabilityClient,
@@ -53,6 +57,9 @@ class MainActivity : ComponentActivity() {
                                 isConnected = true
                                 userClosed = false
                                 isDialogOpen = false
+                                ManageSetting.initialize(
+                                    context = context,
+                                )
                             },
                             onFailure = {
                                 if (!userClosed) {
@@ -83,6 +90,9 @@ class MainActivity : ComponentActivity() {
                                 isConnected = true
                                 userClosed = false
                                 isDialogOpen = false
+                                ManageSetting.initialize(
+                                    context = context,
+                                )
                             },
                             onFailure = {
                                 if (!userClosed) {

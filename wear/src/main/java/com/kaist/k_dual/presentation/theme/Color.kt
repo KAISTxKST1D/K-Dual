@@ -25,21 +25,21 @@ internal val wearColorPalette: Colors = Colors(
 object Colors {
     fun icon(color: KColor): Color {
         return when (color) {
-            KColor.RED -> TODO()
+            KColor.RED -> Color(0xFFEE675C)
             KColor.YELLOW -> Color(0xFFFDD663)
-            KColor.GREEN -> TODO()
+            KColor.GREEN -> Color(0xFF2AAB46)
             KColor.BLUE -> Color(0xFF1B6BD5)
-            KColor.PURPLE -> TODO()
+            KColor.PURPLE -> Color(0xFFAE5CEE)
         }
     }
 
     fun name(color: KColor): Color {
         return when (color) {
-            KColor.RED -> Color(0xFFFDE293)
+            KColor.RED -> Color(0xFFFE9C94)
             KColor.YELLOW -> Color(0xFFFDE293)
-            KColor.GREEN -> TODO()
+            KColor.GREEN -> Color(0xFF7FD892)
             KColor.BLUE -> Color(0xFFA1BBE5)
-            KColor.PURPLE -> TODO()
+            KColor.PURPLE -> Color(0xFFCF94FE)
         }
     }
 }

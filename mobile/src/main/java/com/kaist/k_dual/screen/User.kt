@@ -17,7 +17,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -37,7 +37,10 @@ import com.kaist.k_dual.component.OutlinedInputParameters
 import com.kaist.k_dual.component.SingleRowWhiteBox
 import com.kaist.k_dual.component.TextFieldAlertDialog
 import com.kaist.k_dual.component.TwoTextFieldsAlertDialog
+import com.kaist.k_canvas.DeviceType
+import com.kaist.k_dual.model.ManageSetting
 import com.kaist.k_dual.ui.theme.KDualTheme
+import com.kaist.k_dual.urlPattern
 
 @Composable
 fun UserScreen(
@@ -45,12 +48,11 @@ fun UserScreen(
     isFirst: Boolean,
     onSendMessageFailed: () -> Unit = {}
 ) {
-    val name = "-"
-    val nightscoutUrl = "-"
-    val color = "Yellow"
-    val alert = "On / On / 70-180"
-    val deviceTypes = arrayOf("Nightscout", "Dexcom")
-    var selectedDeviceTypeIndex by remember { mutableIntStateOf(0) }
+    val context = LocalContext.current
+    val userSetting =
+        if (isFirst) ManageSetting.settings.firstUserSetting else ManageSetting.settings.secondUserSetting
+    val alert =
+        "${if (userSetting.vibrationEnabled) "On" else "Off"} / ${if (userSetting.colorBlinkEnabled) "On" else "Off"} / ${userSetting.lowValue}-${userSetting.highValue}"
 
     var isNameDialogOpen by remember { mutableStateOf(false) }
     var isNightscoutURLDialogOpen by remember { mutableStateOf(false) }
@@ -88,13 +90,32 @@ fun UserScreen(
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
-                        text = name,
+                        text = userSetting.name.ifEmpty { "-" },
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color(0xFF454545),
                     )
                     TextFieldAlertDialog(
                         isOpen = isNameDialogOpen,
-                        onConfirm = { isNameDialogOpen = false },
+                        onConfirm = {
+                            if (isFirst) {
+                                ManageSetting.saveSettings(
+                                    settings = ManageSetting.settings.copy(
+                                        firstUserSetting = userSetting.copy(name = it)
+                                    ),
+                                    context = context,
+                                    onSendMessageFailed = onSendMessageFailed
+                                )
+                            } else {
+                                ManageSetting.saveSettings(
+                                    settings = ManageSetting.settings.copy(
+                                        secondUserSetting = userSetting.copy(name = it)
+                                    ),
+                                    context = context,
+                                    onSendMessageFailed = onSendMessageFailed
+                                )
+                            }
+                            isNameDialogOpen = false
+                        },
                         onDismiss = { isNameDialogOpen = false },
                         title = "Name",
                         description = "Enter the name of the first user.\n" +
@@ -123,7 +144,7 @@ fun UserScreen(
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
-                        text = color,
+                        text = userSetting.color.label,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color(0xFF454545),
                     )
@@ -164,10 +185,25 @@ fun UserScreen(
                 modifier = Modifier.padding(start = 24.dp)
             )
             MultipleRowWhiteBox {
-                deviceTypes.mapIndexed { index, deviceType ->
+                val onClick = { deviceType: DeviceType ->
+                    if (isFirst) {
+                        ManageSetting.saveSettings(
+                            settings = ManageSetting.settings.copy(
+                                firstUserSetting = userSetting.copy(deviceType = deviceType)
+                            ), context = context, onSendMessageFailed = onSendMessageFailed
+                        )
+                    } else {
+                        ManageSetting.saveSettings(
+                            settings = ManageSetting.settings.copy(
+                                secondUserSetting = userSetting.copy(deviceType = deviceType)
+                            ), context = context, onSendMessageFailed = onSendMessageFailed
+                        )
+                    }
+                }
+                DeviceType.values().mapIndexed { index, deviceType ->
                     Row(
                         modifier = Modifier
-                            .clickable { selectedDeviceTypeIndex = index }
+                            .clickable { onClick(deviceType) }
                             .fillMaxWidth()
                             .padding(vertical = 20.dp, horizontal = 36.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -176,25 +212,25 @@ fun UserScreen(
                         RadioButton(
                             modifier = Modifier
                                 .size(24.dp),
-                            selected = selectedDeviceTypeIndex == index,
-                            onClick = { selectedDeviceTypeIndex = index },
+                            selected = userSetting.deviceType == deviceType,
+                            onClick = { onClick(deviceType) },
                             colors = RadioButtonDefaults.colors(
                                 selectedColor = Color.Black,
                             )
                         )
                         Text(
-                            text = deviceType,
+                            text = deviceType.label,
                             style = MaterialTheme.typography.bodyLarge,
                         )
                     }
-                    if (index != deviceTypes.lastIndex) Divider(
+                    if (index != DeviceType.values().lastIndex) Divider(
                         modifier = Modifier.padding(
                             horizontal = 36.dp
                         )
                     )
                 }
             }
-            if (selectedDeviceTypeIndex == 0) {
+            if (userSetting.deviceType == DeviceType.Nightscout) {
                 SingleRowWhiteBox(
                     modifier = Modifier
                         .clip(shape = RoundedCornerShape(24.dp))
@@ -208,24 +244,44 @@ fun UserScreen(
                             style = MaterialTheme.typography.bodyLarge,
                         )
                         Text(
-                            text = nightscoutUrl,
+                            text = userSetting.nightscoutUrl.ifEmpty { "-" },
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFF454545),
                         )
                         TextFieldAlertDialog(
                             isOpen = isNightscoutURLDialogOpen,
-                            onConfirm = { isNightscoutURLDialogOpen = false },
+                            onConfirm = {
+                                if (isFirst) {
+                                    ManageSetting.saveSettings(
+                                        settings = ManageSetting.settings.copy(
+                                            firstUserSetting = userSetting.copy(nightscoutUrl = it)
+                                        ),
+                                        context = context,
+                                        onSendMessageFailed = onSendMessageFailed
+                                    )
+                                } else {
+                                    ManageSetting.saveSettings(
+                                        settings = ManageSetting.settings.copy(
+                                            secondUserSetting = userSetting.copy(nightscoutUrl = it)
+                                        ),
+                                        context = context,
+                                        onSendMessageFailed = onSendMessageFailed
+                                    )
+                                }
+                                isNightscoutURLDialogOpen = false
+                            },
                             onDismiss = { isNightscoutURLDialogOpen = false },
                             title = "Nightscout URL",
                             description = "Enter the website link to retrieve the first user's blood glucose data.",
                             outlinedInputParameters = OutlinedInputParameters(
                                 placeholder = "Enter or paste URL",
                                 label = "URL",
+                                validation = { urlPattern.matches(it) }
                             )
                         )
                     }
                 }
-            } else if (selectedDeviceTypeIndex == 1) {
+            } else if (userSetting.deviceType == DeviceType.Dexcom) {
                 SingleRowWhiteBox(
                     modifier = Modifier
                         .clip(shape = RoundedCornerShape(24.dp))
@@ -239,13 +295,38 @@ fun UserScreen(
                             style = MaterialTheme.typography.bodyLarge,
                         )
                         Text(
-                            text = nightscoutUrl,
+                            text = userSetting.dexcomId.ifEmpty { "-" },
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFF454545),
                         )
                         TwoTextFieldsAlertDialog(
                             isOpen = isDexcomURLDialogOpen,
-                            onConfirm = { _, _ -> isDexcomURLDialogOpen = false },
+                            onConfirm = { id, password ->
+                                if (isFirst) {
+                                    ManageSetting.saveSettings(
+                                        settings = ManageSetting.settings.copy(
+                                            firstUserSetting = userSetting.copy(
+                                                dexcomId = id,
+                                                dexcomPassword = password
+                                            )
+                                        ),
+                                        context = context,
+                                        onSendMessageFailed = onSendMessageFailed
+                                    )
+                                } else {
+                                    ManageSetting.saveSettings(
+                                        settings = ManageSetting.settings.copy(
+                                            secondUserSetting = userSetting.copy(
+                                                dexcomId = id,
+                                                dexcomPassword = password
+                                            )
+                                        ),
+                                        context = context,
+                                        onSendMessageFailed = onSendMessageFailed
+                                    )
+                                }
+                                isDexcomURLDialogOpen = false
+                            },
                             onDismiss = { isDexcomURLDialogOpen = false },
                             title = "Dexcom Address",
                             description = "Enter the Dexcom ID and Password to retrieve the first user's blood glucose data.",
