@@ -89,20 +89,26 @@ fun GraphPage(isFirst: Boolean) {
                     userSetting.color,
                     robotoMedium
                 )
-                var currentBloodGlucoseDifference : String = ""
-                if(isFirst){
-                    currentBloodGlucoseDifference=UseBloodGlucose.firstUserDiff
+                var currentBloodGlucoseDifference: String = ""
+                if (isFirst) {
+                    currentBloodGlucoseDifference = UseBloodGlucose.firstUserDiff
+                } else {
+                    currentBloodGlucoseDifference = UseBloodGlucose.secondUserDiff
                 }
-                else{
-                    currentBloodGlucoseDifference=UseBloodGlucose.secondUserDiff
-                }
-                KCanvas.drawDiffArrowBox(canvas, context, 1, false, null, currentBloodGlucoseDifference, robotoRegular)
-                var currentBloodGlucose : String = ""
-                if(isFirst){
-                    currentBloodGlucose=UseBloodGlucose.firstUser
-                }
-                else{
-                    currentBloodGlucose=UseBloodGlucose.secondUser
+                KCanvas.drawDiffArrowBox(
+                    canvas,
+                    context,
+                    1,
+                    false,
+                    null,
+                    currentBloodGlucoseDifference,
+                    robotoRegular
+                )
+                var currentBloodGlucose: String = ""
+                if (isFirst) {
+                    currentBloodGlucose = UseBloodGlucose.firstUser
+                } else {
+                    currentBloodGlucose = UseBloodGlucose.secondUser
                 }
                 KCanvas.drawBloodGlucose(canvas, 1, currentBloodGlucose, robotoMedium)
             }

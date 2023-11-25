@@ -67,141 +67,24 @@ object UseBloodGlucose {
 
             when (firstUserDevice) {
                 DeviceType.Nightscout -> {
-                    var firstUserNightScoutUrl = settings!!.firstUserSetting.nightscoutUrl
-                    firstUserNightScoutUrl = firstUserNightScoutUrl.plus("/")
-                    if (firstUserNightScoutUrl != "/") {
-                        GlobalScope.launch {
-                            val recentThreeHourGlucoseData =
-                                NightScout().getBGDataByUrl(firstUserNightScoutUrl).getOrNull()
-                                    ?: return@launch
-                            if (recentThreeHourGlucoseData.size < 2) return@launch
-                            val recentGlucoseData = recentThreeHourGlucoseData[0].sgv
-                            val secondGlucoseData = recentThreeHourGlucoseData[1].sgv
-                            when (glucoseUnit) {
-                                GlucoseUnits.mg_dL -> {
-                                    firstUser = recentGlucoseData.toString()
-                                    firstUserDiff =
-                                        (recentGlucoseData - secondGlucoseData).toString()
-                                }
-
-                                GlucoseUnits.mmol_L -> {
-                                    val recentGlucoseDataMmol = mgdlToMmol(recentGlucoseData)
-                                    val rounded = round(recentGlucoseDataMmol * 100) / 100
-                                    val secondGlucoseDataMmol = mgdlToMmol(secondGlucoseData)
-                                    val secondRounded = round(secondGlucoseDataMmol * 100) / 100
-                                    firstUser = rounded.toString()
-                                    firstUserDiff =
-                                        (round((rounded - secondRounded) * 10)).toString()
-                                }
-                            }
-                        }
-                    }
+                    var isFirst = true
+                    getNightScoutData(isFirst, glucoseUnit)
                 }
 
                 DeviceType.Dexcom -> {
-                    val firstUserDexcomId = settings!!.firstUserSetting.dexcomId
-                    val firstUserDexcomPassword = settings!!.firstUserSetting.dexcomPassword
-                    val firstUserConfigurationProps = ConfigurationProps(
-                        firstUserDexcomId,
-                        firstUserDexcomPassword,
-                        DexcomServer.EU
-                    )
-                    val firstUserDexcomClient: DexcomClient =
-                        DexcomClient(firstUserConfigurationProps)
-
-                    if (firstUserDexcomId != "" && firstUserDexcomPassword != "") {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val glucoseData =
-                                firstUserDexcomClient.getEstimatedGlucoseValues(latestGlucoseProps)
-                                    ?: return@launch
-                            val currentGlucoseData: GlucoseEntry = glucoseData[0]
-                            val secondGlucoseData: GlucoseEntry = glucoseData[1]
-                            when (glucoseUnit) {
-                                GlucoseUnits.mg_dL -> {
-                                    firstUser = currentGlucoseData.mgdl.toString()
-                                    firstUserDiff =
-                                        (currentGlucoseData.mgdl - secondGlucoseData.mgdl).toString()
-                                }
-
-                                GlucoseUnits.mmol_L -> {
-                                    val rounded = round(currentGlucoseData.mmol * 100) / 100
-                                    val secondRounded = round(secondGlucoseData.mmol * 100) / 100
-                                    firstUser = rounded.toString()
-                                    firstUserDiff =
-                                        (round((rounded - secondRounded) * 10)).toString()
-                                }
-
-                            }
-                        }
-                    }
+                    var isFirst = true
+                    getDexcomData(isFirst, latestGlucoseProps, glucoseUnit)
                 }
             }
             when (secondUserDevice) {
                 DeviceType.Nightscout -> {
-                    var secondUserNightScoutUrl = settings!!.secondUserSetting.nightscoutUrl
-                    secondUserNightScoutUrl = secondUserNightScoutUrl.plus("/")
-                    if (secondUserNightScoutUrl != "/") {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val recentThreeHourGlucoseData =
-                                NightScout().getBGDataByUrl(secondUserNightScoutUrl).getOrNull()
-                                    ?: return@launch
-                            val recentGlucoseData = recentThreeHourGlucoseData[0].sgv
-                            val secondGlucoseData = recentThreeHourGlucoseData[1].sgv
-                            when (glucoseUnit) {
-                                GlucoseUnits.mg_dL -> {
-                                    secondUser = recentGlucoseData.toString()
-                                    secondUserDiff =
-                                        (recentGlucoseData - secondGlucoseData).toString()
-                                }
-
-                                GlucoseUnits.mmol_L -> {
-                                    val recentGlucoseDataMmol = mgdlToMmol(recentGlucoseData)
-                                    val rounded = round(recentGlucoseDataMmol * 100) / 100
-                                    val secondGlucoseDataMmol = mgdlToMmol(secondGlucoseData)
-                                    val secondRounded = round(secondGlucoseDataMmol * 100) / 100
-                                    secondUser = rounded.toString()
-                                    secondUserDiff =
-                                        (round((rounded - secondRounded) * 10)).toString()
-                                }
-                            }
-                        }
-                    }
+                    var isFirst = false
+                    getNightScoutData(isFirst, glucoseUnit)
                 }
 
                 DeviceType.Dexcom -> {
-                    val secondUserDexcomId = settings!!.secondUserSetting.dexcomId
-                    val secondUserDexcomPassword = settings!!.secondUserSetting.dexcomPassword
-                    val secondUserConfigurationProps: ConfigurationProps = ConfigurationProps(
-                        secondUserDexcomId,
-                        secondUserDexcomPassword,
-                        DexcomServer.EU
-                    )
-                    val secondUserDexcomClient: DexcomClient =
-                        DexcomClient(secondUserConfigurationProps)
-                    if (secondUserDexcomId != "" && secondUserDexcomPassword != "") {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val glucoseData = secondUserDexcomClient.getEstimatedGlucoseValues(
-                                latestGlucoseProps
-                            ) ?: return@launch
-                            val currentGlucoseData: GlucoseEntry = glucoseData[0]
-                            val secondGlucoseData: GlucoseEntry = glucoseData[1]
-                            when (glucoseUnit) {
-                                GlucoseUnits.mg_dL -> {
-                                    secondUser = currentGlucoseData.mgdl.toString()
-                                    secondUserDiff =
-                                        (currentGlucoseData.mgdl - secondGlucoseData.mgdl).toString()
-                                }
-
-                                GlucoseUnits.mmol_L -> {
-                                    val rounded = round(currentGlucoseData.mmol * 100) / 100
-                                    val secondRounded = round(secondGlucoseData.mmol * 100) / 100
-                                    secondUser = rounded.toString()
-                                    secondUserDiff =
-                                        (round((rounded - secondRounded) * 10)).toString()
-                                }
-                            }
-                        }
-                    }
+                    var isFirst = false
+                    getDexcomData(isFirst, latestGlucoseProps, glucoseUnit)
                 }
             }
         } else {
@@ -209,75 +92,156 @@ object UseBloodGlucose {
 
             when (firstUserDevice) {
                 DeviceType.Nightscout -> {
-                    var firstUserNightScoutUrl = settings!!.firstUserSetting.nightscoutUrl
-                    firstUserNightScoutUrl = firstUserNightScoutUrl.plus("/")
-                    if (firstUserNightScoutUrl != "/") {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val recentThreeHourGlucoseData =
-                                NightScout().getBGDataByUrl(firstUserNightScoutUrl).getOrNull()
-                                    ?: return@launch
-                            val recentGlucoseData = recentThreeHourGlucoseData[0].sgv
-                            val secondGlucoseData = recentThreeHourGlucoseData[1].sgv
-                            when (glucoseUnit) {
-                                GlucoseUnits.mg_dL -> {
-                                    firstUser = recentGlucoseData.toString()
-                                    firstUserDiff =
-                                        (recentGlucoseData - secondGlucoseData).toString()
-                                }
-
-                                GlucoseUnits.mmol_L -> {
-                                    val recentGlucoseDataMmol = mgdlToMmol(recentGlucoseData)
-                                    val secondGlucoseDataMmol = mgdlToMmol(secondGlucoseData)
-                                    val rounded = round(recentGlucoseDataMmol * 100) / 100
-                                    val secondRounded = round(secondGlucoseDataMmol * 100) / 100
-                                    firstUser = rounded.toString()
-                                    firstUserDiff =
-                                        (round((rounded - secondRounded) * 10)).toString()
-                                }
-                            }
-                        }
-                    }
+                    var isFirst = true
+                    getNightScoutData(isFirst, glucoseUnit)
                 }
 
                 DeviceType.Dexcom -> {
-                    val firstUserDexcomId = settings!!.firstUserSetting.dexcomId
-                    val firstUserDexcomPassword = settings!!.firstUserSetting.dexcomPassword
-                    val firstUserConfigurationProps: ConfigurationProps = ConfigurationProps(
-                        firstUserDexcomId,
-                        firstUserDexcomPassword,
-                        DexcomServer.EU
-                    )
-                    val firstUserDexcomClient: DexcomClient =
-                        DexcomClient(firstUserConfigurationProps)
-                    Log.d("updateBloodGlucose", "$firstUserDexcomId, $firstUserDexcomPassword")
-                    if (firstUserDexcomId != "" && firstUserDexcomPassword != "") {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val glucoseData =
-                                firstUserDexcomClient.getEstimatedGlucoseValues(latestGlucoseProps)
-                                    ?: return@launch
-                            val currentGlucoseData: GlucoseEntry = glucoseData[0]
-                            val secondGlucoseData: GlucoseEntry = glucoseData[1]
-                            when (glucoseUnit) {
-                                GlucoseUnits.mg_dL -> {
-                                    firstUser = currentGlucoseData.mgdl.toString()
-                                    firstUserDiff =
-                                        (currentGlucoseData.mgdl - secondGlucoseData.mgdl).toString()
-                                }
+                    var isFirst = true
+                    getDexcomData(isFirst, latestGlucoseProps, glucoseUnit)
+                }
+            }
+        }
+    }
 
-                                GlucoseUnits.mmol_L -> {
-                                    val rounded = round(currentGlucoseData.mmol * 100) / 100
-                                    val secondRounded = round(secondGlucoseData.mmol * 100) / 100
-                                    firstUser = rounded.toString()
-                                    firstUserDiff =
-                                        (round((rounded - secondRounded) * 10)).toString()
-                                }
-                            }
+
+    fun getNightScoutData(isFirst: Boolean, glucoseUnit: GlucoseUnits){
+        if(isFirst){
+            var firstUserNightScoutUrl = settings!!.firstUserSetting.nightscoutUrl
+            firstUserNightScoutUrl = firstUserNightScoutUrl.plus("/")
+            if (firstUserNightScoutUrl != "/") {
+                GlobalScope.launch {
+                    val recentThreeHourGlucoseData =
+                        NightScout().getBGDataByUrl(firstUserNightScoutUrl).getOrNull()
+                            ?: return@launch
+                    if (recentThreeHourGlucoseData.size < 2) return@launch
+                    val recentGlucoseData = recentThreeHourGlucoseData[0].sgv
+                    val secondGlucoseData = recentThreeHourGlucoseData[1].sgv
+                    when (glucoseUnit) {
+                        GlucoseUnits.mg_dL -> {
+                            firstUser = recentGlucoseData.toString()
+                            firstUserDiff =
+                                (recentGlucoseData - secondGlucoseData).toString()
+                        }
+
+                        GlucoseUnits.mmol_L -> {
+                            val recentGlucoseDataMmol = mgdlToMmol(recentGlucoseData)
+                            val rounded = round(recentGlucoseDataMmol * 100) / 100
+                            val secondGlucoseDataMmol = mgdlToMmol(secondGlucoseData)
+                            val secondRounded = round(secondGlucoseDataMmol * 100) / 100
+                            firstUser = rounded.toString()
+                            firstUserDiff =
+                                (round((rounded - secondRounded) * 10)).toString()
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            var secondUserNightScoutUrl = settings!!.secondUserSetting.nightscoutUrl
+            secondUserNightScoutUrl = secondUserNightScoutUrl.plus("/")
+            if (secondUserNightScoutUrl != "/") {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val recentThreeHourGlucoseData =
+                        NightScout().getBGDataByUrl(secondUserNightScoutUrl).getOrNull()
+                            ?: return@launch
+                    val recentGlucoseData = recentThreeHourGlucoseData[0].sgv
+                    val secondGlucoseData = recentThreeHourGlucoseData[1].sgv
+                    when (glucoseUnit) {
+                        GlucoseUnits.mg_dL -> {
+                            secondUser = recentGlucoseData.toString()
+                            secondUserDiff =
+                                (recentGlucoseData - secondGlucoseData).toString()
+                        }
+
+                        GlucoseUnits.mmol_L -> {
+                            val recentGlucoseDataMmol = mgdlToMmol(recentGlucoseData)
+                            val rounded = round(recentGlucoseDataMmol * 100) / 100
+                            val secondGlucoseDataMmol = mgdlToMmol(secondGlucoseData)
+                            val secondRounded = round(secondGlucoseDataMmol * 100) / 100
+                            secondUser = rounded.toString()
+                            secondUserDiff =
+                                (round((rounded - secondRounded) * 10)).toString()
                         }
                     }
                 }
             }
         }
     }
+    fun getDexcomData(isFirst : Boolean, latestGlucoseProps: LatestGlucoseProps, glucoseUnit : GlucoseUnits) {
+        if(isFirst){
+            val firstUserDexcomId = settings!!.firstUserSetting.dexcomId
+            val firstUserDexcomPassword = settings!!.firstUserSetting.dexcomPassword
+            val firstUserConfigurationProps: ConfigurationProps = ConfigurationProps(
+                firstUserDexcomId,
+                firstUserDexcomPassword,
+                DexcomServer.EU
+            )
+            val firstUserDexcomClient: DexcomClient =
+                DexcomClient(firstUserConfigurationProps)
+            Log.d("updateBloodGlucose", "$firstUserDexcomId, $firstUserDexcomPassword")
+            if (firstUserDexcomId != "" && firstUserDexcomPassword != "") {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val glucoseData =
+                        firstUserDexcomClient.getEstimatedGlucoseValues(latestGlucoseProps)
+                            ?: return@launch
+                    val currentGlucoseData: GlucoseEntry = glucoseData[0]
+                    val secondGlucoseData: GlucoseEntry = glucoseData[1]
+                    when (glucoseUnit) {
+                        GlucoseUnits.mg_dL -> {
+                            firstUser = currentGlucoseData.mgdl.toString()
+                            firstUserDiff =
+                                (currentGlucoseData.mgdl - secondGlucoseData.mgdl).toString()
+                        }
+
+                        GlucoseUnits.mmol_L -> {
+                            val rounded = round(currentGlucoseData.mmol * 100) / 100
+                            val secondRounded = round(secondGlucoseData.mmol * 100) / 100
+                            firstUser = rounded.toString()
+                            firstUserDiff =
+                                (round((rounded - secondRounded) * 10)).toString()
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            val secondUserDexcomId = settings!!.secondUserSetting.dexcomId
+            val secondUserDexcomPassword = settings!!.secondUserSetting.dexcomPassword
+            val secondUserConfigurationProps: ConfigurationProps = ConfigurationProps(
+                secondUserDexcomId,
+                secondUserDexcomPassword,
+                DexcomServer.EU
+            )
+            val secondUserDexcomClient: DexcomClient =
+                DexcomClient(secondUserConfigurationProps)
+            if (secondUserDexcomId != "" && secondUserDexcomPassword != "") {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val glucoseData = secondUserDexcomClient.getEstimatedGlucoseValues(
+                        latestGlucoseProps
+                    ) ?: return@launch
+                    val currentGlucoseData: GlucoseEntry = glucoseData[0]
+                    val secondGlucoseData: GlucoseEntry = glucoseData[1]
+                    when (glucoseUnit) {
+                        GlucoseUnits.mg_dL -> {
+                            secondUser = currentGlucoseData.mgdl.toString()
+                            secondUserDiff =
+                                (currentGlucoseData.mgdl - secondGlucoseData.mgdl).toString()
+                        }
+
+                        GlucoseUnits.mmol_L -> {
+                            val rounded = round(currentGlucoseData.mmol * 100) / 100
+                            val secondRounded = round(secondGlucoseData.mmol * 100) / 100
+                            secondUser = rounded.toString()
+                            secondUserDiff =
+                                (round((rounded - secondRounded) * 10)).toString()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     fun mgdlToMmol(mgdl: Int): Double {
         return (mgdl / 18.0).toBigDecimal().setScale(2, RoundingMode.HALF_EVEN).toDouble()
