@@ -7,12 +7,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.google.gson.Gson
+import com.kaist.k_canvas.DefaultSetting
+import com.kaist.k_canvas.MESSAGE_PATH
+import com.kaist.k_canvas.PREFERENCES_FILE_KEY
+import com.kaist.k_canvas.SETTINGS_KEY
+import com.kaist.k_canvas.Setting
 import sendMessageToWearable
 
 object ManageSetting {
-    private const val PREFERENCES_FILE_KEY = "com.kaist.k_dual.settings_preferences"
-    private const val SETTINGS_KEY = "settings"
-    private const val MESSAGE_PATH = "/settings"
     private lateinit var sharedPreferences: SharedPreferences
     private val gson = Gson()
     var settings by mutableStateOf(DefaultSetting)

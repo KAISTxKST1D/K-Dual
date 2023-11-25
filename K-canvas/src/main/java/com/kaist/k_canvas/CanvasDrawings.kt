@@ -86,8 +86,8 @@ class KCanvas {
                 corners = corners.reversedArray()
             }
 
-            val backgroundPaint = if (isAlertOn) {
-                KPaint.backgroundPaint(color!!, rect)
+            val backgroundPaint = if (isAlertOn && color != null) {
+                KPaint.backgroundPaint(color, rect)
             } else {
                 KPaint.backgroundPaint(rect)
             }
@@ -317,8 +317,8 @@ class KCanvas {
             }
             val differenceText: String = if (difference > 0) {"+$difference"} else {"$difference"}
 
-            val arrowPaint = if (isAlertOn) {
-                KPaint.arrowPaint(color!!)
+            val arrowPaint = if (isAlertOn && color != null) {
+                KPaint.arrowPaint(color)
             } else {
                 null
             }

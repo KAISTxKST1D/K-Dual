@@ -1,6 +1,4 @@
-package com.kaist.k_dual.model
-
-import com.kaist.k_canvas.KColor
+package com.kaist.k_canvas
 
 enum class DeviceType(val label: String) {
     Nightscout("Nightscout"),

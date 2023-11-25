@@ -17,7 +17,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -38,7 +37,7 @@ import com.kaist.k_dual.component.OutlinedInputParameters
 import com.kaist.k_dual.component.SingleRowWhiteBox
 import com.kaist.k_dual.component.TextFieldAlertDialog
 import com.kaist.k_dual.component.TwoTextFieldsAlertDialog
-import com.kaist.k_dual.model.DeviceType
+import com.kaist.k_canvas.DeviceType
 import com.kaist.k_dual.model.ManageSetting
 import com.kaist.k_dual.ui.theme.KDualTheme
 import com.kaist.k_dual.urlPattern
