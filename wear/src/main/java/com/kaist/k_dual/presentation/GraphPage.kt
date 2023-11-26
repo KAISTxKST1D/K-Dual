@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
+import com.kaist.k_canvas.DeviceType
+import com.kaist.k_canvas.GlucoseUnits
 import com.kaist.k_dual.R
 import com.kaist.k_dual.presentation.theme.KDualTheme
 import com.patrykandpatrick.vico.compose.axis.axisGuidelineComponent
@@ -51,6 +53,7 @@ import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.kaist.k_canvas.KCanvas
+import com.kaist.k_dual.model.mgdlToMmol
 import com.patrykandpatrick.vico.compose.chart.scroll.rememberChartScrollSpec
 import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
 import kotlinx.coroutines.delay
@@ -143,44 +146,85 @@ fun GraphPage(isFirst: Boolean) {
 
         val configuration = LocalConfiguration.current
         val screenWidthDp = configuration.screenWidthDp // Width in dp
-        val chartEntryModel: ChartEntryModel = entryModelOf(
-            80,
-            100,
-            77,
-            90,
-            100,
-            90,
-            80,
-            100,
-            77,
-            90,
-            100,
-            90,
-            80,
-            100,
-            77,
-            90,
-            100,
-            90,
-            80,
-            100,
-            77,
-            90,
-            100,
-            90,
-            80,
-            100,
-            77,
-            90,
-            100,
-            90,
-            80,
-            100,
-            77,
-            90,
-            100,
-            90
-        )
+        var chartEntryModel: ChartEntryModel = entryModelOf(listOf())
+        // TODO. Initialize graph when url changed
+        if (isFirst) {
+            when (settings.firstUserSetting.deviceType) {
+                DeviceType.Nightscout -> {
+                    val graphData = UseBloodGlucose.firstUserGraphNightScoutData
+                    if (graphData.size == 36) {
+                        when (settings.glucoseUnits) {
+                            GlucoseUnits.mg_dL -> {
+                                val graphValues = graphData.takeLast(36).map { it.sgv }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+
+                            GlucoseUnits.mmol_L -> {
+                                val graphValues = graphData.takeLast(36).map { mgdlToMmol (it.sgv) }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+                        }
+                    }
+                }
+
+                DeviceType.Dexcom -> {
+                    val graphData = UseBloodGlucose.firstUserGraphDexcomData
+                    if (graphData.size == 36) {
+                        when (settings.glucoseUnits) {
+                            GlucoseUnits.mg_dL -> {
+                                val graphValues = graphData.takeLast(36).map { it.mgdl }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+
+                            GlucoseUnits.mmol_L -> {
+                                val graphValues = graphData.takeLast(36).map { it.mmol }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            when (settings.secondUserSetting.deviceType) {
+                DeviceType.Nightscout -> {
+                    val graphData = UseBloodGlucose.secondUserGraphNightScoutData
+                    if (graphData.size == 36) {
+                        when (settings.glucoseUnits) {
+                            GlucoseUnits.mg_dL -> {
+                                val graphValues = graphData.takeLast(36).map { it.sgv }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+                            GlucoseUnits.mmol_L -> {
+                                val graphValues = graphData.takeLast(36).map { mgdlToMmol (it.sgv) }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+                        }
+                    }
+                }
+
+                DeviceType.Dexcom -> {
+                    val graphData = UseBloodGlucose.secondUserGraphDexcomData
+                    if (graphData.size == 36) {
+                        when (settings.glucoseUnits) {
+                            GlucoseUnits.mg_dL -> {
+                                val graphValues = graphData.takeLast(36).map { it.mgdl }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+
+                            GlucoseUnits.mmol_L -> {
+                                val graphValues = graphData.takeLast(36).map { it.mmol }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        var miny = 0f
+        var maxy = 300f
+        if(settings.glucoseUnits==GlucoseUnits.mmol_L) {
+            maxy = 15f
+        }
         Chart(
             modifier = Modifier
                 .padding(
@@ -201,8 +245,8 @@ fun GraphPage(isFirst: Boolean) {
                     )
                 },
                 axisValuesOverrider = AxisValuesOverrider.fixed(
-                    minY = 50f,
-                    maxY = 200f,
+                    minY = miny,
+                    maxY = maxy,
                 ),
                 spacing = 18.dp,
                 targetVerticalAxisPosition = AxisPosition.Vertical.End
@@ -213,7 +257,16 @@ fun GraphPage(isFirst: Boolean) {
                 isScrollEnabled = false
             )
         )
-
+        var firstBox = "300"
+        var secondBox = "200"
+        var thirdBox = "100"
+        var fourthBox = "0"
+        if (settings.glucoseUnits == GlucoseUnits.mmol_L) {
+            firstBox = "15"
+            secondBox = "10"
+            thirdBox = "5"
+            fourthBox = "0"
+        }
         // Fake chart to draw background grid
         val fakeChartEntryModel: ChartEntryModel = entryModelOf(0, 0, 0, 0, 0, 0, 0, 0)
         Chart(
@@ -227,12 +280,12 @@ fun GraphPage(isFirst: Boolean) {
                 currentChartStyle.lineChart.lines.map { defaultLines ->
                     defaultLines.copy(
                         lineBackgroundShader = null,
-                        lineColor = 0xFFFFFFFF.toInt()
+                        lineColor = 0x00FFFFFF.toInt()
                     )
                 },
                 axisValuesOverrider = AxisValuesOverrider.fixed(
-                    minY = 50f,
-                    maxY = 200f,
+                    minY = miny,
+                    maxY = maxy,
                 ),
                 spacing = 18.dp,
                 targetVerticalAxisPosition = AxisPosition.Vertical.End
@@ -276,19 +329,19 @@ fun GraphPage(isFirst: Boolean) {
         ) {
             StartAxisLabelBox(
                 modifier = Modifier.padding(start = 0.dp),
-                startLabel = "200"
+                startLabel = firstBox
             )
             StartAxisLabelBox(
                 modifier = Modifier.padding(start = (screenWidthDp * 0.03).dp),
-                startLabel = "150"
+                startLabel = secondBox
             )
             StartAxisLabelBox(
                 modifier = Modifier.padding(start = (screenWidthDp * 0.07).dp),
-                startLabel = "100"
+                startLabel = thirdBox
             )
             StartAxisLabelBox(
                 modifier = Modifier.padding(start = (screenWidthDp * 0.15).dp),
-                startLabel = "50"
+                startLabel = fourthBox
             )
         }
     }
