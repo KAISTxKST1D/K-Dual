@@ -4,11 +4,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -26,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -92,7 +95,7 @@ fun UserScreen(
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
-                        text = userSetting.name.ifEmpty { "-" },
+                        text = userSetting.name,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color(0xFF454545),
                     )
@@ -129,6 +132,7 @@ fun UserScreen(
                             placeholder = stringResource(R.string.enter_name),
                             label = stringResource(R.string.name),
                             maxLength = 10,
+                            allowEmpty = true,
                         )
                     )
                 }
@@ -248,10 +252,13 @@ fun UserScreen(
                             text = stringResource(R.string.nightscout_address),
                             style = MaterialTheme.typography.bodyLarge,
                         )
+                        Spacer(modifier = Modifier.width(16.dp))
                         Text(
                             text = userSetting.nightscoutUrl.ifEmpty { "-" },
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFF454545),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                         TextFieldAlertDialog(
                             isOpen = isNightscoutURLDialogOpen,
@@ -303,10 +310,13 @@ fun UserScreen(
                             text = stringResource(R.string.dexcom_account),
                             style = MaterialTheme.typography.bodyLarge,
                         )
+                        Spacer(modifier = Modifier.width(16.dp))
                         Text(
                             text = userSetting.dexcomId.ifEmpty { "-" },
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFF454545),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                         TwoTextFieldsAlertDialog(
                             isOpen = isDexcomURLDialogOpen,

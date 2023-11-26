@@ -39,6 +39,10 @@ import androidx.core.app.ActivityCompat
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
+import android.os.Handler
+import android.os.Looper
+import android.os.PowerManager
+import com.kaist.k_dual.presentation.UseBloodGlucose
 
 class KDualCanvasRenderer(
     private val context: Context,
@@ -58,8 +62,8 @@ class KDualCanvasRenderer(
     private val gson = Gson()
     private var settings: Setting? = null
 
-    private var isUser1AlertOn: Boolean = false
-    private var isUser2AlertOn: Boolean = false
+    private var isUser1ColorAlertOn: Boolean = false
+    private var isUser2ColorAlertOn: Boolean = false
 
     // Font assets
     private val assetManager = context.assets
@@ -87,6 +91,7 @@ class KDualCanvasRenderer(
     private val sharedPrefChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
             updateSettings()
+            updateBloodGlucoseTask.run()
             invalidate()
         }
     private val updateSettings: () -> Unit = {
@@ -104,15 +109,67 @@ class KDualCanvasRenderer(
         }
     }
 
+    private val handler = Handler(Looper.getMainLooper())
+    private val updateInterval = 5 * 60 * 1000L
+
+    private val updateBloodGlucoseTask = object : Runnable {
+        override fun run() {
+            UseBloodGlucose.updateBloodGlucose(context)
+            invalidate()
+            handler.postDelayed(this, updateInterval)
+        }
+    }
+
+    private val checkAlertConditionTask = object : Runnable {
+        override fun run() {
+            checkAlertCondition()
+            handler.postDelayed(this, updateInterval)
+        }
+    }
+
+    private fun checkAlertCondition() {
+        settings?.let {
+            val firstUserBGValue = UseBloodGlucose.firstUser.toIntOrNull()
+            firstUserBGValue?.let { bgValue ->
+                if (bgValue > it.firstUserSetting.highValue || bgValue < it.firstUserSetting.lowValue) {
+                    if (it.firstUserSetting.vibrationEnabled) {
+                        vibrateDevice()
+                    }
+                    if (it.firstUserSetting.colorBlinkEnabled) {
+                        blinkEffect(1)
+                    }
+                }
+            }
+            if (it.enableDualMode) {
+                val secondUserBGValue = UseBloodGlucose.secondUser.toIntOrNull()
+                secondUserBGValue?.let { bgValue ->
+                    if (bgValue > it.secondUserSetting.highValue || bgValue < it.secondUserSetting.lowValue) {
+                        if (it.secondUserSetting.vibrationEnabled) {
+                            vibrateDevice()
+                        }
+                        if (it.secondUserSetting.colorBlinkEnabled) {
+                            blinkEffect(2)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     init {
         context.registerReceiver(batteryReceiver, intentFilter)
         sharedPref.registerOnSharedPreferenceChangeListener(sharedPrefChangeListener)
         updateSettings()
+        updateBloodGlucoseTask.run()
+        checkAlertConditionTask.run()
+        handler.post(updateBloodGlucoseTask)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         context.unregisterReceiver(batteryReceiver)
+        handler.removeCallbacks(updateBloodGlucoseTask)
+        handler.removeCallbacks(checkAlertConditionTask)
     }
 
     override suspend fun createSharedAssets(): KDualAssets {
@@ -146,13 +203,13 @@ class KDualCanvasRenderer(
                 KCanvas.drawBackgroundBox(
                     canvas,
                     "up",
-                    isUser1AlertOn,
+                    isUser1ColorAlertOn,
                     it.firstUserSetting.color
                 )
                 KCanvas.drawBackgroundBox(
                     canvas,
                     "down",
-                    isUser2AlertOn,
+                    isUser2ColorAlertOn,
                     it.secondUserSetting.color
                 )
 
@@ -175,28 +232,30 @@ class KDualCanvasRenderer(
                     canvas,
                     context,
                     1,
-                    isUser1AlertOn,
+                    isUser1ColorAlertOn,
                     it.firstUserSetting.color,
-                    84,
+                    UseBloodGlucose.firstUserDiff,
+                    it.glucoseUnits,
                     robotoRegular
                 )
                 KCanvas.drawDiffArrowBox(
                     canvas,
                     context,
                     2,
-                    isUser2AlertOn,
+                    isUser2ColorAlertOn,
                     it.secondUserSetting.color,
-                    -8,
+                    UseBloodGlucose.secondUserDiff,
+                    it.glucoseUnits,
                     robotoRegular
                 )
 
-                KCanvas.drawBloodGlucose(canvas, 1, 144, robotoMedium)
-                KCanvas.drawBloodGlucose(canvas, 2, 94, robotoMedium)
+                KCanvas.drawBloodGlucose(canvas, 1, UseBloodGlucose.firstUser, it.glucoseUnits, robotoMedium)
+                KCanvas.drawBloodGlucose(canvas, 2, UseBloodGlucose.secondUser, it.glucoseUnits, robotoMedium)
             } else {
                 KCanvas.drawBackgroundBox(
                     canvas,
                     null,
-                    isUser1AlertOn,
+                    isUser1ColorAlertOn,
                     it.firstUserSetting.color
                 )
                 KCanvas.drawIconAndUserName(
@@ -206,14 +265,15 @@ class KDualCanvasRenderer(
                     it.firstUserSetting.color,
                     robotoMedium
                 )
-                KCanvas.drawBloodGlucose(canvas, null, 144, robotoMedium)
+                KCanvas.drawBloodGlucose(canvas, null, UseBloodGlucose.firstUser, it.glucoseUnits, robotoMedium)
                 KCanvas.drawDiffArrowBox(
                     canvas,
                     context,
                     null,
-                    isUser1AlertOn,
+                    isUser1ColorAlertOn,
                     it.firstUserSetting.color,
-                    4,
+                    UseBloodGlucose.firstUserDiff,
+                    it.glucoseUnits,
                     robotoRegular
                 )
             }
@@ -223,26 +283,29 @@ class KDualCanvasRenderer(
     override fun onTapEvent(tapType: Int, tapEvent: TapEvent, complicationSlot: ComplicationSlot?) {
         // For test blink effect
         if (settings?.enableDualMode == true && tapEvent.yPos > watchRect.height() / 2) {
-            if (tapType == TapType.DOWN) {
-                blinkEffect(2)
-                vibrateDevice()
-            } else if (tapType == TapType.UP) {
+            if (tapType == TapType.UP) {
                 openWearApp(2)
             }
         } else {
-            if (tapType == TapType.DOWN) {
-                blinkEffect(1)
-            } else if (tapType == TapType.UP) {
+            if (tapType == TapType.UP) {
                 openWearApp(1)
             }
         }
     }
 
     private fun vibrateDevice() {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.VIBRATE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             performVibration()
         } else {
-            ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.VIBRATE), VIBRATION_PERMISSION_REQUEST_CODE)
+            ActivityCompat.requestPermissions(
+                context as Activity,
+                arrayOf(Manifest.permission.VIBRATE),
+                VIBRATION_PERMISSION_REQUEST_CODE
+            )
         }
     }
 
@@ -276,17 +339,25 @@ class KDualCanvasRenderer(
         startActivity(context, intent, null)
     }
 
-    // Function for low/high alert highlights
-    private fun blinkEffect(order: Number?) = CoroutineScope(Dispatchers.Main).launch {
+    // Function for low/high color alert
+    private fun blinkEffect(order: Number) = CoroutineScope(Dispatchers.Main).launch {
+        val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        // TODO. PowerManager flags are deprecated
+        val wakeLock = powerManager.newWakeLock(
+            PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP,
+            "KDualWatch:WakelockTag"
+        )
+        wakeLock?.acquire(10 * 1000L)
+
         repeat(3) {
             when (order) {
-                2 -> isUser2AlertOn = !isUser2AlertOn
-                else -> isUser1AlertOn = !isUser1AlertOn
+                1 -> isUser1ColorAlertOn = !isUser1ColorAlertOn
+                else -> isUser2ColorAlertOn = !isUser2ColorAlertOn
             }
             delay(if (it % 2 == 0) 400L else 100L)
         }
-        isUser1AlertOn = false
-        isUser2AlertOn = false
+        isUser1ColorAlertOn = false
+        isUser2ColorAlertOn = false
     }
 }
 

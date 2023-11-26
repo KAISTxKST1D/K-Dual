@@ -17,7 +17,8 @@ var connectedNodeID: String? = null
 fun findWearableNode(
     capabilityClient: CapabilityClient,
     onSuccess: () -> Unit,
-    onFailure: () -> Unit
+    onFailure: () -> Unit,
+    isFirstTrial: Boolean = true,
 ) {
     CoroutineScope(Dispatchers.IO).launch {
         try {
@@ -32,17 +33,27 @@ fun findWearableNode(
 
             if (targetNodeId != null) {
                 connectedNodeID = targetNodeId
-                onSuccess()
+                if (!isFirstTrial) {
+                    onSuccess()
+                }
                 Log.d("phoneApp", "Wearable node connected: $connectedNodeID")
             } else {
                 onFailure()
                 Log.e("phoneApp", "Wearable node not found")
-                scheduleRetry(capabilityClient, onSuccess, onFailure)
+                scheduleRetry(
+                    capabilityClient = capabilityClient,
+                    onSuccess = onSuccess,
+                    onFailure = onFailure
+                )
             }
         } catch (e: Exception) {
             onFailure()
             Log.e("phoneApp", "Error finding wearable node: ${e.message}")
-            scheduleRetry(capabilityClient, onSuccess, onFailure)
+            scheduleRetry(
+                capabilityClient = capabilityClient,
+                onSuccess = onSuccess,
+                onFailure = onFailure
+            )
         }
     }
 }
@@ -50,10 +61,15 @@ fun findWearableNode(
 private fun scheduleRetry(
     capabilityClient: CapabilityClient,
     onSuccess: () -> Unit,
-    onFailure: () -> Unit
+    onFailure: () -> Unit,
 ) {
     executorService.schedule({
-        findWearableNode(capabilityClient, onSuccess, onFailure)
+        findWearableNode(
+            capabilityClient = capabilityClient,
+            onSuccess = onSuccess,
+            onFailure = onFailure,
+            isFirstTrial = false
+        )
     }, RETRY_DELAY_SECONDS, TimeUnit.SECONDS)
 }
 
@@ -65,15 +81,20 @@ fun sendMessageToWearable(
     onFailure: () -> Unit = {}
 ) {
     connectedNodeID?.let { nodeId ->
-        Wearable.getMessageClient(context).sendMessage(nodeId, path, data)
-            .addOnSuccessListener {
-                Log.d("PhoneApp", "Message sent successfully")
-                onSuccess()
-            }
-            .addOnFailureListener { e ->
-                Log.e("PhoneApp", "Failed to send message", e)
-                onFailure()
-            }
+        try {
+            Wearable.getMessageClient(context).sendMessage(nodeId, path, data)
+                .addOnSuccessListener {
+                    Log.d("PhoneApp", "Message sent successfully")
+                    onSuccess()
+                }
+                .addOnFailureListener { e ->
+                    Log.e("PhoneApp", "Failed to send message", e)
+                    onFailure()
+                }
+        } catch (_: Exception) {
+            onFailure()
+            Log.e("PhoneApp", "No connected node found")
+        }
     } ?: run {
         onFailure()
         Log.e("PhoneApp", "No connected node found")

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -75,8 +74,9 @@ fun HomePage(
                 settings?.let {
                     UserItem(
                         modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                            .fillMaxWidth()
                             .height(52.dp)
-                            .width(172.dp)
                             .clip(RoundedCornerShape(92.129.dp))
                             .clickable {
                                 if (navController.currentDestination != NavDestination("graph/${1}")) {
@@ -88,28 +88,31 @@ fun HomePage(
                         server = settings.firstUserSetting.deviceType.label,
                         isAlertOn = settings.firstUserSetting.colorBlinkEnabled || settings.firstUserSetting.vibrationEnabled
                     )
-                    UserItem(
-                        modifier = Modifier
-                            .padding(top = 4.dp)
-                            .height(52.dp)
-                            .width(172.dp)
-                            .clip(RoundedCornerShape(92.129.dp))
-                            .clickable {
-                                if (navController.currentDestination != NavDestination("graph/${2}")) {
-                                    navController.navigate("graph/${2}")
-                                }
-                            },
-                        name = settings.secondUserSetting.name,
-                        color = settings.secondUserSetting.color,
-                        server = settings.secondUserSetting.deviceType.label,
-                        isAlertOn = settings.secondUserSetting.colorBlinkEnabled || settings.secondUserSetting.vibrationEnabled
-                    )
+                    if (settings.enableDualMode) {
+                        UserItem(
+                            modifier = Modifier
+                                .padding(top = 4.dp, start = 10.dp, end = 10.dp)
+                                .fillMaxWidth()
+                                .height(52.dp)
+                                .clip(RoundedCornerShape(92.129.dp))
+                                .clickable {
+                                    if (navController.currentDestination != NavDestination("graph/${2}")) {
+                                        navController.navigate("graph/${2}")
+                                    }
+                                },
+                            name = settings.secondUserSetting.name,
+                            color = settings.secondUserSetting.color,
+                            server = settings.secondUserSetting.deviceType.label,
+                            isAlertOn = settings.secondUserSetting.colorBlinkEnabled || settings.secondUserSetting.vibrationEnabled
+                        )
+                    }
                 }
             }
         }
     }
 }
 
+@Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
 @Composable
 fun HomePagePreview() {

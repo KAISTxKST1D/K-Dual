@@ -14,11 +14,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
@@ -27,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
+import com.kaist.k_canvas.DeviceType
+import com.kaist.k_canvas.GlucoseUnits
 import com.kaist.k_dual.R
 import com.kaist.k_dual.presentation.theme.KDualTheme
 import com.patrykandpatrick.vico.compose.axis.axisGuidelineComponent
@@ -36,7 +43,6 @@ import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.edges.rememberFadingEdges
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
-import com.patrykandpatrick.vico.compose.chart.scroll.rememberChartScrollState
 import com.patrykandpatrick.vico.compose.component.lineComponent
 import com.patrykandpatrick.vico.compose.style.currentChartStyle
 import com.patrykandpatrick.vico.core.axis.AxisPosition
@@ -47,8 +53,15 @@ import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.kaist.k_canvas.KCanvas
-import com.kaist.k_canvas.KColor
+import com.kaist.k_dual.model.mgdlToMmol
+import com.patrykandpatrick.vico.compose.chart.scroll.rememberChartScrollSpec
+import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
+import kotlinx.coroutines.delay
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import com.kaist.k_dual.presentation.theme.Colors
+import kotlinx.coroutines.isActive
 
 @Composable
 fun GraphPage(isFirst: Boolean) {
@@ -75,13 +88,30 @@ fun GraphPage(isFirst: Boolean) {
         val userSetting =
             if (isFirst) settings.firstUserSetting else settings.secondUserSetting
 
+        val currentHour = remember { mutableStateOf(0) }
+        val currentMinute = remember { mutableStateOf(0) }
+
+        LaunchedEffect(Unit) {
+            while (isActive) {
+                val date = Date()
+                currentHour.value = SimpleDateFormat("HH", Locale.getDefault()).format(date).toInt()
+                currentMinute.value =
+                    SimpleDateFormat("mm", Locale.getDefault()).format(date).toInt()
+                delay(1000)
+            }
+        }
+
         Canvas(
             modifier = Modifier.fillMaxSize()
         ) {
             drawIntoCanvas {
                 val canvas = it.nativeCanvas
-                // TODO. show real time
-                KCanvas.drawDigitalClock(canvas, 12, 33, robotoMedium)
+                KCanvas.drawDigitalClock(
+                    canvas,
+                    currentHour.value,
+                    currentMinute.value,
+                    robotoMedium
+                )
                 KCanvas.drawIconAndUserName(
                     canvas,
                     1,
@@ -89,17 +119,120 @@ fun GraphPage(isFirst: Boolean) {
                     userSetting.color,
                     robotoMedium
                 )
-                KCanvas.drawDiffArrowBox(canvas, context, 1, false, null, 4, robotoRegular)
-                KCanvas.drawBloodGlucose(canvas, 1, 144, robotoMedium)
+                var currentBloodGlucoseDifference: String = ""
+                if (isFirst) {
+                    currentBloodGlucoseDifference = UseBloodGlucose.firstUserDiff
+                } else {
+                    currentBloodGlucoseDifference = UseBloodGlucose.secondUserDiff
+                }
+                KCanvas.drawDiffArrowBox(
+                    canvas,
+                    context,
+                    1,
+                    false,
+                    null,
+                    currentBloodGlucoseDifference,
+                    settings.glucoseUnits,
+                    robotoRegular
+                )
+                var currentBloodGlucose: String = ""
+                if (isFirst) {
+                    currentBloodGlucose = UseBloodGlucose.firstUser
+                } else {
+                    currentBloodGlucose = UseBloodGlucose.secondUser
+                }
+                KCanvas.drawBloodGlucose(canvas, 1, currentBloodGlucose, settings.glucoseUnits, robotoMedium)
             }
         }
 
-        val chartEntryModel: ChartEntryModel =
-            entryModelOf(80, 100, 77, 90, 100, 90, 80, 100, 77, 90, 100, 90)
+        val configuration = LocalConfiguration.current
+        val screenWidthDp = configuration.screenWidthDp // Width in dp
+        var chartEntryModel: ChartEntryModel = entryModelOf(listOf())
+        // TODO. Initialize graph when url changed
+        if (isFirst) {
+            when (settings.firstUserSetting.deviceType) {
+                DeviceType.Nightscout -> {
+                    val graphData = UseBloodGlucose.firstUserGraphNightScoutData
+                    if (graphData.size == 36) {
+                        when (settings.glucoseUnits) {
+                            GlucoseUnits.mg_dL -> {
+                                val graphValues = graphData.takeLast(36).map { it.sgv }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
 
+                            GlucoseUnits.mmol_L -> {
+                                val graphValues = graphData.takeLast(36).map { mgdlToMmol (it.sgv) }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+                        }
+                    }
+                }
+
+                DeviceType.Dexcom -> {
+                    val graphData = UseBloodGlucose.firstUserGraphDexcomData
+                    if (graphData.size == 36) {
+                        when (settings.glucoseUnits) {
+                            GlucoseUnits.mg_dL -> {
+                                val graphValues = graphData.takeLast(36).map { it.mgdl }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+
+                            GlucoseUnits.mmol_L -> {
+                                val graphValues = graphData.takeLast(36).map { it.mmol }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            when (settings.secondUserSetting.deviceType) {
+                DeviceType.Nightscout -> {
+                    val graphData = UseBloodGlucose.secondUserGraphNightScoutData
+                    if (graphData.size == 36) {
+                        when (settings.glucoseUnits) {
+                            GlucoseUnits.mg_dL -> {
+                                val graphValues = graphData.takeLast(36).map { it.sgv }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+                            GlucoseUnits.mmol_L -> {
+                                val graphValues = graphData.takeLast(36).map { mgdlToMmol (it.sgv) }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+                        }
+                    }
+                }
+
+                DeviceType.Dexcom -> {
+                    val graphData = UseBloodGlucose.secondUserGraphDexcomData
+                    if (graphData.size == 36) {
+                        when (settings.glucoseUnits) {
+                            GlucoseUnits.mg_dL -> {
+                                val graphValues = graphData.takeLast(36).map { it.mgdl }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+
+                            GlucoseUnits.mmol_L -> {
+                                val graphValues = graphData.takeLast(36).map { it.mmol }
+                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        var miny = 0f
+        var maxy = 300f
+        if(settings.glucoseUnits==GlucoseUnits.mmol_L) {
+            maxy = 15f
+        }
         Chart(
             modifier = Modifier
-                .padding(bottom = 30.dp, start = 25.dp, end = 26.dp)
+                .padding(
+                    bottom = 30.dp,
+                    start = (screenWidthDp * 0.15).dp,
+                    end = (screenWidthDp * 0.15).dp
+                )
                 .fillMaxWidth()
                 .fillMaxHeight(0.45f)
                 .align(Alignment.BottomCenter),
@@ -113,13 +246,51 @@ fun GraphPage(isFirst: Boolean) {
                     )
                 },
                 axisValuesOverrider = AxisValuesOverrider.fixed(
-                    minY = 50f,
-                    maxY = 200f,
+                    minY = miny,
+                    maxY = maxy,
                 ),
                 spacing = 18.dp,
                 targetVerticalAxisPosition = AxisPosition.Vertical.End
             ),
             model = chartEntryModel,
+            fadingEdges = rememberFadingEdges(),
+            chartScrollSpec = rememberChartScrollSpec(
+                isScrollEnabled = false
+            )
+        )
+        var firstBox = "300"
+        var secondBox = "200"
+        var thirdBox = "100"
+        var fourthBox = "0"
+        if (settings.glucoseUnits == GlucoseUnits.mmol_L) {
+            firstBox = "15"
+            secondBox = "10"
+            thirdBox = "5"
+            fourthBox = "0"
+        }
+        // Fake chart to draw background grid
+        val fakeChartEntryModel: ChartEntryModel = entryModelOf(0, 0, 0, 0, 0, 0, 0, 0)
+        Chart(
+            modifier = Modifier
+                .padding(bottom = 30.dp, start = 26.dp, end = 26.dp)
+                .fillMaxWidth()
+                .fillMaxHeight(0.45f)
+                .align(Alignment.BottomCenter)
+                .clip(RoundedCornerShape(bottomStartPercent = 40, bottomEndPercent = 40)),
+            chart = lineChart(
+                currentChartStyle.lineChart.lines.map { defaultLines ->
+                    defaultLines.copy(
+                        lineBackgroundShader = null,
+                        lineColor = 0x00FFFFFF.toInt()
+                    )
+                },
+                axisValuesOverrider = AxisValuesOverrider.fixed(
+                    minY = miny,
+                    maxY = maxy,
+                ),
+                spacing = 18.dp,
+                targetVerticalAxisPosition = AxisPosition.Vertical.End
+            ),
             startAxis = rememberStartAxis(
                 label = rememberStartAxisLabel(),
                 axis = lineComponent(
@@ -131,7 +302,8 @@ fun GraphPage(isFirst: Boolean) {
                     thickness = 0.5.dp,
                     color = Color(0x33FFFFFF),
                 ),
-                tickLength = 0.dp
+                tickLength = 0.dp,
+                itemPlacer = AxisItemPlacer.Vertical.default(maxItemCount = 4)
             ),
             bottomAxis = rememberBottomAxis(
                 label = null,
@@ -141,8 +313,11 @@ fun GraphPage(isFirst: Boolean) {
                 ),
                 tickLength = 0.dp
             ),
+            model = fakeChartEntryModel,
             fadingEdges = rememberFadingEdges(),
-            chartScrollState = rememberChartScrollState()
+            chartScrollSpec = rememberChartScrollSpec(
+                isScrollEnabled = false
+            )
         )
         Column(
             modifier = Modifier
@@ -155,19 +330,19 @@ fun GraphPage(isFirst: Boolean) {
         ) {
             StartAxisLabelBox(
                 modifier = Modifier.padding(start = 0.dp),
-                startLabel = "200"
+                startLabel = firstBox
             )
             StartAxisLabelBox(
-                modifier = Modifier.padding(start = 3.dp),
-                startLabel = "150"
+                modifier = Modifier.padding(start = (screenWidthDp * 0.03).dp),
+                startLabel = secondBox
             )
             StartAxisLabelBox(
-                modifier = Modifier.padding(start = 12.dp),
-                startLabel = "100"
+                modifier = Modifier.padding(start = (screenWidthDp * 0.07).dp),
+                startLabel = thirdBox
             )
             StartAxisLabelBox(
-                modifier = Modifier.padding(start = 27.dp),
-                startLabel = "50"
+                modifier = Modifier.padding(start = (screenWidthDp * 0.15).dp),
+                startLabel = fourthBox
             )
         }
     }
@@ -199,6 +374,7 @@ fun rememberStartAxisLabel() = axisLabelComponent(
     verticalMargin = 4.5.dp
 )
 
+@Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
 @Composable
 fun GraphPagePreview() {

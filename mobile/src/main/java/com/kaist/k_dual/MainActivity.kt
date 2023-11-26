@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kaist.k_dual.component.OpenWatchAppDialog
 import com.kaist.k_dual.screen.AlertScreen
 import com.kaist.k_dual.screen.ColorScreen
@@ -28,7 +30,9 @@ import com.kaist.k_dual.screen.UserScreen
 import com.kaist.k_dual.ui.theme.KDualTheme
 import com.google.android.gms.wearable.Wearable
 import com.kaist.k_dual.model.ManageSetting
+import com.kaist.k_dual.screen.SplashScreen
 import findWearableNode
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     private val capabilityClient by lazy { Wearable.getCapabilityClient(this) }
@@ -38,34 +42,47 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             KDualTheme {
+                val backgroundColor = MaterialTheme.colorScheme.background
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
                         .safeContentPadding(),
-                    color = MaterialTheme.colorScheme.background
+                    color = backgroundColor
                 ) {
+                    val systemUiController = rememberSystemUiController()
+
+                    SideEffect {
+                        systemUiController.setStatusBarColor(
+                            color = backgroundColor
+                        )
+                    }
+
                     var isDialogOpen by remember { mutableStateOf(false) }
                     var isConnected by remember { mutableStateOf(false) }
                     var userClosed by remember { mutableStateOf(false) }
 
                     val context = LocalContext.current
+                    val navController = rememberNavController()
 
                     LaunchedEffect(Unit) {
+                        ManageSetting.initialize(
+                            context = context,
+                        )
+                        delay(1900)
                         findWearableNode(
                             capabilityClient = capabilityClient,
                             onSuccess = {
                                 isConnected = true
                                 userClosed = false
                                 isDialogOpen = false
-                                ManageSetting.initialize(
-                                    context = context,
+                                ManageSetting.saveSettings(
+                                    settings = ManageSetting.settings.copy(),
+                                    context = context
                                 )
                             },
                             onFailure = {
-                                if (!userClosed) {
-                                    isDialogOpen = true
-                                }
                                 isConnected = false
+                                isDialogOpen = true
                             }
                         )
                     }
@@ -79,26 +96,26 @@ class MainActivity : ComponentActivity() {
                         },
                     )
 
-                    val navController = rememberNavController()
-
+                    // TODO. Show animation when success
                     val onSendMessageFailed = {
+                        isConnected = false
                         userClosed = false
                         isDialogOpen = true
                         findWearableNode(
                             capabilityClient = capabilityClient,
                             onSuccess = {
                                 isConnected = true
-                                userClosed = false
-                                isDialogOpen = false
-                                ManageSetting.initialize(
-                                    context = context,
+                                ManageSetting.saveSettings(
+                                    settings = ManageSetting.settings.copy(),
+                                    context = context
                                 )
+                                isDialogOpen = false
                             },
+                            isFirstTrial = false,
                             onFailure = {
                                 if (!userClosed) {
                                     isDialogOpen = true
                                 }
-                                isConnected = false
                             }
                         )
                     }
@@ -106,8 +123,14 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         modifier = Modifier,
                         navController = navController,
-                        startDestination = "home"
+                        startDestination = "splash"
                     ) {
+                        composable("splash") {
+                            SplashScreen(
+                                navController = navController,
+                            )
+                        }
+
                         composable("home") {
                             HomeScreen(
                                 navController = navController,
@@ -163,11 +186,8 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     }
-
-
                 }
             }
         }
     }
 }
-
