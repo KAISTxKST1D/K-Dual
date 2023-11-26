@@ -27,7 +27,11 @@ import kotlinx.coroutines.delay
 fun SplashScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         delay(2000)
-        navController.navigate("home")
+        navController.navigate("home") {
+            popUpTo(0)
+            // Avoid multiple copies of the same destination when reselecting the same item
+            launchSingleTop = true
+        }
     }
 
 
