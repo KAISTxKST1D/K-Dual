@@ -100,7 +100,6 @@ class MainActivity : ComponentActivity() {
                         }
                     )
 
-                    // TODO. Show animation when success
                     val onSendMessageFailed = {
                         isConnected = false
                         userClosed = false
