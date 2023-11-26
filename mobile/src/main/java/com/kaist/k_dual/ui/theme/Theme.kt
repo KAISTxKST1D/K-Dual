@@ -30,7 +30,6 @@ fun KDualTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
 //    dynamicColor: Boolean = true,
-    isKorean: Boolean = true,
     content: @Composable () -> Unit
 ) {
 //    val colorScheme = when {
@@ -51,11 +50,10 @@ fun KDualTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
-    Log.d("Theme", "isKorean $isKorean")
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = if (isKorean) KoreanTypography else EnglishTypography,
+        typography = Typography,
         content = content,
     )
 }

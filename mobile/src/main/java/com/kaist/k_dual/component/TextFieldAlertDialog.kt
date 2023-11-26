@@ -121,7 +121,8 @@ fun TextFieldAlertDialog(
                             keyboardOptions = outlinedInputParameters.keyboardOptions,
                             isError = textValue.isNotEmpty() && !outlinedInputParameters.validation(
                                 textValue
-                            )
+                            ),
+                            maxLines = 1,
                         )
                     }
                 },
