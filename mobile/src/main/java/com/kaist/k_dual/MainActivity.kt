@@ -95,6 +95,9 @@ class MainActivity : ComponentActivity() {
                             userClosed = true
                             isDialogOpen = false
                         },
+                        onAnimationFinish = {
+                            isConnected = false
+                        }
                     )
 
                     // TODO. Show animation when success

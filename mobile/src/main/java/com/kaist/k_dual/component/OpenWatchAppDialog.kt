@@ -44,6 +44,7 @@ fun OpenWatchAppDialog(
     isOpen: Boolean,
     isConnected: Boolean,
     onDismiss: () -> Unit,
+    onAnimationFinish: () -> Unit,
 ) {
     val customColorScheme = lightColorScheme(
         surface = Color(0xFFFCECEC)
@@ -62,6 +63,8 @@ fun OpenWatchAppDialog(
                 delay(16L)
             }
             animationFinished = true
+            onAnimationFinish()
+            animationFinished = false
         }
     }
 
@@ -177,6 +180,7 @@ fun OpenWatchAppDialogPreview() {
             isOpen = true,
             isConnected = false,
             onDismiss = { /* Preview doesn't handle interactions */ },
+            onAnimationFinish = {/* Preview doesn't handle interactions */ },
         )
     }
 }

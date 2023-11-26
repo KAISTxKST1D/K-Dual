@@ -50,7 +50,9 @@ fun ColorScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
     ) {
         BackButtonTitleRow(
             navController = navController,
-            title = (if (isFirst) stringResource(R.string.first_user) else stringResource(R.string.second_user)) + stringResource(R.string.color2)
+            title = (if (isFirst) stringResource(R.string.first_user) else stringResource(R.string.second_user)) + stringResource(
+                R.string.color2
+            )
         )
         WatchFacePreview(
             isFirstHighLight = isFirst,

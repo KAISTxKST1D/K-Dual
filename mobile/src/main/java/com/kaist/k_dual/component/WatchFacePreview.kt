@@ -69,7 +69,13 @@ fun WatchFacePreview(
                         ManageSetting.settings.glucoseUnits,
                         robotoRegular
                     )
-                    KCanvas.drawBloodGlucose(canvas, 1, "000", ManageSetting.settings.glucoseUnits, robotoMedium)
+                    KCanvas.drawBloodGlucose(
+                        canvas,
+                        1,
+                        "000",
+                        ManageSetting.settings.glucoseUnits,
+                        robotoMedium
+                    )
                     KCanvas.drawBackgroundBox(canvas, "down", isSecondHighLight, secondUserColor)
                     KCanvas.drawIconAndUserName(
                         canvas,
@@ -88,7 +94,13 @@ fun WatchFacePreview(
                         ManageSetting.settings.glucoseUnits,
                         robotoRegular
                     )
-                    KCanvas.drawBloodGlucose(canvas, 2, "000", ManageSetting.settings.glucoseUnits, robotoMedium)
+                    KCanvas.drawBloodGlucose(
+                        canvas,
+                        2,
+                        "000",
+                        ManageSetting.settings.glucoseUnits,
+                        robotoMedium
+                    )
                 } else {
                     KCanvas.drawBackgroundBox(canvas, null, isFirstHighLight, firstUserColor)
                     KCanvas.drawIconAndUserName(
@@ -98,7 +110,13 @@ fun WatchFacePreview(
                         firstUserColor,
                         robotoMedium
                     )
-                    KCanvas.drawBloodGlucose(canvas, null, "000", ManageSetting.settings.glucoseUnits, robotoMedium)
+                    KCanvas.drawBloodGlucose(
+                        canvas,
+                        null,
+                        "000",
+                        ManageSetting.settings.glucoseUnits,
+                        robotoMedium
+                    )
                     KCanvas.drawDiffArrowBox(
                         canvas,
                         context,

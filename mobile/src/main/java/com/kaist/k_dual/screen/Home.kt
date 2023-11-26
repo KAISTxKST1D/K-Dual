@@ -65,7 +65,7 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
                 )
             }
             Text(
-                text = stringResource(R.string.connected_devices),
+                text = stringResource(R.string.user_mode),
                 style = MaterialTheme.typography.labelLarge,
                 color = Color(0xFF454545),
                 modifier = Modifier.padding(horizontal = 24.dp)
