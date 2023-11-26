@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kaist.k_dual.ui.theme.Background
 import com.kaist.k_dual.ui.theme.RedUISolid
 import com.kaist.k_dual.ui.theme.KDualTheme
 import java.lang.Integer.min
@@ -37,7 +38,7 @@ fun TextFieldAlertDialog(
     var textValue by remember { mutableStateOf("") }
 
     val customColorScheme = lightColorScheme(
-        surface = Color(0xFFFCECEC)
+        surface = Background
     )
 
     val focusRequester = remember { FocusRequester() }

@@ -30,7 +30,9 @@ import com.kaist.k_dual.screen.UserScreen
 import com.kaist.k_dual.ui.theme.KDualTheme
 import com.google.android.gms.wearable.Wearable
 import com.kaist.k_dual.model.ManageSetting
+import com.kaist.k_dual.screen.SplashScreen
 import findWearableNode
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     private val capabilityClient by lazy { Wearable.getCapabilityClient(this) }
@@ -60,23 +62,27 @@ class MainActivity : ComponentActivity() {
                     var userClosed by remember { mutableStateOf(false) }
 
                     val context = LocalContext.current
+                    val navController = rememberNavController()
 
                     LaunchedEffect(Unit) {
+                        ManageSetting.initialize(
+                            context = context,
+                        )
+                        delay(1900)
                         findWearableNode(
                             capabilityClient = capabilityClient,
                             onSuccess = {
                                 isConnected = true
                                 userClosed = false
                                 isDialogOpen = false
-                                ManageSetting.initialize(
-                                    context = context,
+                                ManageSetting.saveSettings(
+                                    settings = ManageSetting.settings.copy(),
+                                    context = context
                                 )
                             },
                             onFailure = {
-                                if (!userClosed) {
-                                    isDialogOpen = true
-                                }
                                 isConnected = false
+                                isDialogOpen = true
                             }
                         )
                     }
@@ -90,26 +96,26 @@ class MainActivity : ComponentActivity() {
                         },
                     )
 
-                    val navController = rememberNavController()
-
+                    // TODO. Show animation when success
                     val onSendMessageFailed = {
+                        isConnected = false
                         userClosed = false
                         isDialogOpen = true
                         findWearableNode(
                             capabilityClient = capabilityClient,
                             onSuccess = {
                                 isConnected = true
-                                userClosed = false
-                                isDialogOpen = false
-                                ManageSetting.initialize(
-                                    context = context,
+                                ManageSetting.saveSettings(
+                                    settings = ManageSetting.settings.copy(),
+                                    context = context
                                 )
+                                isDialogOpen = false
                             },
+                            isFirstTrial = false,
                             onFailure = {
                                 if (!userClosed) {
                                     isDialogOpen = true
                                 }
-                                isConnected = false
                             }
                         )
                     }
@@ -117,8 +123,14 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         modifier = Modifier,
                         navController = navController,
-                        startDestination = "home"
+                        startDestination = "splash"
                     ) {
+                        composable("splash") {
+                            SplashScreen(
+                                navController = navController,
+                            )
+                        }
+
                         composable("home") {
                             HomeScreen(
                                 navController = navController,
@@ -174,11 +186,8 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     }
-
-
                 }
             }
         }
     }
 }
-

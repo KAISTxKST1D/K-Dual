@@ -15,26 +15,17 @@ import com.kaist.k_canvas.Setting
 import sendMessageToWearable
 
 object ManageSetting {
+    var isLoading by mutableStateOf(true)
     private lateinit var sharedPreferences: SharedPreferences
     private val gson = Gson()
     var settings by mutableStateOf(DefaultSetting)
 
     fun initialize(
         context: Context,
-        onSendMessageFailed: () -> Unit = {},
-        onSendMessageSuccess: () -> Unit = {}
     ) {
         sharedPreferences = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE)
         getSettings()
-        val settingsJson = gson.toJson(settings)
-
-        sendMessageToWearable(
-            context = context,
-            path = MESSAGE_PATH,
-            data = settingsJson.toByteArray(),
-            onFailure = onSendMessageFailed,
-            onSuccess = onSendMessageSuccess
-        )
+        isLoading = false
     }
 
     fun saveSettings(
