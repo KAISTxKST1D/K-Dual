@@ -56,7 +56,7 @@ fun OpenWatchAppDialog(
     var animationFinished by remember { mutableStateOf(false) }
 
     LaunchedEffect(isOpen, isConnected) {
-        if (isConnected && !isOpen) {
+        if (!isOpen && isConnected) {
             while (progress < 1f) {
                 delay(16L)
             }
