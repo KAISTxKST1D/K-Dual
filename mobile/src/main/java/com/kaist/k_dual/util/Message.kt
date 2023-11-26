@@ -15,11 +15,25 @@ private val executorService = Executors.newSingleThreadScheduledExecutor()
 var connectedNodeID: String? = null
 
 fun findWearableNode(
+    context: Context,
     capabilityClient: CapabilityClient,
     onSuccess: () -> Unit,
     onFailure: () -> Unit,
     isFirstTrial: Boolean = true,
 ) {
+    val handleFailure = {
+        if (isFirstTrial) {
+            onFailure()
+        }
+        Log.e("phoneApp", "Wearable node not found")
+        scheduleRetry(
+            capabilityClient = capabilityClient,
+            onSuccess = onSuccess,
+            onFailure = onFailure,
+            context = context,
+        )
+    }
+
     CoroutineScope(Dispatchers.IO).launch {
         try {
             val nodes = Tasks.await(
@@ -33,27 +47,23 @@ fun findWearableNode(
 
             if (targetNodeId != null) {
                 connectedNodeID = targetNodeId
-                if (!isFirstTrial) {
-                    onSuccess()
-                }
-                Log.d("phoneApp", "Wearable node connected: $connectedNodeID")
-            } else {
-                onFailure()
-                Log.e("phoneApp", "Wearable node not found")
-                scheduleRetry(
-                    capabilityClient = capabilityClient,
-                    onSuccess = onSuccess,
-                    onFailure = onFailure
+                sendMessageToWearable(
+                    context = context,
+                    path = "",
+                    data = null,
+                    onFailure = { handleFailure() },
+                    onSuccess = {
+                        if (!isFirstTrial) {
+                            onSuccess()
+                        }
+                        Log.d("phoneApp", "Wearable node connected: $connectedNodeID")
+                    },
                 )
+            } else {
+                handleFailure()
             }
-        } catch (e: Exception) {
-            onFailure()
-            Log.e("phoneApp", "Error finding wearable node: ${e.message}")
-            scheduleRetry(
-                capabilityClient = capabilityClient,
-                onSuccess = onSuccess,
-                onFailure = onFailure
-            )
+        } catch (_: Exception) {
+            handleFailure()
         }
     }
 }
@@ -62,13 +72,15 @@ private fun scheduleRetry(
     capabilityClient: CapabilityClient,
     onSuccess: () -> Unit,
     onFailure: () -> Unit,
+    context: Context,
 ) {
     executorService.schedule({
         findWearableNode(
             capabilityClient = capabilityClient,
             onSuccess = onSuccess,
             onFailure = onFailure,
-            isFirstTrial = false
+            isFirstTrial = false,
+            context = context
         )
     }, RETRY_DELAY_SECONDS, TimeUnit.SECONDS)
 }

@@ -81,9 +81,10 @@ class MainActivity : ComponentActivity() {
                                 )
                             },
                             onFailure = {
-                                isConnected = false
                                 isDialogOpen = true
-                            }
+                                isConnected = false
+                            },
+                            context = context
                         )
                     }
 
@@ -112,11 +113,8 @@ class MainActivity : ComponentActivity() {
                                 isDialogOpen = false
                             },
                             isFirstTrial = false,
-                            onFailure = {
-                                if (!userClosed) {
-                                    isDialogOpen = true
-                                }
-                            }
+                            onFailure = {},
+                            context = context
                         )
                     }
 
