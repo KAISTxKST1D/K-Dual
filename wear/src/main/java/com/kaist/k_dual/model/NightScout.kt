@@ -52,7 +52,7 @@ class NightScout {
                         call: Call<List<nightScoutData>>,
                         response: Response<List<nightScoutData>>
                     ) {
-                        body = response.body() ?: throw Exception("Response body is null")
+                        body = response.body() ?: return
                         done = true
                     }
 
