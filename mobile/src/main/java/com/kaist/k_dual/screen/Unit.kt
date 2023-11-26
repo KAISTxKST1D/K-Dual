@@ -40,7 +40,10 @@ fun UnitScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
-        BackButtonTitleRow(navController = navController, title = "Blood Glucose Units")
+        BackButtonTitleRow(
+            navController = navController,
+            title = stringResource(R.string.blood_glucose_units)
+        )
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp),

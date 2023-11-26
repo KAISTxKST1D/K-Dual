@@ -4,7 +4,7 @@
 
     <!-- alert.kt-->
     <string name="alert2"> - Alert</string>
-    <string name="alert_setting">Alert Setting222</string>
+    <string name="alert_setting">Alert Setting</string>
     <string name="vibration">Vibration</string>
     <string name="color_blink">Color Blink</string>
     <string name="value_setting">Value Setting</string>
