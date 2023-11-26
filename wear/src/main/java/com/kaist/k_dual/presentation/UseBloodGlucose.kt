@@ -1,19 +1,9 @@
 package com.kaist.k_dual.presentation
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import com.google.gson.Gson
-import com.google.gson.JsonParseException
-import com.google.gson.JsonSyntaxException
 import com.kaist.k_canvas.DeviceType
 import com.kaist.k_canvas.GlucoseUnits
 import com.kaist.k_canvas.PREFERENCES_FILE_KEY
-import com.kaist.k_canvas.SETTINGS_KEY
-import com.kaist.k_canvas.Setting
 import com.kaist.k_dual.model.ConfigurationProps
 import com.kaist.k_dual.model.DexcomClient
 import com.kaist.k_dual.model.DexcomServer
@@ -43,76 +33,62 @@ object UseBloodGlucose {
     var firstUserGraphDexcomData: List<GlucoseEntry> = listOf(GlucoseEntry(0, 0.0, Trend.FLAT, 0))
     var secondUserGraphDexcomData: List<GlucoseEntry> = listOf(GlucoseEntry(0, 0.0, Trend.FLAT, 0))
 
-    @OptIn(DelicateCoroutinesApi::class)
     fun updateBloodGlucose(context: Context) {
-        val latestGlucoseProps: LatestGlucoseProps = LatestGlucoseProps(180, 36)
+        val latestGlucoseProps = LatestGlucoseProps(180, 36)
 
         val sharedPref = context.getSharedPreferences(
             PREFERENCES_FILE_KEY,
             Context.MODE_PRIVATE
         )
-        val gson = Gson()
-        val jsonString = sharedPref.getString(SETTINGS_KEY, null)
-        settings = if (jsonString != null) {
-            try {
-                gson.fromJson(jsonString, Setting::class.java)
-            } catch (e: JsonSyntaxException) {
-                null
-            } catch (e: JsonParseException) {
-                null
-            }
-        } else {
-            null
-        }
 
-        if (settings == null) return
+        val settings = UseSetting.settings ?: return
 
-        // TODO. Avoid !! operator
-        val glucoseUnit = settings!!.glucoseUnits
-        if (settings!!.enableDualMode) {
-            val firstUserDevice: DeviceType = settings!!.firstUserSetting.deviceType
-            val secondUserDevice: DeviceType = settings!!.secondUserSetting.deviceType
+        val glucoseUnit = settings.glucoseUnits
+        if (settings.enableDualMode) {
+            val firstUserDevice: DeviceType = settings.firstUserSetting.deviceType
+            val secondUserDevice: DeviceType = settings.secondUserSetting.deviceType
 
             when (firstUserDevice) {
                 DeviceType.Nightscout -> {
-                    var isFirst = true
-                    getNightScoutData(isFirst, glucoseUnit)
+                    getNightScoutData(isFirst = true, glucoseUnit = glucoseUnit)
                 }
 
                 DeviceType.Dexcom -> {
-                    var isFirst = true
-                    getDexcomData(isFirst, latestGlucoseProps, glucoseUnit)
+                    getDexcomData(
+                        isFirst = true,
+                        latestGlucoseProps = latestGlucoseProps,
+                        glucoseUnit = glucoseUnit
+                    )
                 }
             }
             when (secondUserDevice) {
                 DeviceType.Nightscout -> {
-                    var isFirst = false
-                    getNightScoutData(isFirst, glucoseUnit)
+                    getNightScoutData(isFirst = false, glucoseUnit = glucoseUnit)
                 }
 
                 DeviceType.Dexcom -> {
-                    var isFirst = false
-                    getDexcomData(isFirst, latestGlucoseProps, glucoseUnit)
+                    getDexcomData(isFirst = false, latestGlucoseProps, glucoseUnit = glucoseUnit)
                 }
             }
         } else {
-            val firstUserDevice: DeviceType = settings!!.firstUserSetting.deviceType
-
-            when (firstUserDevice) {
+            when (settings.firstUserSetting.deviceType) {
                 DeviceType.Nightscout -> {
-                    var isFirst = true
-                    getNightScoutData(isFirst, glucoseUnit)
+                    getNightScoutData(isFirst = true, glucoseUnit = glucoseUnit)
                 }
 
                 DeviceType.Dexcom -> {
-                    var isFirst = true
-                    getDexcomData(isFirst, latestGlucoseProps, glucoseUnit)
+                    getDexcomData(
+                        isFirst = true,
+                        latestGlucoseProps = latestGlucoseProps,
+                        glucoseUnit = glucoseUnit
+                    )
                 }
             }
         }
     }
 
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun getNightScoutData(isFirst: Boolean, glucoseUnit: GlucoseUnits) {
         if (isFirst) {
             var firstUserNightScoutUrl = settings!!.firstUserSetting.nightscoutUrl
@@ -140,7 +116,7 @@ object UseBloodGlucose {
                             val secondRounded = round(secondGlucoseDataMmol * 10) / 10
                             firstUser = rounded.toString()
                             firstUserDiff =
-                                (round((rounded - secondRounded)*10)/10).toString()
+                                (round((rounded - secondRounded) * 10) / 10).toString()
                         }
                     }
                 }
@@ -170,7 +146,7 @@ object UseBloodGlucose {
                             val secondRounded = round(secondGlucoseDataMmol * 10) / 10
                             secondUser = rounded.toString()
                             secondUserDiff =
-                                (round((rounded - secondRounded)*10)/10).toString()
+                                (round((rounded - secondRounded) * 10) / 10).toString()
                         }
                     }
                 }
@@ -178,20 +154,22 @@ object UseBloodGlucose {
         }
     }
 
-    fun getDexcomData(
+    private fun getDexcomData(
         isFirst: Boolean,
         latestGlucoseProps: LatestGlucoseProps,
         glucoseUnit: GlucoseUnits
     ) {
+        val settings = UseSetting.settings ?: return
+
         if (isFirst) {
-            val firstUserDexcomId = settings!!.firstUserSetting.dexcomId
-            val firstUserDexcomPassword = settings!!.firstUserSetting.dexcomPassword
-            val firstUserConfigurationProps: ConfigurationProps = ConfigurationProps(
+            val firstUserDexcomId = settings.firstUserSetting.dexcomId
+            val firstUserDexcomPassword = settings.firstUserSetting.dexcomPassword
+            val firstUserConfigurationProps = ConfigurationProps(
                 firstUserDexcomId,
                 firstUserDexcomPassword,
                 DexcomServer.EU
             )
-            val firstUserDexcomClient: DexcomClient =
+            val firstUserDexcomClient =
                 DexcomClient(firstUserConfigurationProps)
             if (firstUserDexcomId != "" && firstUserDexcomPassword != "") {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -213,15 +191,15 @@ object UseBloodGlucose {
                             val secondRounded = round(secondGlucoseData.mmol * 10) / 10
                             firstUser = rounded.toString()
                             firstUserDiff =
-                                (round((rounded - secondRounded)*10)/10).toString()
+                                (round((rounded - secondRounded) * 10) / 10).toString()
                         }
                     }
                 }
             }
         } else {
-            val secondUserDexcomId = settings!!.secondUserSetting.dexcomId
-            val secondUserDexcomPassword = settings!!.secondUserSetting.dexcomPassword
-            val secondUserConfigurationProps: ConfigurationProps = ConfigurationProps(
+            val secondUserDexcomId = settings.secondUserSetting.dexcomId
+            val secondUserDexcomPassword = settings.secondUserSetting.dexcomPassword
+            val secondUserConfigurationProps = ConfigurationProps(
                 secondUserDexcomId,
                 secondUserDexcomPassword,
                 DexcomServer.EU
@@ -248,7 +226,7 @@ object UseBloodGlucose {
                             val secondRounded = round(secondGlucoseData.mmol * 10) / 10
                             secondUser = rounded.toString()
                             secondUserDiff =
-                                (round((rounded - secondRounded)*10)/10).toString()
+                                (round((rounded - secondRounded) * 10) / 10).toString()
                         }
                     }
                 }
@@ -257,7 +235,7 @@ object UseBloodGlucose {
     }
 
 
-    fun mgdlToMmol(mgdl: Int): Double {
+    private fun mgdlToMmol(mgdl: Int): Double {
         return (mgdl / 18.0).toBigDecimal().setScale(2, RoundingMode.HALF_EVEN).toDouble()
     }
 }

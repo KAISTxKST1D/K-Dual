@@ -119,11 +119,10 @@ fun GraphPage(isFirst: Boolean) {
                     userSetting.color,
                     robotoMedium
                 )
-                var currentBloodGlucoseDifference: String = ""
-                if (isFirst) {
-                    currentBloodGlucoseDifference = UseBloodGlucose.firstUserDiff
+                val currentBloodGlucoseDifference = if (!isFirst) {
+                    UseBloodGlucose.secondUserDiff
                 } else {
-                    currentBloodGlucoseDifference = UseBloodGlucose.secondUserDiff
+                    UseBloodGlucose.firstUserDiff
                 }
                 KCanvas.drawDiffArrowBox(
                     canvas,
@@ -135,13 +134,18 @@ fun GraphPage(isFirst: Boolean) {
                     settings.glucoseUnits,
                     robotoRegular
                 )
-                var currentBloodGlucose: String = ""
-                if (isFirst) {
-                    currentBloodGlucose = UseBloodGlucose.firstUser
+                val currentBloodGlucose = if (isFirst) {
+                    UseBloodGlucose.firstUser
                 } else {
-                    currentBloodGlucose = UseBloodGlucose.secondUser
+                    UseBloodGlucose.secondUser
                 }
-                KCanvas.drawBloodGlucose(canvas, 1, currentBloodGlucose, settings.glucoseUnits, robotoMedium)
+                KCanvas.drawBloodGlucose(
+                    canvas,
+                    1,
+                    currentBloodGlucose,
+                    settings.glucoseUnits,
+                    robotoMedium
+                )
             }
         }
 
@@ -154,15 +158,15 @@ fun GraphPage(isFirst: Boolean) {
                 DeviceType.Nightscout -> {
                     val graphData = UseBloodGlucose.firstUserGraphNightScoutData
                     if (graphData.size == 36) {
-                        when (settings.glucoseUnits) {
+                        chartEntryModel = when (settings.glucoseUnits) {
                             GlucoseUnits.mg_dL -> {
                                 val graphValues = graphData.takeLast(36).map { it.sgv }
-                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                                entryModelOf(*graphValues.toTypedArray())
                             }
 
                             GlucoseUnits.mmol_L -> {
-                                val graphValues = graphData.takeLast(36).map { mgdlToMmol (it.sgv) }
-                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                                val graphValues = graphData.takeLast(36).map { mgdlToMmol(it.sgv) }
+                                entryModelOf(*graphValues.toTypedArray())
                             }
                         }
                     }
@@ -171,15 +175,15 @@ fun GraphPage(isFirst: Boolean) {
                 DeviceType.Dexcom -> {
                     val graphData = UseBloodGlucose.firstUserGraphDexcomData
                     if (graphData.size == 36) {
-                        when (settings.glucoseUnits) {
+                        chartEntryModel = when (settings.glucoseUnits) {
                             GlucoseUnits.mg_dL -> {
                                 val graphValues = graphData.takeLast(36).map { it.mgdl }
-                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                                entryModelOf(*graphValues.toTypedArray())
                             }
 
                             GlucoseUnits.mmol_L -> {
                                 val graphValues = graphData.takeLast(36).map { it.mmol }
-                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                                entryModelOf(*graphValues.toTypedArray())
                             }
                         }
                     }
@@ -190,14 +194,15 @@ fun GraphPage(isFirst: Boolean) {
                 DeviceType.Nightscout -> {
                     val graphData = UseBloodGlucose.secondUserGraphNightScoutData
                     if (graphData.size == 36) {
-                        when (settings.glucoseUnits) {
+                        chartEntryModel = when (settings.glucoseUnits) {
                             GlucoseUnits.mg_dL -> {
                                 val graphValues = graphData.takeLast(36).map { it.sgv }
-                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                                entryModelOf(*graphValues.toTypedArray())
                             }
+
                             GlucoseUnits.mmol_L -> {
-                                val graphValues = graphData.takeLast(36).map { mgdlToMmol (it.sgv) }
-                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                                val graphValues = graphData.takeLast(36).map { mgdlToMmol(it.sgv) }
+                                entryModelOf(*graphValues.toTypedArray())
                             }
                         }
                     }
@@ -206,24 +211,24 @@ fun GraphPage(isFirst: Boolean) {
                 DeviceType.Dexcom -> {
                     val graphData = UseBloodGlucose.secondUserGraphDexcomData
                     if (graphData.size == 36) {
-                        when (settings.glucoseUnits) {
+                        chartEntryModel = when (settings.glucoseUnits) {
                             GlucoseUnits.mg_dL -> {
                                 val graphValues = graphData.takeLast(36).map { it.mgdl }
-                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                                entryModelOf(*graphValues.toTypedArray())
                             }
 
                             GlucoseUnits.mmol_L -> {
                                 val graphValues = graphData.takeLast(36).map { it.mmol }
-                                chartEntryModel = entryModelOf(*graphValues.toTypedArray())
+                                entryModelOf(*graphValues.toTypedArray())
                             }
                         }
                     }
                 }
             }
         }
-        var miny = 0f
+        val miny = 0f
         var maxy = 300f
-        if(settings.glucoseUnits==GlucoseUnits.mmol_L) {
+        if (settings.glucoseUnits == GlucoseUnits.mmol_L) {
             maxy = 15f
         }
         Chart(
