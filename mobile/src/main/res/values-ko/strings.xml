@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="true">K-Dual</string>
+
+    <!-- alert.kt-->
+    <string name="alert2"> - 알림</string>
+    <string name="alert_setting">알림 설정</string>
+    <string name="vibration">진동</string>
+    <string name="color_blink">색상 깜빡임</string>
+    <string name="value_setting">범위 설정</string>
+    <string name="low_value">하한값</string>
+    <string name="high_value">상한값</string>
+    <string name="enter_the_low_value">하한값보다 낮은 혈당값을 가지면 알림이 제공됩니다. 하한값을 입력해 주세요.</string>
+    <string name="enter_the_high_value">상한값보다 높은 혈당값을 가지면 알림이 제공됩니다. 상한값을 입력해 주세요.</string>
+    <string name="enter_the_glucose_value">혈당값을 입력해 주세요</string>
+
+    <!-- Color.kt-->
+    <string name="color">색상</string>
+    <string name="color2"> - 색상</string>
+
+    <!-- Home.kt-->
+    <string name="connected_devices">사용자 모드</string>
+    <string name="enabled_dual_mode">듀얼 모드</string>
+    <string name="first_user">사용자 1</string>
+    <string name="second_user">사용자 2</string>
+    <string name="setting">설정</string>
+    <string name="blood_glucose_units">혈당 단위</string>
+
+    <!-- Unit.kt-->
+    <string name="units">단위</string>
+
+    <!-- User.kt-->
+    <string name="general_setting">기본 설정</string>
+    <string name="name">이름</string>
+    <string name="enter_the_name"> "사용자 1의 이름을 입력해 주세요.\n" "(글자수는 최소 0글자, 최대 8글자로 제한됩니다.)"</string>
+    <string name="enter_the_name2"> "사용자 2의 이름을 입력해 주세요.\n" "(글자수는 최소 0글자, 최대 8글자로 제한됩니다.)"</string>
+    <string name="enter_name">이름 입력</string>
+    <string name="alert">알림</string>
+    <string name="device_type">장치 종류</string>
+    <string name="enter_the_website_link">사용자 1의 혈당 데이터를 가져오기 위하여 Nightscout URL을 입력해 주세요.</string>
+    <string name="enter_the_website_link2">사용자 2의 혈당 데이터를 가져오기 위하여 Nightscout URL을 입력해 주세요.</string>
+    <string name="enter_or_paste_url">입력 또는 붙여넣기</string>
+    <string name="url">URL</string>
+    <string name="nightscout_address">Nightscout 주소</string>
+    <string name="dexcom_account">Dexcom 계정</string>
+    <string name="enter_the_dexcom_id">사용자 1의 혈당 데이터를 가져오기 위하여 Dexcom 아이디와 비밀번호를 입력해 주세요.</string>
+    <string name="enter_the_dexcom_id2">사용자 2의 혈당 데이터를 가져오기 위하여 Dexcom 아이디와 비밀번호를 입력해 주세요.</string>
+    <string name="ex_user1">예. user123</string>
+    <string name="id">아이디</string>
+    <string name="ex_user2">예. 12345678</string>
+    <string name="password">비밀번호</string>
+
+    <!-- OpenWatchAppDialog.kt-->
+    <string name="connect_your_galaxy_watch">갤럭시 워치를 연결해 주세요.</string>
+    <string name="ensure_your_galaxy_watch">갤럭시 워치를 디바이스와 연결해야 K-Dual 앱을 세팅할 수 있습니다. 연결 상태를 확인해 주세요. </string>
+    <string name="connection_status">연결 상태</string>
+
+    <!-- TextFieldAlertDialog.kt-->
+    <string name="done">확인</string>
+    <string name="cancel">취소</string>
+
+
+</resources>

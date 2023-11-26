@@ -22,11 +22,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.kaist.k_dual.R
 import com.kaist.k_dual.component.BackButtonTitleRow
 import com.kaist.k_dual.component.Divider
 import com.kaist.k_dual.component.MultipleRowWhiteBox
@@ -53,7 +55,7 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
     ) {
         BackButtonTitleRow(
             navController = navController,
-            title = (if (isFirst) "First User" else "Second User") + " - Alert"
+            title = (if (isFirst) stringResource(R.string.first_user) else stringResource(R.string.second_user)) + stringResource(R.string.alert2)
         )
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -64,7 +66,7 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "Alert Setting",
+                    text = stringResource(R.string.alert_setting),
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(horizontal = 24.dp)
                 )
@@ -117,7 +119,7 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = "Vibration",
+                            text = stringResource(R.string.vibration),
                             style = MaterialTheme.typography.bodyLarge,
                         )
                         Toggle(
@@ -135,7 +137,7 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = "Color Blink",
+                            text = stringResource(R.string.color_blink),
                             style = MaterialTheme.typography.bodyLarge,
                         )
                         Toggle(
@@ -150,7 +152,7 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "Value Setting",
+                    text = stringResource(R.string.value_setting),
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(horizontal = 24.dp)
                 )
@@ -203,7 +205,7 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Low Value",
+                            text = stringResource(R.string.low_value),
                             style = MaterialTheme.typography.bodyLarge,
 
                             )
@@ -222,12 +224,12 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                                 isLowValueDialogOpen = false
                             },
                             onDismiss = { isLowValueDialogOpen = false },
-                            title = "Low Value",
-                            description = "Enter the low value of blood glucose to receive vibration alert.",
+                            title = stringResource(R.string.low_value),
+                            description = stringResource(R.string.enter_the_low_value),
                             outlinedInputParameters = OutlinedInputParameters(
-                                placeholder = "Enter the glucose value",
+                                placeholder = stringResource(R.string.enter_the_glucose_value),
                                 suffix = ManageSetting.settings.glucoseUnits.label,
-                                label = "Low Value",
+                                label = stringResource(R.string.low_value),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                 validation = {
                                     try {
@@ -250,7 +252,7 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "High Value",
+                            text = stringResource(R.string.high_value),
                             style = MaterialTheme.typography.bodyLarge,
                         )
                         Text(

@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -27,6 +28,7 @@ import com.kaist.k_dual.component.BackButtonTitleRow
 import com.kaist.k_dual.component.Divider
 import com.kaist.k_dual.component.MultipleRowWhiteBox
 import com.kaist.k_canvas.GlucoseUnits
+import com.kaist.k_dual.R
 import com.kaist.k_dual.model.ManageSetting
 import com.kaist.k_dual.ui.theme.KDualTheme
 
@@ -38,14 +40,17 @@ fun UnitScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
-        BackButtonTitleRow(navController = navController, title = "Blood Glucose Units")
+        BackButtonTitleRow(
+            navController = navController,
+            title = stringResource(R.string.blood_glucose_units)
+        )
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "Units",
+                text = stringResource(R.string.units),
                 style = MaterialTheme.typography.labelLarge,
                 color = Color(0xFF454545),
                 modifier = Modifier.padding(start = 24.dp)

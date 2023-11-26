@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +42,7 @@ import com.kaist.k_dual.component.SingleRowWhiteBox
 import com.kaist.k_dual.component.TextFieldAlertDialog
 import com.kaist.k_dual.component.TwoTextFieldsAlertDialog
 import com.kaist.k_canvas.DeviceType
+import com.kaist.k_dual.R
 import com.kaist.k_dual.model.ManageSetting
 import com.kaist.k_dual.ui.theme.KDualTheme
 import com.kaist.k_dual.urlPattern
@@ -67,7 +69,7 @@ fun UserScreen(
     ) {
         BackButtonTitleRow(
             navController = navController,
-            title = if (isFirst) "First User" else "Second User"
+            title = if (isFirst) stringResource(R.string.first_user) else stringResource(R.string.second_user)
         )
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -75,7 +77,7 @@ fun UserScreen(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "General Setting",
+                text = stringResource(R.string.general_setting),
                 style = MaterialTheme.typography.labelLarge,
                 color = Color(0xFF454545),
                 modifier = Modifier.padding(start = 24.dp)
@@ -89,7 +91,7 @@ fun UserScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text = "Name",
+                        text = stringResource(R.string.name),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
@@ -120,15 +122,18 @@ fun UserScreen(
                             isNameDialogOpen = false
                         },
                         onDismiss = { isNameDialogOpen = false },
-                        title = "Name",
-                        description = "Enter the name of the first user.\n" +
-                                "(Minimum 0 character, maximum 8 characters limit.)",
+                        title = stringResource(R.string.name),
+                        description = if (isFirst) {
+                            stringResource(R.string.enter_the_name)
+                        } else {
+                            stringResource(R.string.enter_the_name2)
+                        },
                         outlinedInputParameters = OutlinedInputParameters(
-                            placeholder = "Enter Name",
-                            label = "Name",
-                            maxLength = 8,
+                            placeholder = stringResource(R.string.enter_name),
+                            label = stringResource(R.string.name),
+                            maxLength = 10,
                             allowEmpty = true,
-                        ),
+                        )
                     )
                 }
                 Divider(modifier = Modifier.padding(horizontal = 36.dp))
@@ -144,7 +149,7 @@ fun UserScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text = "Color",
+                        text = stringResource(R.string.color),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
@@ -166,7 +171,7 @@ fun UserScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text = "Alert",
+                        text = stringResource(R.string.alert),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
@@ -183,7 +188,7 @@ fun UserScreen(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "Device Type",
+                text = stringResource(R.string.device_type),
                 style = MaterialTheme.typography.labelLarge,
                 color = Color(0xFF454545),
                 modifier = Modifier.padding(start = 24.dp)
@@ -244,7 +249,7 @@ fun UserScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
-                            text = "Nightscout URL",
+                            text = stringResource(R.string.nightscout_address),
                             style = MaterialTheme.typography.bodyLarge,
                         )
                         Spacer(modifier = Modifier.width(16.dp))
@@ -278,11 +283,15 @@ fun UserScreen(
                                 isNightscoutURLDialogOpen = false
                             },
                             onDismiss = { isNightscoutURLDialogOpen = false },
-                            title = "Nightscout URL",
-                            description = "Enter the website link to retrieve the first user's blood glucose data.",
+                            title = stringResource(R.string.nightscout_address),
+                            description = if (isFirst) {
+                                stringResource(R.string.enter_the_website_link)
+                            } else {
+                                stringResource(R.string.enter_the_website_link2)
+                                   },
                             outlinedInputParameters = OutlinedInputParameters(
-                                placeholder = "Enter or paste URL",
-                                label = "URL",
+                                placeholder = stringResource(R.string.enter_or_paste_url),
+                                label = stringResource(R.string.url),
                                 validation = { urlPattern.matches(it) }
                             )
                         )
@@ -298,7 +307,7 @@ fun UserScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
-                            text = "Dexcom Address",
+                            text = stringResource(R.string.dexcom_account),
                             style = MaterialTheme.typography.bodyLarge,
                         )
                         Spacer(modifier = Modifier.width(16.dp))
@@ -338,15 +347,19 @@ fun UserScreen(
                                 isDexcomURLDialogOpen = false
                             },
                             onDismiss = { isDexcomURLDialogOpen = false },
-                            title = "Dexcom Address",
-                            description = "Enter the Dexcom ID and Password to retrieve the first user's blood glucose data.",
+                            title = stringResource(R.string.dexcom_account),
+                            description = if (isFirst) {
+                                    stringResource(R.string.enter_the_dexcom_id)
+                                } else {
+                                    stringResource(R.string.enter_the_dexcom_id2)
+                                },
                             outlinedInputParameters1 = OutlinedInputParameters(
-                                placeholder = "ex. user123",
-                                label = "ID",
+                                placeholder = stringResource(R.string.ex_user1),
+                                label = stringResource(R.string.id),
                             ),
                             outlinedInputParameters2 = OutlinedInputParameters(
-                                placeholder = "ex. 12345678",
-                                label = "Password",
+                                placeholder = stringResource(R.string.ex_user2),
+                                label = stringResource(R.string.password),
                             )
                         )
                     }
