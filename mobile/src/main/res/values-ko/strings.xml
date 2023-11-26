@@ -35,7 +35,7 @@
     <string name="user.dexcom_address">Dexcom 주소</string>
 
     <!-- OpenWatchAppDialog.kt-->
-    <string name="open_watch_app_dialog.connect_your_galaxy_watch.">갤럭시워치를 연결하세요.</string>
+    <string name="open_watch_app_dialog.connect_your_galaxy_watch">갤럭시워치를 연결하세요.</string>
     <string name="open_watch_app_dialog.to_set_up">K-Dual 앱을 설정하려면 갤럭시 워치가 휴대폰에 연결되어 있는지 확인하세요.</string>
     <string name="open_watch_app_dialog.connection_status">연결 상태</string>
 

@@ -34,7 +34,7 @@
     <string name="user.dexcom_address">Dexcom Address</string>
 
     <!-- OpenWatchAppDialog.kt-->
-    <string name="open_watch_app_dialog.connect_your_galaxy_watch.">Connect your Galaxy Watch.</string>
+    <string name="open_watch_app_dialog.connect_your_galaxy_watch">Connect your Galaxy Watch.</string>
     <string name="open_watch_app_dialog.to_set_up">Ensure your Galaxy Watch is connected to your phone to set up the K-Dual app.</string>
     <string name="open_watch_app_dialog.connection_status">Connection Status</string>
 
