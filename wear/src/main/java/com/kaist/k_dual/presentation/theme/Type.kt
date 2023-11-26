@@ -28,18 +28,18 @@ val robotoFamily = FontFamily(
 val Typography = Typography(
     title1 = TextStyle(
         fontFamily = robotoFamily,
-        fontWeight = FontWeight(500),
+        fontWeight = FontWeight.Medium,
         fontSize = 14.sp
     ),
     title2 = TextStyle(
         fontFamily = robotoFamily,
-        fontWeight = FontWeight(500),
-        fontSize = 12.sp,
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp,
         color = Color(0xFFBDC1C6)
     ),
     body1 = TextStyle(
         fontFamily = robotoFamily,
-        fontWeight = FontWeight(500),
+        fontWeight = FontWeight.Medium,
         fontSize = 10.sp,
         color = Color(0xB2FFFFFF)
     ),
