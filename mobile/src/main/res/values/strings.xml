@@ -9,6 +9,9 @@
     <string name="alert.value_setting">Value Setting</string>
     <string name="alert.low_value">Low Value</string>
     <string name="alert.high_value">High Value</string>
+    <string name="alert.enter_the_low_value">Enter the low value of blood glucose to receive vibration alert</string>
+    <string name="alert.enter_the_high_value">Enter the high value of blood glucose to receive vibration alert</string>
+    <string name="alert.enter_the_glucose_value">Enter the glucose value</string>
 
     <!-- Color.kt-->
     <string name="color.color">Color</string>
@@ -27,22 +30,35 @@
     <!-- User.kt-->
     <string name="user.general_setting">General Setting</string>
     <string name="user.name">Name</string>
+    <string name="user.enter_the_name"> Enter the name of the first user.\n" + "(Minimum 1 character, maximum 10 characters limit.)"</string>
+    <string name="user.enter_the_name2"> enter_the_name_of_the_second_user.\n"_+_"(minimum_1_character,_maximum_10_characters_limit.)"">"Enter the name of the second user.\n" + "(Minimum 1 character, maximum 10 characters limit.)"</string>
+    <string name="user.enter_name">Enter Name</string>
     <string name="user.color">Color</string>
     <string name="user.alert">Alert</string>
     <string name="user.device_type">Device Type</string>
-    <string name="user.nightscout_url">Nightscout URL</string>
-    <string name="user.dexcom_address">Dexcom Address</string>
+    <string name="user.enter_the_website_link">Enter the website link to retrieve the first user's blood glucose data.</string>
+    <string name="user.enter_the_website_link2">Enter the website link to retrieve the second user's blood glucose data.</string>
+    <string name="user.enter_or_paste_url">Enter or paste URL</string>
+    <string name="user.url">URL</string>
+    <string name="user.nightscout_address">Nightscout Address</string>
+    <string name="user.dexcom_account">Dexcom Account</string>
+    <string name="user.enter_the_dexcom_id">Enter the Dexcom ID and Password to retrieve the first user's blood glucose data.</string>
+    <string name="user.enter_the_dexcom_id2">Enter the Dexcom ID and Password to retrieve the second user's blood glucose data.</string>
+    <string name="user.ex._user123">ex. user123</string>
+    <string name="user.id">ID</string>
+    <string name="user.ex._12345678">ex. 12345678</string>
+    <string name="user.password">Password</string>
 
-    <!-- OpenWatchAppDialog.kt-->
+        <!-- OpenWatchAppDialog.kt-->
     <string name="open_watch_app_dialog.connect_your_galaxy_watch">Connect your Galaxy Watch.</string>
-    <string name="open_watch_app_dialog.to_set_up">Ensure your Galaxy Watch is connected to your phone to set up the K-Dual app.</string>
+    <string name="open_watch_app_dialog.ensure_your_galaxy_watch">Ensure your Galaxy Watch is connected to your phone to set up the K-Dual app.</string>
     <string name="open_watch_app_dialog.connection_status">Connection Status</string>
 
-    <!-- TextFieldAlertDialog.kt-->
+        <!-- TextFieldAlertDialog.kt-->
     <string name="text_field_alert_dialog.done">Done</string>
     <string name="text_field_alert_dialog.cancel">Cancel</string>
 
-    <!-- TwoTextFieldsAlertDialog.kt-->
+        <!-- TwoTextFieldsAlertDialog.kt-->
     <string name="two_text_fields_alert_dialog.done">Done</string>
     <string name="two_text_fields_alert_dialog.cancel">Cancel</string>
 

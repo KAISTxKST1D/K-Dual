@@ -118,8 +118,13 @@ fun UserScreen(
                         },
                         onDismiss = { isNameDialogOpen = false },
                         title = "Name",
-                        description = "Enter the name of the first user.\n" +
-                                "(Minimum 1 character, maximum 10 characters limit.)",
+                        description = if (isFirst) {
+                            "Enter the name of the first user.\n" +
+                                    "(Minimum 1 character, maximum 10 characters limit.)"
+                        } else {
+                            "Enter the name of the second user.\n" +
+                                    "(Minimum 1 character, maximum 10 characters limit.)"
+                        },
                         outlinedInputParameters = OutlinedInputParameters(
                             placeholder = "Enter Name",
                             label = "Name",
@@ -271,8 +276,12 @@ fun UserScreen(
                                 isNightscoutURLDialogOpen = false
                             },
                             onDismiss = { isNightscoutURLDialogOpen = false },
-                            title = "Nightscout URL",
-                            description = "Enter the website link to retrieve the first user's blood glucose data.",
+                            title = "Nightscout Address",
+                            description = if (isFirst) {
+                                "Enter the Nightscout URL link to retrieve the first user's blood glucose data."
+                            } else {
+                                "Enter the Nightscout URL link to retrieve the second user's blood glucose data."
+                            },
                             outlinedInputParameters = OutlinedInputParameters(
                                 placeholder = "Enter or paste URL",
                                 label = "URL",
@@ -328,8 +337,12 @@ fun UserScreen(
                                 isDexcomURLDialogOpen = false
                             },
                             onDismiss = { isDexcomURLDialogOpen = false },
-                            title = "Dexcom Address",
-                            description = "Enter the Dexcom ID and Password to retrieve the first user's blood glucose data.",
+                            title = "Dexcom Account",
+                            description = if (isFirst) {
+                                "Enter the Dexcom ID and Password to retrieve the first user's blood glucose data."
+                            } else {
+                                "Enter the Dexcom ID and Password to retrieve the second user's blood glucose data."
+                            },
                             outlinedInputParameters1 = OutlinedInputParameters(
                                 placeholder = "ex. user123",
                                 label = "ID",
