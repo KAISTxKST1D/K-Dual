@@ -33,7 +33,7 @@ data class Setting(
 val DefaultSetting = Setting(
     enableDualMode = true,
     firstUserSetting = UserSetting(
-        name = "",
+        name = "-",
         color = KColor.YELLOW,
         colorBlinkEnabled = true,
         vibrationEnabled = true,
@@ -42,7 +42,7 @@ val DefaultSetting = Setting(
         deviceType = DeviceType.Nightscout
     ),
     secondUserSetting = UserSetting(
-        name = "",
+        name = "-",
         color = KColor.BLUE,
         colorBlinkEnabled = true,
         vibrationEnabled = true,

@@ -93,7 +93,7 @@ fun UserScreen(
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
-                        text = userSetting.name.ifEmpty { "-" },
+                        text = userSetting.name,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color(0xFF454545),
                     )
@@ -127,7 +127,8 @@ fun UserScreen(
                             placeholder = "Enter Name",
                             label = "Name",
                             maxLength = 10,
-                        )
+                            allowEmpty = true,
+                        ),
                     )
                 }
                 Divider(modifier = Modifier.padding(horizontal = 36.dp))
@@ -300,10 +301,13 @@ fun UserScreen(
                             text = "Dexcom Address",
                             style = MaterialTheme.typography.bodyLarge,
                         )
+                        Spacer(modifier = Modifier.width(16.dp))
                         Text(
                             text = userSetting.dexcomId.ifEmpty { "-" },
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFF454545),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                         TwoTextFieldsAlertDialog(
                             isOpen = isDexcomURLDialogOpen,
