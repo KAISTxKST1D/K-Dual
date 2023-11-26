@@ -5,10 +5,10 @@
     values-round/strings.xml for round devices.
     -->
     <string name="hello_world">From the Square world,\nHello, %1$s!</string>
-
+    <string name="mo_alert"> • Alert </string>
     <!-- UserItem.kt-->
-    <string name="on">ON</string>
-    <string name="off">OFF</string>
+    <string name="mo_on">ON</string>
+    <string name="mo_off">OFF</string>
 
 
 </resources>

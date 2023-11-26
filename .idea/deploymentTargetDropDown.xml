@@ -6,12 +6,12 @@
         <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
           <Key>
-            <type value="SERIAL_NUMBER" />
-            <value value="R59M905HA5X" />
+            <type value="VIRTUAL_DEVICE_PATH" />
+            <value value="C:\Users\sklee\.android\avd\Wear_OS_Small_Round_API_30.avd" />
           </Key>
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-11-26T11:56:19.247972100Z" />
+    <timeTargetWasSelectedWithDropDown value="2023-11-26T13:51:52.027622200Z" />
   </component>
 </project>

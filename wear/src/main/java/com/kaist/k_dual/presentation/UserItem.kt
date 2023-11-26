@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.MaterialTheme
@@ -50,7 +51,7 @@ fun UserItem(modifier: Modifier, name: String, color: KColor, server: String, is
                 color = Colors.name(color)
             )
             Text(
-                text = "$server • Alert ${if (isAlertOn) "ON" else "OFF"}",
+                text = "$server stringResource(R.string.mo_alert) ${if (isAlertOn) stringResource(R.string.mo_on) else stringResource(R.string.mo_off)}",
                 style = MaterialTheme.typography.title2)
         }
     }
