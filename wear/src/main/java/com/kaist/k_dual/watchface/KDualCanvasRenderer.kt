@@ -235,6 +235,7 @@ class KDualCanvasRenderer(
                     isUser1ColorAlertOn,
                     it.firstUserSetting.color,
                     UseBloodGlucose.firstUserDiff,
+                    it.glucoseUnits,
                     robotoRegular
                 )
                 KCanvas.drawDiffArrowBox(
@@ -244,11 +245,12 @@ class KDualCanvasRenderer(
                     isUser2ColorAlertOn,
                     it.secondUserSetting.color,
                     UseBloodGlucose.secondUserDiff,
+                    it.glucoseUnits,
                     robotoRegular
                 )
 
-                KCanvas.drawBloodGlucose(canvas, 1, UseBloodGlucose.firstUser, robotoMedium)
-                KCanvas.drawBloodGlucose(canvas, 2, UseBloodGlucose.secondUser, robotoMedium)
+                KCanvas.drawBloodGlucose(canvas, 1, UseBloodGlucose.firstUser, it.glucoseUnits, robotoMedium)
+                KCanvas.drawBloodGlucose(canvas, 2, UseBloodGlucose.secondUser, it.glucoseUnits, robotoMedium)
             } else {
                 KCanvas.drawBackgroundBox(
                     canvas,
@@ -263,7 +265,7 @@ class KDualCanvasRenderer(
                     it.firstUserSetting.color,
                     robotoMedium
                 )
-                KCanvas.drawBloodGlucose(canvas, null, UseBloodGlucose.firstUser, robotoMedium)
+                KCanvas.drawBloodGlucose(canvas, null, UseBloodGlucose.firstUser, it.glucoseUnits, robotoMedium)
                 KCanvas.drawDiffArrowBox(
                     canvas,
                     context,
@@ -271,6 +273,7 @@ class KDualCanvasRenderer(
                     isUser1ColorAlertOn,
                     it.firstUserSetting.color,
                     UseBloodGlucose.firstUserDiff,
+                    it.glucoseUnits,
                     robotoRegular
                 )
             }

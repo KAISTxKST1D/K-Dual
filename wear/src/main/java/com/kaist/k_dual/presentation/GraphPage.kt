@@ -132,6 +132,7 @@ fun GraphPage(isFirst: Boolean) {
                     false,
                     null,
                     currentBloodGlucoseDifference,
+                    settings.glucoseUnits,
                     robotoRegular
                 )
                 var currentBloodGlucose: String = ""
@@ -140,7 +141,7 @@ fun GraphPage(isFirst: Boolean) {
                 } else {
                     currentBloodGlucose = UseBloodGlucose.secondUser
                 }
-                KCanvas.drawBloodGlucose(canvas, 1, currentBloodGlucose, robotoMedium)
+                KCanvas.drawBloodGlucose(canvas, 1, currentBloodGlucose, settings.glucoseUnits, robotoMedium)
             }
         }
 
