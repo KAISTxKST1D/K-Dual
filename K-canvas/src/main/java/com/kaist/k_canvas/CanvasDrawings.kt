@@ -366,8 +366,8 @@ class KCanvas {
 
             val textBounds = Rect()
             val paint = KPaint.bloodGlucoseTextPaint(unitF, isDualMode, typeface)
-            val valueText = value
-            paint.getTextBounds(valueText, 0, valueText.length, textBounds)
+            val fakeText = "123"
+            paint.getTextBounds(fakeText, 0, fakeText.length, textBounds)
 
             val textX: Float
             val textY: Float
@@ -384,7 +384,7 @@ class KCanvas {
                 textX = width / 2f
                 textY = height / 2f + textBounds.height() / 2f
             }
-            canvas.drawText(valueText, textX, textY, paint)
+            canvas.drawText(value, textX, textY, paint)
         }
     }
 }
