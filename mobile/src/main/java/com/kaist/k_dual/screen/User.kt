@@ -122,11 +122,11 @@ fun UserScreen(
                         onDismiss = { isNameDialogOpen = false },
                         title = "Name",
                         description = "Enter the name of the first user.\n" +
-                                "(Minimum 1 character, maximum 10 characters limit.)",
+                                "(Minimum 0 character, maximum 8 characters limit.)",
                         outlinedInputParameters = OutlinedInputParameters(
                             placeholder = "Enter Name",
                             label = "Name",
-                            maxLength = 10,
+                            maxLength = 8,
                             allowEmpty = true,
                         ),
                     )

@@ -51,6 +51,7 @@ fun TextFieldAlertDialog(
             AlertDialog(
                 modifier = modifier,
                 onDismissRequest = {
+                    textValue = ""
                     onDismiss()
                 },
                 title = {
@@ -138,6 +139,7 @@ fun TextFieldAlertDialog(
                 },
                 dismissButton = {
                     TextButton(onClick = {
+                        textValue = ""
                         onDismiss()
                     }, colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)) {
                         Text("Cancel", style = MaterialTheme.typography.labelLarge)

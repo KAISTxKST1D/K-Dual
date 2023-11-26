@@ -52,6 +52,8 @@ fun TwoTextFieldsAlertDialog(
                 modifier = modifier,
                 onDismissRequest = {
                     onDismiss()
+                    textValue1 = ""
+                    textValue2 = ""
                 },
                 title = {
                     Text(
@@ -160,6 +162,8 @@ fun TwoTextFieldsAlertDialog(
                 },
                 dismissButton = {
                     TextButton(onClick = {
+                        textValue1 = ""
+                        textValue2 = ""
                         onDismiss()
                     }, colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)) {
                         Text("Cancel", style = MaterialTheme.typography.labelLarge)
