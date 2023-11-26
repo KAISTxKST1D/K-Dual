@@ -67,9 +67,10 @@ fun WatchFacePreview(
                         isFirstHighLight,
                         firstUserColor,
                         "4",
+                        ManageSetting.settings.glucoseUnits,
                         robotoRegular
                     )
-                    KCanvas.drawBloodGlucose(canvas, 1, "144", robotoMedium)
+                    KCanvas.drawBloodGlucose(canvas, 1, "144", ManageSetting.settings.glucoseUnits, robotoMedium)
                     KCanvas.drawBackgroundBox(canvas, "down", isSecondHighLight, secondUserColor)
                     KCanvas.drawIconAndUserName(
                         canvas,
@@ -85,9 +86,10 @@ fun WatchFacePreview(
                         isSecondHighLight,
                         secondUserColor,
                         "4",
+                        ManageSetting.settings.glucoseUnits,
                         robotoRegular
                     )
-                    KCanvas.drawBloodGlucose(canvas, 2, "144", robotoMedium)
+                    KCanvas.drawBloodGlucose(canvas, 2, "144", ManageSetting.settings.glucoseUnits, robotoMedium)
                 } else {
                     KCanvas.drawBackgroundBox(canvas, null, isFirstHighLight, firstUserColor)
                     KCanvas.drawIconAndUserName(
@@ -97,7 +99,7 @@ fun WatchFacePreview(
                         firstUserColor,
                         robotoMedium
                     )
-                    KCanvas.drawBloodGlucose(canvas, null, "144", robotoMedium)
+                    KCanvas.drawBloodGlucose(canvas, null, "144", ManageSetting.settings.glucoseUnits, robotoMedium)
                     KCanvas.drawDiffArrowBox(
                         canvas,
                         context,
@@ -105,6 +107,7 @@ fun WatchFacePreview(
                         isFirstHighLight,
                         firstUserColor,
                         "4",
+                        ManageSetting.settings.glucoseUnits,
                         robotoRegular
                     )
 
