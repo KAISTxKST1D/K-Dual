@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -25,7 +24,6 @@ import com.kaist.k_dual.ui.theme.RedUISolid
 import com.kaist.k_dual.ui.theme.KDualTheme
 import java.lang.Integer.min
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextFieldAlertDialog(
     modifier: Modifier = Modifier,
@@ -53,6 +51,7 @@ fun TextFieldAlertDialog(
             AlertDialog(
                 modifier = modifier,
                 onDismissRequest = {
+                    textValue = ""
                     onDismiss()
                 },
                 title = {
@@ -121,7 +120,8 @@ fun TextFieldAlertDialog(
                             keyboardOptions = outlinedInputParameters.keyboardOptions,
                             isError = textValue.isNotEmpty() && !outlinedInputParameters.validation(
                                 textValue
-                            )
+                            ),
+                            maxLines = 1,
                         )
                     }
                 },
@@ -130,9 +130,8 @@ fun TextFieldAlertDialog(
                         onClick = {
                             onConfirm(textValue)
                         },
-                        enabled = textValue.isNotEmpty() && outlinedInputParameters.validation(
-                            textValue
-                        ),
+                        enabled = (outlinedInputParameters.allowEmpty || textValue.isNotEmpty())
+                                && outlinedInputParameters.validation(textValue),
                         colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)
                     ) {
                         Text("Done", style = MaterialTheme.typography.labelLarge)
@@ -140,6 +139,7 @@ fun TextFieldAlertDialog(
                 },
                 dismissButton = {
                     TextButton(onClick = {
+                        textValue = ""
                         onDismiss()
                     }, colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)) {
                         Text("Cancel", style = MaterialTheme.typography.labelLarge)
@@ -158,6 +158,7 @@ data class OutlinedInputParameters(
     val maxLength: Int? = null,
     val keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     val validation: (String) -> Boolean = { _ -> true },
+    val allowEmpty: Boolean = false,
 )
 
 @Preview

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -23,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import com.kaist.k_dual.ui.theme.RedUISolid
 import com.kaist.k_dual.ui.theme.KDualTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TwoTextFieldsAlertDialog(
     modifier: Modifier = Modifier,
@@ -54,6 +52,8 @@ fun TwoTextFieldsAlertDialog(
                 modifier = modifier,
                 onDismissRequest = {
                     onDismiss()
+                    textValue1 = ""
+                    textValue2 = ""
                 },
                 title = {
                     Text(
@@ -105,7 +105,8 @@ fun TwoTextFieldsAlertDialog(
                             keyboardOptions = outlinedInputParameters1.keyboardOptions,
                             isError = textValue1.isNotEmpty() && !outlinedInputParameters1.validation(
                                 textValue1
-                            )
+                            ),
+                            maxLines = 1,
                         )
                         OutlinedTextField(
                             modifier = outlinedInputParameters2.modifier
@@ -142,7 +143,8 @@ fun TwoTextFieldsAlertDialog(
                             keyboardOptions = outlinedInputParameters2.keyboardOptions,
                             isError = textValue2.isNotEmpty() && !outlinedInputParameters2.validation(
                                 textValue2
-                            )
+                            ),
+                            maxLines = 1,
                         )
 
                     }
@@ -160,6 +162,8 @@ fun TwoTextFieldsAlertDialog(
                 },
                 dismissButton = {
                     TextButton(onClick = {
+                        textValue1 = ""
+                        textValue2 = ""
                         onDismiss()
                     }, colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)) {
                         Text("Cancel", style = MaterialTheme.typography.labelLarge)

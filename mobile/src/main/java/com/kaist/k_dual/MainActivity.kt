@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kaist.k_dual.component.OpenWatchAppDialog
 import com.kaist.k_dual.screen.AlertScreen
 import com.kaist.k_dual.screen.ColorScreen
@@ -38,12 +40,21 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             KDualTheme {
+                val backgroundColor = MaterialTheme.colorScheme.background
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
                         .safeContentPadding(),
-                    color = MaterialTheme.colorScheme.background
+                    color = backgroundColor
                 ) {
+                    val systemUiController = rememberSystemUiController()
+
+                    SideEffect {
+                        systemUiController.setStatusBarColor(
+                            color = backgroundColor
+                        )
+                    }
+
                     var isDialogOpen by remember { mutableStateOf(false) }
                     var isConnected by remember { mutableStateOf(false) }
                     var userClosed by remember { mutableStateOf(false) }

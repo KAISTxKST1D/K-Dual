@@ -4,11 +4,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -25,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -90,7 +93,7 @@ fun UserScreen(
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
-                        text = userSetting.name.ifEmpty { "-" },
+                        text = userSetting.name,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color(0xFF454545),
                     )
@@ -119,12 +122,13 @@ fun UserScreen(
                         onDismiss = { isNameDialogOpen = false },
                         title = "Name",
                         description = "Enter the name of the first user.\n" +
-                                "(Minimum 1 character, maximum 10 characters limit.)",
+                                "(Minimum 0 character, maximum 8 characters limit.)",
                         outlinedInputParameters = OutlinedInputParameters(
                             placeholder = "Enter Name",
                             label = "Name",
-                            maxLength = 10,
-                        )
+                            maxLength = 8,
+                            allowEmpty = true,
+                        ),
                     )
                 }
                 Divider(modifier = Modifier.padding(horizontal = 36.dp))
@@ -243,10 +247,13 @@ fun UserScreen(
                             text = "Nightscout URL",
                             style = MaterialTheme.typography.bodyLarge,
                         )
+                        Spacer(modifier = Modifier.width(16.dp))
                         Text(
                             text = userSetting.nightscoutUrl.ifEmpty { "-" },
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFF454545),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                         TextFieldAlertDialog(
                             isOpen = isNightscoutURLDialogOpen,
@@ -294,10 +301,13 @@ fun UserScreen(
                             text = "Dexcom Address",
                             style = MaterialTheme.typography.bodyLarge,
                         )
+                        Spacer(modifier = Modifier.width(16.dp))
                         Text(
                             text = userSetting.dexcomId.ifEmpty { "-" },
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFF454545),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                         TwoTextFieldsAlertDialog(
                             isOpen = isDexcomURLDialogOpen,
