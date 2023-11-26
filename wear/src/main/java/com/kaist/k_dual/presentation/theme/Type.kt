@@ -39,5 +39,4 @@ val Typography = Typography(
         fontSize = 10.sp,
         color = Color(0xB2FFFFFF)
     ),
-
 )

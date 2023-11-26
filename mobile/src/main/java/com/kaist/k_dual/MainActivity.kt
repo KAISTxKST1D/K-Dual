@@ -37,8 +37,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val currentLanguage = LocalContext.current.resources.configuration.locales.get(0).language
-            KDualTheme() {
+            KDualTheme {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
