@@ -18,9 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kaist.k_dual.R
 import com.kaist.k_dual.ui.theme.RedUISolid
 import com.kaist.k_dual.ui.theme.KDualTheme
 import java.lang.Integer.min
@@ -135,14 +137,14 @@ fun TextFieldAlertDialog(
                         ),
                         colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)
                     ) {
-                        Text("Done", style = MaterialTheme.typography.labelLarge)
+                        Text(stringResource(R.string.done), style = MaterialTheme.typography.labelLarge)
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = {
                         onDismiss()
                     }, colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)) {
-                        Text("Cancel", style = MaterialTheme.typography.labelLarge)
+                        Text(stringResource(R.string.cancel), style = MaterialTheme.typography.labelLarge)
                     }
                 },
             )

@@ -7,8 +7,8 @@
     <string name="hello_world">From the Square world,\nHello, %1$s!</string>
 
     <!-- UserItem.kt-->
-    <string name="user_item.on">ON</string>
-    <string name="user_item.off">OFF</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
 
 
 </resources>

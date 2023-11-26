@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -108,13 +109,13 @@ fun OpenWatchAppDialog(
                             )
                         }
                         Text(
-                            text = "Connect your Galaxy Watch.",
+                            text = stringResource(R.string.connect_your_galaxy_watch),
                             style = MaterialTheme.typography.headlineSmall,
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
                         )
                         Text(
-                            text = "Ensure your Galaxy Watch is connected to your phone to set up the K-Dual app.",
+                            text = stringResource(R.string.ensure_your_galaxy_watch),
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier
                                 .padding(bottom = 24.dp)
@@ -143,7 +144,7 @@ fun OpenWatchAppDialog(
                                         .wrapContentHeight(align = Alignment.CenterVertically)
                                 )
                                 Text(
-                                    text = "Connection Status",
+                                    text = stringResource(R.string.connection_status),
                                     style = MaterialTheme.typography.bodyLarge,
                                 )
                             }

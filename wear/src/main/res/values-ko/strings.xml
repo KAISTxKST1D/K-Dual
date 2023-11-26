@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="true">K-Dual</string>
-    <string name="user_item.on">화면 켬</string>
-    <string name="user_item.off">화면 끔</string>
+
+    <string name="hello_world">From the Square world,\nHello, %1$s!</string>
+
+    <string name="on">화면 켬</string>
+    <string name="off">화면 끔</string>
 </resources>

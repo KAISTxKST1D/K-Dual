@@ -23,11 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.kaist.k_canvas.KColor
+import com.kaist.k_dual.R
 import com.kaist.k_dual.component.BackButtonTitleRow
 import com.kaist.k_dual.component.Divider
 import com.kaist.k_dual.component.MultipleRowWhiteBox
@@ -48,7 +50,7 @@ fun ColorScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
     ) {
         BackButtonTitleRow(
             navController = navController,
-            title = (if (isFirst) "First User" else "Second User") + " - Color"
+            title = (if (isFirst) stringResource(R.string.first_user) else stringResource(R.string.second_user)) + stringResource(R.string.color2)
         )
         WatchFacePreview(
             isFirstHighLight = isFirst,
@@ -60,7 +62,7 @@ fun ColorScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Color",
+                text = stringResource(R.string.color),
                 style = MaterialTheme.typography.labelLarge,
                 color = Color(0xFF454545),
                 modifier = Modifier.padding(start = 24.dp)

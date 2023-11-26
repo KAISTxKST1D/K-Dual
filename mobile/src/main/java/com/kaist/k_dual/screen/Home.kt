@@ -18,11 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.kaist.k_dual.R
 import com.kaist.k_dual.component.Divider
 import com.kaist.k_dual.component.MultipleRowWhiteBox
 import com.kaist.k_dual.component.SingleRowWhiteBox
@@ -63,7 +65,7 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
                 )
             }
             Text(
-                text = "Connected Devices",
+                text = stringResource(R.string.connected_devices),
                 style = MaterialTheme.typography.labelLarge,
                 color = Color(0xFF454545),
                 modifier = Modifier.padding(horizontal = 24.dp)
@@ -73,7 +75,7 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
                     .clip(shape = RoundedCornerShape(24.dp))
                     .clickable { onClickToggle() }) {
                 Text(
-                    text = "Enabled dual mode",
+                    text = stringResource(R.string.enabled_dual_mode),
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 Toggle(
@@ -91,7 +93,7 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
                         }
                     }) {
                     Text(
-                        text = "First User",
+                        text = stringResource(R.string.first_user),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
@@ -114,7 +116,7 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "First User",
+                            text = stringResource(R.string.first_user),
                             style = MaterialTheme.typography.bodyLarge,
                         )
                         Text(
@@ -140,7 +142,7 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Second User",
+                            text = stringResource(R.string.second_user),
                             style = MaterialTheme.typography.bodyLarge,
                         )
                         Text(
@@ -157,7 +159,7 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Setting",
+                text = stringResource(R.string.setting),
                 style = MaterialTheme.typography.labelLarge,
                 color = Color(0xFF454545),
                 modifier = Modifier.padding(horizontal = 24.dp)
@@ -171,7 +173,7 @@ fun HomeScreen(navController: NavController, onSendMessageFailed: () -> Unit) {
                         }
                     }) {
                 Text(
-                    text = "Blood Glucose Units",
+                    text = stringResource(R.string.blood_glucose_units),
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 Text(
