@@ -268,7 +268,6 @@ class KCanvas {
                 differenceVal = 0.0f
             }
 
-
             // Draw rounded rect
             val rectHeight = unitF * 27f
             val rectWidth = if (abs(differenceVal) < 10) {
