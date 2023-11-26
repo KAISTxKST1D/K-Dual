@@ -219,11 +219,10 @@ fun GraphPage(isFirst: Boolean) {
                 }
             }
         }
-        var miny = 50f
-        var maxy = 200f
+        var miny = 0f
+        var maxy = 300f
         if(settings.glucoseUnits==GlucoseUnits.mmol_L) {
-            miny = 2f
-            maxy = 11f
+            maxy = 15f
         }
         Chart(
             modifier = Modifier
@@ -257,15 +256,15 @@ fun GraphPage(isFirst: Boolean) {
                 isScrollEnabled = false
             )
         )
-        var firstBox = "200"
-        var secondBox = "150"
+        var firstBox = "300"
+        var secondBox = "200"
         var thirdBox = "100"
-        var fourthBox = "50"
+        var fourthBox = "0"
         if (settings.glucoseUnits == GlucoseUnits.mmol_L) {
-            firstBox = "11"
-            secondBox = "8"
+            firstBox = "15"
+            secondBox = "10"
             thirdBox = "5"
-            fourthBox = "2"
+            fourthBox = "0"
         }
         // Fake chart to draw background grid
         val fakeChartEntryModel: ChartEntryModel = entryModelOf(0, 0, 0, 0, 0, 0, 0, 0)
@@ -280,7 +279,7 @@ fun GraphPage(isFirst: Boolean) {
                 currentChartStyle.lineChart.lines.map { defaultLines ->
                     defaultLines.copy(
                         lineBackgroundShader = null,
-                        lineColor = 0xFFFFFFFF.toInt()
+                        lineColor = 0x00FFFFFF.toInt()
                     )
                 },
                 axisValuesOverrider = AxisValuesOverrider.fixed(
