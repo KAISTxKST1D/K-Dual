@@ -81,8 +81,8 @@ class MainActivity : ComponentActivity() {
                                 )
                             },
                             onFailure = {
-                                isDialogOpen = true
                                 isConnected = false
+                                isDialogOpen = true
                             },
                             context = context
                         )
