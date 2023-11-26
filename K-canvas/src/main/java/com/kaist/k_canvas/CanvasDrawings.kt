@@ -248,7 +248,7 @@ class KCanvas {
             order: Number?,
             isAlertOn: Boolean,
             color: KColor?,
-            difference: Int,
+            difference: String,
             typeface: Typeface
         ) {
             val width = canvas.width
@@ -263,9 +263,14 @@ class KCanvas {
 
             val textBounds = Rect()
 
+            var differenceVal = difference.toFloatOrNull()
+            if(differenceVal == null) {
+                differenceVal = 0.0f
+            }
+
             // Draw rounded rect
             val rectHeight = unitF * 27f
-            val rectWidth = if (abs(difference) < 10) {
+            val rectWidth = if (abs(differenceVal) < 10) {
                 unitF * 56f
             } else {
                 unitF * 61f
@@ -300,22 +305,22 @@ class KCanvas {
 
             // Draw arrow source bitmap (Use rule of nightscout)
             val arrowSrc: Bitmap = when {
-                abs(difference) <= 5 ->
+                abs(differenceVal) <= 5 ->
                     BitmapFactory.decodeResource(context.resources, R.drawable.arrow_flat)
-                abs(difference) <= 9 -> {
-                    if (difference > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_forty_five_up)
+                abs(differenceVal) <= 9 -> {
+                    if (differenceVal > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_forty_five_up)
                     else BitmapFactory.decodeResource(context.resources, R.drawable.arrow_forty_five_down)
                 }
-                abs(difference) <= 19 -> {
-                    if (difference > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_single_up)
+                abs(differenceVal) <= 19 -> {
+                    if (differenceVal > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_single_up)
                     else BitmapFactory.decodeResource(context.resources, R.drawable.arrow_single_down)
                 }
                 else -> {
-                    if (difference > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_double_up)
+                    if (differenceVal > 0) BitmapFactory.decodeResource(context.resources, R.drawable.arrow_double_up)
                     else BitmapFactory.decodeResource(context.resources, R.drawable.arrow_double_down)
                 }
             }
-            val differenceText: String = if (difference > 0) {"+$difference"} else {"$difference"}
+            val differenceText: String = if (differenceVal > 0) {"+$difference"} else {"$difference"}
 
             val arrowPaint = if (isAlertOn && color != null) {
                 KPaint.arrowPaint(color)
@@ -349,7 +354,7 @@ class KCanvas {
             )
         }
 
-        fun drawBloodGlucose(canvas: Canvas, order: Number?, value: Int, typeface: Typeface) {
+        fun drawBloodGlucose(canvas: Canvas, order: Number?, value: String, typeface: Typeface) {
             val width = canvas.width
             val height = canvas.height
             val unitF = getUnitF(width)
@@ -361,7 +366,7 @@ class KCanvas {
 
             val textBounds = Rect()
             val paint = KPaint.bloodGlucoseTextPaint(unitF, isDualMode, typeface)
-            val valueText = value.toString()
+            val valueText = value
             paint.getTextBounds(valueText, 0, valueText.length, textBounds)
 
             val textX: Float
