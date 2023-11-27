@@ -23,17 +23,19 @@ import kotlinx.coroutines.launch
 import java.math.RoundingMode
 import kotlin.math.round
 
+val defaultGraphNightScoutData: List<nightScoutData> =
+    listOf(nightScoutData("", "", 0, "", 0, 0.0f, "", "", "", "", 0, 0, "", 0))
+val defaultGraphDexcomData: List<GlucoseEntry> = listOf(GlucoseEntry(0, 0.0, Trend.FLAT, 0))
+
 object UseBloodGlucose {
     var firstUser: String = "-"
     var secondUser: String = "-"
     var firstUserDiff: String = "0"
     var secondUserDiff: String = "0"
-    var firstUserGraphNightScoutData: List<nightScoutData> =
-        listOf(nightScoutData("", "", 0, "", 0, 0.0f, "", "", "", "", 0, 0, "", 0))
-    var secondUserGraphNightScoutData: List<nightScoutData> =
-        listOf(nightScoutData("", "", 0, "", 0, 0.0f, "", "", "", "", 0, 0, "", 0))
-    var firstUserGraphDexcomData: List<GlucoseEntry> = listOf(GlucoseEntry(0, 0.0, Trend.FLAT, 0))
-    var secondUserGraphDexcomData: List<GlucoseEntry> = listOf(GlucoseEntry(0, 0.0, Trend.FLAT, 0))
+    var firstUserGraphNightScoutData = defaultGraphNightScoutData
+    var secondUserGraphNightScoutData = defaultGraphNightScoutData
+    var firstUserGraphDexcomData = defaultGraphDexcomData
+    var secondUserGraphDexcomData = defaultGraphDexcomData
 
     fun updateBloodGlucose(context: Context) {
         val latestGlucoseProps = LatestGlucoseProps(180, 36)
@@ -70,6 +72,10 @@ object UseBloodGlucose {
                         firstUserGraphNightScoutData = dataArray[0] as List<nightScoutData>
                         firstUser = dataArray[1] as String
                         firstUserDiff = dataArray[2] as String
+                    } else {
+                        firstUserGraphNightScoutData = defaultGraphNightScoutData
+                        firstUser = "-"
+                        firstUserDiff = "0"
                     }
                 }
 
@@ -84,6 +90,10 @@ object UseBloodGlucose {
                         firstUserGraphDexcomData = dataArray[0] as List<GlucoseEntry>
                         firstUser = dataArray[1] as String
                         firstUserDiff = dataArray[2] as String
+                    } else {
+                        firstUserGraphDexcomData = defaultGraphDexcomData
+                        firstUser = "-"
+                        firstUserDiff = "0"
                     }
                 }
             }
@@ -98,6 +108,10 @@ object UseBloodGlucose {
                             secondUserGraphNightScoutData = dataArray[0] as List<nightScoutData>
                             secondUser = dataArray[1] as String
                             secondUserDiff = dataArray[2] as String
+                        } else {
+                            secondUserGraphNightScoutData = defaultGraphNightScoutData
+                            secondUser = "-"
+                            secondUserDiff = "0"
                         }
                     }
 
@@ -112,6 +126,10 @@ object UseBloodGlucose {
                             secondUserGraphDexcomData = dataArray[0] as List<GlucoseEntry>
                             secondUser = dataArray[1] as String
                             secondUserDiff = dataArray[2] as String
+                        } else {
+                            secondUserGraphDexcomData = defaultGraphDexcomData
+                            secondUser = "-"
+                            secondUserDiff = "0"
                         }
                     }
                 }
@@ -121,7 +139,7 @@ object UseBloodGlucose {
 
     private suspend fun getNightScoutData(url: String, glucoseUnit: GlucoseUnits): List<Any> {
         val dataArray = mutableListOf<Any>()
-        val formattedUrl = "$url/"
+        val formattedUrl = if (url.isNotEmpty() && url.last() == '/') url else "$url/"
         if (formattedUrl != "/") {
             val getDataJob = CoroutineScope(Dispatchers.IO).launch {
                 val recentThreeHourGlucoseData =

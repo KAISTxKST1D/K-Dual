@@ -152,7 +152,7 @@ fun GraphPage(isFirst: Boolean) {
         val configuration = LocalConfiguration.current
         val screenWidthDp = configuration.screenWidthDp // Width in dp
         var chartEntryModel: ChartEntryModel = entryModelOf(listOf())
-        // TODO. Initialize graph when url changed
+
         if (isFirst) {
             when (settings.firstUserSetting.deviceType) {
                 DeviceType.Nightscout -> {
