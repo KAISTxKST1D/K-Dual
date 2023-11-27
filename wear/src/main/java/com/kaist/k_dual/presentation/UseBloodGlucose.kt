@@ -63,7 +63,7 @@ object UseBloodGlucose {
             when (settings.firstUserSetting.deviceType) {
                 DeviceType.Nightscout -> {
                     val dataArray = getNightScoutData(
-                        url = UseSetting.settings!!.firstUserSetting.nightscoutUrl,
+                        url = settings.firstUserSetting.nightscoutUrl,
                         glucoseUnit = glucoseUnit
                     )
                     if (dataArray.isNotEmpty()) {
@@ -91,7 +91,7 @@ object UseBloodGlucose {
                 when (settings.secondUserSetting.deviceType) {
                     DeviceType.Nightscout -> {
                         val dataArray = getNightScoutData(
-                            url = UseSetting.settings!!.secondUserSetting.nightscoutUrl,
+                            url = settings.secondUserSetting.nightscoutUrl,
                             glucoseUnit = glucoseUnit
                         )
                         if (dataArray.isNotEmpty()) {
@@ -159,7 +159,6 @@ object UseBloodGlucose {
         glucoseUnit: GlucoseUnits
     ): List<Any> {
         val dataArray = mutableListOf<Any>()
-        val settings = UseSetting.settings ?: return dataArray
 
         val firstUserConfigurationProps = ConfigurationProps(
             dexcomId,
