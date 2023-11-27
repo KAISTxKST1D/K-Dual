@@ -162,7 +162,6 @@ class KDualCanvasRenderer(
         updateSettings()
         updateBloodGlucoseTask.run()
         checkAlertConditionTask.run()
-        handler.post(updateBloodGlucoseTask)
     }
 
     override fun onDestroy() {

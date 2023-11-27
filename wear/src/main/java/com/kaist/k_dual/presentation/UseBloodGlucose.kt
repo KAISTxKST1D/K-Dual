@@ -1,6 +1,7 @@
 package com.kaist.k_dual.presentation
 
 import android.content.Context
+import android.util.Log
 import com.kaist.k_canvas.DeviceType
 import com.kaist.k_canvas.GlucoseUnits
 import com.kaist.k_canvas.PREFERENCES_FILE_KEY
@@ -44,24 +45,22 @@ object UseBloodGlucose {
         val settings = UseSetting.settings ?: return
 
         val glucoseUnit = settings.glucoseUnits
-        if (settings.enableDualMode) {
-            val firstUserDevice: DeviceType = settings.firstUserSetting.deviceType
-            val secondUserDevice: DeviceType = settings.secondUserSetting.deviceType
-
-            when (firstUserDevice) {
-                DeviceType.Nightscout -> {
-                    getNightScoutData(isFirst = true, glucoseUnit = glucoseUnit)
-                }
-
-                DeviceType.Dexcom -> {
-                    getDexcomData(
-                        isFirst = true,
-                        latestGlucoseProps = latestGlucoseProps,
-                        glucoseUnit = glucoseUnit
-                    )
-                }
+        Log.d("type", "first: ${settings.firstUserSetting.deviceType}, second: ${settings.secondUserSetting.deviceType}")
+        when (settings.firstUserSetting.deviceType) {
+            DeviceType.Nightscout -> {
+                getNightScoutData(isFirst = true, glucoseUnit = glucoseUnit)
             }
-            when (secondUserDevice) {
+
+            DeviceType.Dexcom -> {
+                getDexcomData(
+                    isFirst = true,
+                    latestGlucoseProps = latestGlucoseProps,
+                    glucoseUnit = glucoseUnit
+                )
+            }
+        }
+        if (settings.enableDualMode) {
+            when (settings.secondUserSetting.deviceType) {
                 DeviceType.Nightscout -> {
                     getNightScoutData(isFirst = false, glucoseUnit = glucoseUnit)
                 }
@@ -70,29 +69,13 @@ object UseBloodGlucose {
                     getDexcomData(isFirst = false, latestGlucoseProps, glucoseUnit = glucoseUnit)
                 }
             }
-        } else {
-            when (settings.firstUserSetting.deviceType) {
-                DeviceType.Nightscout -> {
-                    getNightScoutData(isFirst = true, glucoseUnit = glucoseUnit)
-                }
-
-                DeviceType.Dexcom -> {
-                    getDexcomData(
-                        isFirst = true,
-                        latestGlucoseProps = latestGlucoseProps,
-                        glucoseUnit = glucoseUnit
-                    )
-                }
-            }
         }
     }
-
 
     @OptIn(DelicateCoroutinesApi::class)
     fun getNightScoutData(isFirst: Boolean, glucoseUnit: GlucoseUnits) {
         if (isFirst) {
-            var firstUserNightScoutUrl = settings!!.firstUserSetting.nightscoutUrl
-            firstUserNightScoutUrl = firstUserNightScoutUrl.plus("/")
+            var firstUserNightScoutUrl = settings!!.firstUserSetting.nightscoutUrl + "/"
             if (firstUserNightScoutUrl != "/") {
                 GlobalScope.launch {
                     val recentThreeHourGlucoseData =
@@ -122,8 +105,7 @@ object UseBloodGlucose {
                 }
             }
         } else {
-            var secondUserNightScoutUrl = settings!!.secondUserSetting.nightscoutUrl
-            secondUserNightScoutUrl = secondUserNightScoutUrl.plus("/")
+            var secondUserNightScoutUrl = settings!!.secondUserSetting.nightscoutUrl + "/"
             if (secondUserNightScoutUrl != "/") {
                 CoroutineScope(Dispatchers.IO).launch {
                     val recentThreeHourGlucoseData =
@@ -177,22 +159,27 @@ object UseBloodGlucose {
                         firstUserDexcomClient.getEstimatedGlucoseValues(latestGlucoseProps)
                             ?: return@launch
                     firstUserGraphDexcomData = glucoseData
-                    val currentGlucoseData: GlucoseEntry = glucoseData[0]
-                    val secondGlucoseData: GlucoseEntry = glucoseData[1]
-                    when (glucoseUnit) {
-                        GlucoseUnits.mg_dL -> {
-                            firstUser = currentGlucoseData.mgdl.toString()
-                            firstUserDiff =
-                                (currentGlucoseData.mgdl - secondGlucoseData.mgdl).toString()
-                        }
+                    try {
+                        val currentGlucoseData: GlucoseEntry = glucoseData[0]
+                        val secondGlucoseData: GlucoseEntry = glucoseData[1]
+                        when (glucoseUnit) {
+                            GlucoseUnits.mg_dL -> {
+                                firstUser = currentGlucoseData.mgdl.toString()
+                                firstUserDiff =
+                                    (currentGlucoseData.mgdl - secondGlucoseData.mgdl).toString()
+                            }
 
-                        GlucoseUnits.mmol_L -> {
-                            val rounded = round(currentGlucoseData.mmol * 10) / 10
-                            val secondRounded = round(secondGlucoseData.mmol * 10) / 10
-                            firstUser = rounded.toString()
-                            firstUserDiff =
-                                (round((rounded - secondRounded) * 10) / 10).toString()
+                            GlucoseUnits.mmol_L -> {
+                                val rounded = round(currentGlucoseData.mmol * 10) / 10
+                                val secondRounded = round(secondGlucoseData.mmol * 10) / 10
+                                firstUser = rounded.toString()
+                                firstUserDiff =
+                                    (round((rounded - secondRounded) * 10) / 10).toString()
+                            }
                         }
+                    } catch (e: Exception) {
+                        secondUser = "-"
+                        secondUserDiff = "0"
                     }
                 }
             }
@@ -212,22 +199,28 @@ object UseBloodGlucose {
                         latestGlucoseProps
                     ) ?: return@launch
                     secondUserGraphDexcomData = glucoseData
-                    val currentGlucoseData: GlucoseEntry = glucoseData[0]
-                    val secondGlucoseData: GlucoseEntry = glucoseData[1]
-                    when (glucoseUnit) {
-                        GlucoseUnits.mg_dL -> {
-                            secondUser = currentGlucoseData.mgdl.toString()
-                            secondUserDiff =
-                                (currentGlucoseData.mgdl - secondGlucoseData.mgdl).toString()
-                        }
+                    try {
+                        val currentGlucoseData: GlucoseEntry = glucoseData[0]
+                        val secondGlucoseData: GlucoseEntry = glucoseData[1]
 
-                        GlucoseUnits.mmol_L -> {
-                            val rounded = round(currentGlucoseData.mmol * 10) / 10
-                            val secondRounded = round(secondGlucoseData.mmol * 10) / 10
-                            secondUser = rounded.toString()
-                            secondUserDiff =
-                                (round((rounded - secondRounded) * 10) / 10).toString()
+                        when (glucoseUnit) {
+                            GlucoseUnits.mg_dL -> {
+                                secondUser = currentGlucoseData.mgdl.toString()
+                                secondUserDiff =
+                                    (currentGlucoseData.mgdl - secondGlucoseData.mgdl).toString()
+                            }
+
+                            GlucoseUnits.mmol_L -> {
+                                val rounded = round(currentGlucoseData.mmol * 10) / 10
+                                val secondRounded = round(secondGlucoseData.mmol * 10) / 10
+                                secondUser = rounded.toString()
+                                secondUserDiff =
+                                    (round((rounded - secondRounded) * 10) / 10).toString()
+                            }
                         }
+                    } catch (e: Exception) {
+                        secondUser = "-"
+                        secondUserDiff = "0"
                     }
                 }
             }
