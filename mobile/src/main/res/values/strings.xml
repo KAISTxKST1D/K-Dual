@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">K-Dual</string>
 
-    <!-- alert.kt-->
-    <string name="alert2"> - Alert</string>
+    <!-- Alert.kt-->
+    <string name="alert2">" - Alert"</string>
     <string name="alert_setting">Alert Setting</string>
     <string name="vibration">Vibration</string>
     <string name="color_blink">Color Blink</string>
@@ -13,13 +13,15 @@
     <string name="enter_the_low_value">Enter the low value of blood glucose to receive vibration alert</string>
     <string name="enter_the_high_value">Enter the high value of blood glucose to receive vibration alert</string>
     <string name="enter_the_glucose_value">Enter the glucose value</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
 
     <!-- Color.kt-->
     <string name="color">Color</string>
-    <string name="color2"> - Color</string>
+    <string name="color2">" - Color"</string>
     <!-- Home.kt-->
-    <string name="connected_devices">Connected Devices</string>
-    <string name="enabled_dual_mode">User Mode</string>
+    <string name="user_mode">User Mode</string>
+    <string name="enabled_dual_mode">Dual mode</string>
     <string name="first_user">First User</string>
     <string name="second_user">Second User</string>
     <string name="setting">Setting</string>

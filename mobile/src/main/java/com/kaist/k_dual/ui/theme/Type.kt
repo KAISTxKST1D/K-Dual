@@ -51,6 +51,12 @@ fun TypographyPreview() {
         Text("Body Large", style = Typography.bodyLarge)
         Text("Body Medium", style = Typography.bodyMedium)
         Text("Label Large", style = Typography.labelLarge)
+        Text("헤드라인 스몰", style = Typography.headlineSmall)
+        Text("타이틀 라지", style = Typography.titleLarge)
+        Text("타이틀 스몰", style = Typography.titleSmall)
+        Text("바디 라지", style = Typography.bodyLarge)
+        Text("바디 미디움", style = Typography.bodyMedium)
+        Text("라벨 라지", style = Typography.labelLarge)
     }
 }
 

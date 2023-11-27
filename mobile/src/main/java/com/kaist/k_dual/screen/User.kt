@@ -57,7 +57,11 @@ fun UserScreen(
     val userSetting =
         if (isFirst) ManageSetting.settings.firstUserSetting else ManageSetting.settings.secondUserSetting
     val alert =
-        "${if (userSetting.vibrationEnabled) "On" else "Off"} / ${if (userSetting.colorBlinkEnabled) "On" else "Off"} / ${userSetting.lowValue}-${userSetting.highValue}"
+        "${if (userSetting.vibrationEnabled) stringResource(id = R.string.on) else stringResource(id = R.string.off)} / ${
+            if (userSetting.colorBlinkEnabled) stringResource(
+                id = R.string.on
+            ) else stringResource(id = R.string.off)
+        } / ${userSetting.lowValue}-${userSetting.highValue}"
 
     var isNameDialogOpen by remember { mutableStateOf(false) }
     var isNightscoutURLDialogOpen by remember { mutableStateOf(false) }
@@ -288,7 +292,7 @@ fun UserScreen(
                                 stringResource(R.string.enter_the_website_link)
                             } else {
                                 stringResource(R.string.enter_the_website_link2)
-                                   },
+                            },
                             outlinedInputParameters = OutlinedInputParameters(
                                 placeholder = stringResource(R.string.enter_or_paste_url),
                                 label = stringResource(R.string.url),
@@ -349,10 +353,10 @@ fun UserScreen(
                             onDismiss = { isDexcomURLDialogOpen = false },
                             title = stringResource(R.string.dexcom_account),
                             description = if (isFirst) {
-                                    stringResource(R.string.enter_the_dexcom_id)
-                                } else {
-                                    stringResource(R.string.enter_the_dexcom_id2)
-                                },
+                                stringResource(R.string.enter_the_dexcom_id)
+                            } else {
+                                stringResource(R.string.enter_the_dexcom_id2)
+                            },
                             outlinedInputParameters1 = OutlinedInputParameters(
                                 placeholder = stringResource(R.string.ex_user1),
                                 label = stringResource(R.string.id),

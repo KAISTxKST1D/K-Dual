@@ -83,7 +83,8 @@ class MainActivity : ComponentActivity() {
                             onFailure = {
                                 isConnected = false
                                 isDialogOpen = true
-                            }
+                            },
+                            context = context
                         )
                     }
 
@@ -94,9 +95,11 @@ class MainActivity : ComponentActivity() {
                             userClosed = true
                             isDialogOpen = false
                         },
+                        onAnimationFinish = {
+                            isConnected = false
+                        }
                     )
 
-                    // TODO. Show animation when success
                     val onSendMessageFailed = {
                         isConnected = false
                         userClosed = false
@@ -112,11 +115,8 @@ class MainActivity : ComponentActivity() {
                                 isDialogOpen = false
                             },
                             isFirstTrial = false,
-                            onFailure = {
-                                if (!userClosed) {
-                                    isDialogOpen = true
-                                }
-                            }
+                            onFailure = {},
+                            context = context
                         )
                     }
 
