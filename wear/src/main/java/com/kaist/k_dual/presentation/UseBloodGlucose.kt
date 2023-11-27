@@ -1,9 +1,14 @@
 package com.kaist.k_dual.presentation
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.JsonParseException
+import com.google.gson.JsonSyntaxException
 import com.kaist.k_canvas.DeviceType
 import com.kaist.k_canvas.GlucoseUnits
 import com.kaist.k_canvas.PREFERENCES_FILE_KEY
+import com.kaist.k_canvas.SETTINGS_KEY
+import com.kaist.k_canvas.Setting
 import com.kaist.k_dual.model.ConfigurationProps
 import com.kaist.k_dual.model.DexcomClient
 import com.kaist.k_dual.model.DexcomServer
@@ -38,18 +43,33 @@ object UseBloodGlucose {
             Context.MODE_PRIVATE
         )
 
-        val settings = UseSetting.settings ?: return
+        val jsonString = sharedPref.getString(SETTINGS_KEY, null)
+
+        val settings = if (jsonString != null) {
+            try {
+                Gson().fromJson(jsonString, Setting::class.java)
+            } catch (e: JsonSyntaxException) {
+                null
+            } catch (e: JsonParseException) {
+                null
+            }
+        } else {
+            null
+        } ?: return
 
         val glucoseUnit = settings.glucoseUnits
 
         CoroutineScope(Dispatchers.Main).launch {
             when (settings.firstUserSetting.deviceType) {
                 DeviceType.Nightscout -> {
-                    val dataArray = getNightScoutData(url = UseSetting.settings!!.firstUserSetting.nightscoutUrl, glucoseUnit = glucoseUnit)
+                    val dataArray = getNightScoutData(
+                        url = UseSetting.settings!!.firstUserSetting.nightscoutUrl,
+                        glucoseUnit = glucoseUnit
+                    )
                     if (dataArray.isNotEmpty()) {
                         firstUserGraphNightScoutData = dataArray[0] as List<nightScoutData>
                         firstUser = dataArray[1] as String
-                        firstUserDiff  = dataArray[2] as String
+                        firstUserDiff = dataArray[2] as String
                     }
                 }
 
@@ -63,18 +83,21 @@ object UseBloodGlucose {
                     if (dataArray.isNotEmpty()) {
                         firstUserGraphDexcomData = dataArray[0] as List<GlucoseEntry>
                         firstUser = dataArray[1] as String
-                        firstUserDiff  = dataArray[2] as String
+                        firstUserDiff = dataArray[2] as String
                     }
                 }
             }
             if (settings.enableDualMode) {
                 when (settings.secondUserSetting.deviceType) {
                     DeviceType.Nightscout -> {
-                        val dataArray = getNightScoutData(url = UseSetting.settings!!.secondUserSetting.nightscoutUrl, glucoseUnit = glucoseUnit)
+                        val dataArray = getNightScoutData(
+                            url = UseSetting.settings!!.secondUserSetting.nightscoutUrl,
+                            glucoseUnit = glucoseUnit
+                        )
                         if (dataArray.isNotEmpty()) {
                             secondUserGraphNightScoutData = dataArray[0] as List<nightScoutData>
                             secondUser = dataArray[1] as String
-                            secondUserDiff  = dataArray[2] as String
+                            secondUserDiff = dataArray[2] as String
                         }
                     }
 
@@ -83,11 +106,12 @@ object UseBloodGlucose {
                             dexcomId = settings.secondUserSetting.dexcomId,
                             dexcomPassword = settings.secondUserSetting.dexcomPassword,
                             latestGlucoseProps,
-                            glucoseUnit = glucoseUnit)
+                            glucoseUnit = glucoseUnit
+                        )
                         if (dataArray.isNotEmpty()) {
                             secondUserGraphDexcomData = dataArray[0] as List<GlucoseEntry>
                             secondUser = dataArray[1] as String
-                            secondUserDiff  = dataArray[2] as String
+                            secondUserDiff = dataArray[2] as String
                         }
                     }
                 }
