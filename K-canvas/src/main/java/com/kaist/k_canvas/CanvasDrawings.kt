@@ -10,6 +10,8 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Typeface
 import kotlin.math.abs
+//import androidx.compose.ui.res.stringResource
+//import com.kaist.k_canvas.R
 
 private fun getUnitF(width: Int): Float { return width / 192f }
 private fun getMHorizontal(unitF: Float, isDualMode: Boolean): Float {
@@ -121,7 +123,9 @@ class KCanvas {
 
             // Draw info text
             val textBounds = Rect()
-            val info1 = "Requires\nUser Setup"
+            val info1 = context.resources.getString(R.string.K_info1)
+            //val info1 = stringResource(R.string.K_info1)
+            //val info1 = "Requires\nUser Setup"
             val info2 = "Return to the mobile app\non your smartphone\nto complete setup."
             val info1Paint = KPaint.setupInfoPaint(1, unitF, typeface)
             val info2Paint = KPaint.setupInfoPaint(2, unitF, typeface)
@@ -143,6 +147,7 @@ class KCanvas {
                 yPos += info2LineHeight
             }
         }
+
 
         fun drawIconAndUserName(
             canvas: Canvas,
