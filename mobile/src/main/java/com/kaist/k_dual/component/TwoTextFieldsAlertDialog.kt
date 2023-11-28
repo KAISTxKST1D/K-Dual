@@ -107,6 +107,7 @@ fun TwoTextFieldsAlertDialog(
                                 textValue1
                             ),
                             maxLines = 1,
+                            singleLine = true,
                         )
                         OutlinedTextField(
                             modifier = outlinedInputParameters2.modifier
@@ -145,6 +146,7 @@ fun TwoTextFieldsAlertDialog(
                                 textValue2
                             ),
                             maxLines = 1,
+                            singleLine = true,
                         )
 
                     }

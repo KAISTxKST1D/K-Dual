@@ -19,11 +19,21 @@ import com.kaist.k_dual.presentation.theme.KDualTheme
 class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
+        UseSetting.initialize(this)
         val userId = intent.getIntExtra("routeGraph", 0)
         setContent {
-            UseSetting.initialize(LocalContext.current)
             WearApp(userId)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        UseSetting.registerListener()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        UseSetting.unregisterListener()
     }
 }
 
