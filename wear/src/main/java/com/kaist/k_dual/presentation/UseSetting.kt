@@ -19,6 +19,10 @@ object UseSetting {
     private val gson = Gson()
     var settings: Setting? by mutableStateOf(null)
 
+    private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
+        updateSettings()
+    }
+
     private fun updateSettings() {
         val jsonString = sharedPreferences.getString(SETTINGS_KEY, null)
         Log.d("updateSettings", jsonString ?: "")
@@ -35,13 +39,16 @@ object UseSetting {
         }
     }
 
-    fun initialize(
-        context: Context,
-    ) {
+    fun initialize(context: Context) {
         sharedPreferences = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE)
-        sharedPreferences.registerOnSharedPreferenceChangeListener { _, _ ->
-            updateSettings()
-        }
         updateSettings()
+    }
+
+    fun registerListener() {
+        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
+    }
+
+    fun unregisterListener() {
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
     }
 }

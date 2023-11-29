@@ -135,7 +135,7 @@ fun UserScreen(
                         outlinedInputParameters = OutlinedInputParameters(
                             placeholder = stringResource(R.string.enter_name),
                             label = stringResource(R.string.name),
-                            maxLength = 10,
+                            maxLength = 8,
                             allowEmpty = true,
                         )
                     )
