@@ -80,7 +80,7 @@ class DexcomClient(configurationProps: ConfigurationProps) {
 
     private val service: DexcomApiService = retrofit.create(DexcomApiService::class.java)
 
-    suspend fun getAccountId(): String? {
+    private suspend fun getAccountId(): String? {
         return withContext(Dispatchers.IO) {
             try {
                 val response = service.authenticate(
@@ -107,7 +107,7 @@ class DexcomClient(configurationProps: ConfigurationProps) {
         }
     }
 
-    suspend fun getSessionId(): String? {
+    private suspend fun getSessionId(): String? {
         return withContext(Dispatchers.IO) {
             try {
                 val accountId = getAccountId() ?: return@withContext null
@@ -155,6 +155,9 @@ class DexcomClient(configurationProps: ConfigurationProps) {
                         }"
                     )
                 }
+
+                Log.d("getEstimatedGlucoseValues", "${response.code()} ${response.body()}")
+
 
                 val dexcomEntries = response.body() ?: throw Exception("Response body is null")
 

@@ -42,6 +42,7 @@ import com.google.gson.JsonSyntaxException
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
+import android.util.Log
 import com.kaist.k_dual.presentation.UseBloodGlucose
 
 class KDualCanvasRenderer(
@@ -88,14 +89,18 @@ class KDualCanvasRenderer(
         PREFERENCES_FILE_KEY,
         Context.MODE_PRIVATE
     )
-    private val sharedPrefChangeListener =
+    private val sharedPreferenceChangeListener = {
+        updateSettings()
+        updateBloodGlucoseTask.run()
+        invalidate()
+    }
+    private val onSharedPreferenceChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
-            updateSettings()
-            updateBloodGlucoseTask.run()
-            invalidate()
+            sharedPreferenceChangeListener()
         }
     private val updateSettings: () -> Unit = {
         val jsonString = sharedPref.getString(SETTINGS_KEY, null)
+        Log.d("updateSettings", jsonString ?: "")
         settings = if (jsonString != null) {
             try {
                 gson.fromJson(jsonString, Setting::class.java)
@@ -158,7 +163,7 @@ class KDualCanvasRenderer(
 
     init {
         context.registerReceiver(batteryReceiver, intentFilter)
-        sharedPref.registerOnSharedPreferenceChangeListener(sharedPrefChangeListener)
+        sharedPref.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
         updateSettings()
         updateBloodGlucoseTask.run()
         checkAlertConditionTask.run()
@@ -248,8 +253,20 @@ class KDualCanvasRenderer(
                     robotoRegular
                 )
 
-                KCanvas.drawBloodGlucose(canvas, 1, UseBloodGlucose.firstUser, it.glucoseUnits, robotoMedium)
-                KCanvas.drawBloodGlucose(canvas, 2, UseBloodGlucose.secondUser, it.glucoseUnits, robotoMedium)
+                KCanvas.drawBloodGlucose(
+                    canvas,
+                    1,
+                    UseBloodGlucose.firstUser,
+                    it.glucoseUnits,
+                    robotoMedium
+                )
+                KCanvas.drawBloodGlucose(
+                    canvas,
+                    2,
+                    UseBloodGlucose.secondUser,
+                    it.glucoseUnits,
+                    robotoMedium
+                )
             } else {
                 KCanvas.drawBackgroundBox(
                     canvas,
@@ -264,7 +281,13 @@ class KDualCanvasRenderer(
                     it.firstUserSetting.color,
                     robotoMedium
                 )
-                KCanvas.drawBloodGlucose(canvas, null, UseBloodGlucose.firstUser, it.glucoseUnits, robotoMedium)
+                KCanvas.drawBloodGlucose(
+                    canvas,
+                    null,
+                    UseBloodGlucose.firstUser,
+                    it.glucoseUnits,
+                    robotoMedium
+                )
                 KCanvas.drawDiffArrowBox(
                     canvas,
                     context,

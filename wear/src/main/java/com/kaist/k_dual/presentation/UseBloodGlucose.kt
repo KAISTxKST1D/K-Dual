@@ -1,6 +1,9 @@
 package com.kaist.k_dual.presentation
 
 import android.content.Context
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
@@ -19,6 +22,7 @@ import com.kaist.k_dual.model.Trend
 import com.kaist.k_dual.model.nightScoutData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.math.RoundingMode
 import kotlin.math.round
@@ -28,14 +32,31 @@ val defaultGraphNightScoutData: List<nightScoutData> =
 val defaultGraphDexcomData: List<GlucoseEntry> = listOf(GlucoseEntry(0, 0.0, Trend.FLAT, 0))
 
 object UseBloodGlucose {
-    var firstUser: String = "-"
-    var secondUser: String = "-"
-    var firstUserDiff: String = "0"
-    var secondUserDiff: String = "0"
-    var firstUserGraphNightScoutData = defaultGraphNightScoutData
-    var secondUserGraphNightScoutData = defaultGraphNightScoutData
-    var firstUserGraphDexcomData = defaultGraphDexcomData
-    var secondUserGraphDexcomData = defaultGraphDexcomData
+    private var _firstUser = mutableStateOf("-")
+    var firstUser: String by _firstUser
+
+    private var _secondUser = mutableStateOf("-")
+    var secondUser: String by _secondUser
+
+    private var _firstUserDiff = mutableStateOf("0")
+    var firstUserDiff: String by _firstUserDiff
+
+    private var _secondUserDiff = mutableStateOf("0")
+    var secondUserDiff: String by _secondUserDiff
+
+    private var _firstUserGraphNightScoutData = mutableStateOf(defaultGraphNightScoutData)
+    var firstUserGraphNightScoutData: List<nightScoutData> by _firstUserGraphNightScoutData
+
+    private var _secondUserGraphNightScoutData = mutableStateOf(defaultGraphNightScoutData)
+    var secondUserGraphNightScoutData: List<nightScoutData> by _secondUserGraphNightScoutData
+
+    private var _firstUserGraphDexcomData = mutableStateOf(defaultGraphDexcomData)
+    var firstUserGraphDexcomData: List<GlucoseEntry> by _firstUserGraphDexcomData
+
+    private var _secondUserGraphDexcomData = mutableStateOf(defaultGraphDexcomData)
+    var secondUserGraphDexcomData: List<GlucoseEntry> by _secondUserGraphDexcomData
+
+    private var updateJob: Job? = null
 
     fun updateBloodGlucose(context: Context) {
         val latestGlucoseProps = LatestGlucoseProps(180, 36)
@@ -61,7 +82,9 @@ object UseBloodGlucose {
 
         val glucoseUnit = settings.glucoseUnits
 
-        CoroutineScope(Dispatchers.Main).launch {
+        updateJob?.cancel()
+
+        updateJob = CoroutineScope(Dispatchers.Main).launch {
             when (settings.firstUserSetting.deviceType) {
                 DeviceType.Nightscout -> {
                     val dataArray = getNightScoutData(
