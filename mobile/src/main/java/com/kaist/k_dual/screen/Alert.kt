@@ -14,7 +14,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.kaist.k_canvas.UserSetting
 import com.kaist.k_dual.R
 import com.kaist.k_dual.component.BackButtonTitleRow
 import com.kaist.k_dual.component.Divider
@@ -47,6 +47,19 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
 
     var isLowValueDialogOpen by remember { mutableStateOf(false) }
     var isHighValueDialogOpen by remember { mutableStateOf(false) }
+
+    fun saveUserSettings(updatedUserSetting: UserSetting) {
+        val updatedSettings = if (isFirst) {
+            ManageSetting.settings.copy(firstUserSetting = updatedUserSetting)
+        } else {
+            ManageSetting.settings.copy(secondUserSetting = updatedUserSetting)
+        }
+        ManageSetting.saveSettings(
+            settings = updatedSettings,
+            context = context,
+            onSendMessageFailed = onSendMessageFailed
+        )
+    }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -74,42 +87,10 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                 )
                 MultipleRowWhiteBox {
                     val onClickVibration = {
-                        if (isFirst) {
-                            ManageSetting.saveSettings(
-                                settings = ManageSetting.settings.copy(
-                                    firstUserSetting = userSetting.copy(vibrationEnabled = !userSetting.vibrationEnabled)
-                                ),
-                                context = context,
-                                onSendMessageFailed = onSendMessageFailed
-                            )
-                        } else {
-                            ManageSetting.saveSettings(
-                                settings = ManageSetting.settings.copy(
-                                    secondUserSetting = userSetting.copy(vibrationEnabled = !userSetting.vibrationEnabled)
-                                ),
-                                context = context,
-                                onSendMessageFailed = onSendMessageFailed
-                            )
-                        }
+                        saveUserSettings(userSetting.copy(vibrationEnabled = !userSetting.vibrationEnabled))
                     }
                     val onClickColorBlink = {
-                        if (isFirst) {
-                            ManageSetting.saveSettings(
-                                settings = ManageSetting.settings.copy(
-                                    firstUserSetting = userSetting.copy(colorBlinkEnabled = !userSetting.colorBlinkEnabled)
-                                ),
-                                context = context,
-                                onSendMessageFailed = onSendMessageFailed
-                            )
-                        } else {
-                            ManageSetting.saveSettings(
-                                settings = ManageSetting.settings.copy(
-                                    secondUserSetting = userSetting.copy(colorBlinkEnabled = !userSetting.colorBlinkEnabled)
-                                ),
-                                context = context,
-                                onSendMessageFailed = onSendMessageFailed
-                            )
-                        }
+                        saveUserSettings(userSetting.copy(colorBlinkEnabled = !userSetting.colorBlinkEnabled))
                     }
 
                     Row(
@@ -160,42 +141,10 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                 )
                 MultipleRowWhiteBox {
                     val onChangeLowValue = { lowValue: Int ->
-                        if (isFirst) {
-                            ManageSetting.saveSettings(
-                                settings = ManageSetting.settings.copy(
-                                    firstUserSetting = userSetting.copy(lowValue = lowValue)
-                                ),
-                                context = context,
-                                onSendMessageFailed = onSendMessageFailed
-                            )
-                        } else {
-                            ManageSetting.saveSettings(
-                                settings = ManageSetting.settings.copy(
-                                    secondUserSetting = userSetting.copy(lowValue = lowValue)
-                                ),
-                                context = context,
-                                onSendMessageFailed = onSendMessageFailed
-                            )
-                        }
+                        saveUserSettings(userSetting.copy(lowValue = lowValue))
                     }
                     val onChangeHighValue = { highValue: Int ->
-                        if (isFirst) {
-                            ManageSetting.saveSettings(
-                                settings = ManageSetting.settings.copy(
-                                    firstUserSetting = userSetting.copy(highValue = highValue)
-                                ),
-                                context = context,
-                                onSendMessageFailed = onSendMessageFailed
-                            )
-                        } else {
-                            ManageSetting.saveSettings(
-                                settings = ManageSetting.settings.copy(
-                                    secondUserSetting = userSetting.copy(highValue = highValue)
-                                ),
-                                context = context,
-                                onSendMessageFailed = onSendMessageFailed
-                            )
-                        }
+                        saveUserSettings(userSetting.copy(highValue = highValue))
                     }
 
                     Row(

@@ -42,6 +42,7 @@ import com.kaist.k_dual.component.SingleRowWhiteBox
 import com.kaist.k_dual.component.TextFieldAlertDialog
 import com.kaist.k_dual.component.TwoTextFieldsAlertDialog
 import com.kaist.k_canvas.DeviceType
+import com.kaist.k_canvas.UserSetting
 import com.kaist.k_dual.R
 import com.kaist.k_dual.model.ManageSetting
 import com.kaist.k_dual.ui.theme.KDualTheme
@@ -66,6 +67,19 @@ fun UserScreen(
     var isNameDialogOpen by remember { mutableStateOf(false) }
     var isNightscoutURLDialogOpen by remember { mutableStateOf(false) }
     var isDexcomURLDialogOpen by remember { mutableStateOf(false) }
+
+    fun saveUserSettings(updatedUserSetting: UserSetting) {
+        val updatedSettings = if (isFirst) {
+            ManageSetting.settings.copy(firstUserSetting = updatedUserSetting)
+        } else {
+            ManageSetting.settings.copy(secondUserSetting = updatedUserSetting)
+        }
+        ManageSetting.saveSettings(
+            settings = updatedSettings,
+            context = context,
+            onSendMessageFailed = onSendMessageFailed
+        )
+    }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -106,23 +120,7 @@ fun UserScreen(
                     TextFieldAlertDialog(
                         isOpen = isNameDialogOpen,
                         onConfirm = {
-                            if (isFirst) {
-                                ManageSetting.saveSettings(
-                                    settings = ManageSetting.settings.copy(
-                                        firstUserSetting = userSetting.copy(name = it)
-                                    ),
-                                    context = context,
-                                    onSendMessageFailed = onSendMessageFailed
-                                )
-                            } else {
-                                ManageSetting.saveSettings(
-                                    settings = ManageSetting.settings.copy(
-                                        secondUserSetting = userSetting.copy(name = it)
-                                    ),
-                                    context = context,
-                                    onSendMessageFailed = onSendMessageFailed
-                                )
-                            }
+                            saveUserSettings(userSetting.copy(name = it))
                             isNameDialogOpen = false
                         },
                         onDismiss = { isNameDialogOpen = false },
@@ -199,19 +197,7 @@ fun UserScreen(
             )
             MultipleRowWhiteBox {
                 val onClick = { deviceType: DeviceType ->
-                    if (isFirst) {
-                        ManageSetting.saveSettings(
-                            settings = ManageSetting.settings.copy(
-                                firstUserSetting = userSetting.copy(deviceType = deviceType)
-                            ), context = context, onSendMessageFailed = onSendMessageFailed
-                        )
-                    } else {
-                        ManageSetting.saveSettings(
-                            settings = ManageSetting.settings.copy(
-                                secondUserSetting = userSetting.copy(deviceType = deviceType)
-                            ), context = context, onSendMessageFailed = onSendMessageFailed
-                        )
-                    }
+                    saveUserSettings(userSetting.copy(deviceType = deviceType))
                 }
                 DeviceType.values().mapIndexed { index, deviceType ->
                     Row(
@@ -267,23 +253,7 @@ fun UserScreen(
                         TextFieldAlertDialog(
                             isOpen = isNightscoutURLDialogOpen,
                             onConfirm = {
-                                if (isFirst) {
-                                    ManageSetting.saveSettings(
-                                        settings = ManageSetting.settings.copy(
-                                            firstUserSetting = userSetting.copy(nightscoutUrl = it)
-                                        ),
-                                        context = context,
-                                        onSendMessageFailed = onSendMessageFailed
-                                    )
-                                } else {
-                                    ManageSetting.saveSettings(
-                                        settings = ManageSetting.settings.copy(
-                                            secondUserSetting = userSetting.copy(nightscoutUrl = it)
-                                        ),
-                                        context = context,
-                                        onSendMessageFailed = onSendMessageFailed
-                                    )
-                                }
+                                saveUserSettings(userSetting.copy(nightscoutUrl = it))
                                 isNightscoutURLDialogOpen = false
                             },
                             onDismiss = { isNightscoutURLDialogOpen = false },
@@ -325,29 +295,12 @@ fun UserScreen(
                         TwoTextFieldsAlertDialog(
                             isOpen = isDexcomURLDialogOpen,
                             onConfirm = { id, password ->
-                                if (isFirst) {
-                                    ManageSetting.saveSettings(
-                                        settings = ManageSetting.settings.copy(
-                                            firstUserSetting = userSetting.copy(
-                                                dexcomId = id,
-                                                dexcomPassword = password
-                                            )
-                                        ),
-                                        context = context,
-                                        onSendMessageFailed = onSendMessageFailed
+                                saveUserSettings(
+                                    userSetting.copy(
+                                        dexcomId = id,
+                                        dexcomPassword = password
                                     )
-                                } else {
-                                    ManageSetting.saveSettings(
-                                        settings = ManageSetting.settings.copy(
-                                            secondUserSetting = userSetting.copy(
-                                                dexcomId = id,
-                                                dexcomPassword = password
-                                            )
-                                        ),
-                                        context = context,
-                                        onSendMessageFailed = onSendMessageFailed
-                                    )
-                                }
+                                )
                                 isDexcomURLDialogOpen = false
                             },
                             onDismiss = { isDexcomURLDialogOpen = false },

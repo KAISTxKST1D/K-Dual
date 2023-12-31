@@ -27,7 +27,7 @@ import com.kaist.k_dual.R
 import com.kaist.k_dual.ui.theme.Background
 import com.kaist.k_dual.ui.theme.RedUISolid
 import com.kaist.k_dual.ui.theme.KDualTheme
-import java.lang.Integer.min
+import kotlin.math.min
 
 @Composable
 fun TextFieldAlertDialog(
