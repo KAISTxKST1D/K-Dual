@@ -1,6 +1,5 @@
 package com.kaist.k_dual.presentation
 
-import GlucoseUpdateService
 import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
@@ -18,6 +16,7 @@ import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.kaist.k_dual.model.UseSetting
 import com.kaist.k_dual.presentation.theme.KDualTheme
+import com.kaist.k_dual.service.GlucoseUpdateService
 
 class MainActivity : ComponentActivity() {
     override fun onStart() {
