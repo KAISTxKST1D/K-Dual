@@ -16,10 +16,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,7 +40,7 @@ fun TextFieldAlertDialog(
     description: String,
     outlinedInputParameters: OutlinedInputParameters
 ) {
-    var textValue by remember { mutableStateOf("") }
+    var textFieldValue by remember { mutableStateOf(TextFieldValue(outlinedInputParameters.initialValue)) }
 
     val customColorScheme = lightColorScheme(
         surface = Background
@@ -56,7 +57,7 @@ fun TextFieldAlertDialog(
             AlertDialog(
                 modifier = modifier,
                 onDismissRequest = {
-                    textValue = ""
+                    textFieldValue = textFieldValue.copy(text = "")
                     onDismiss()
                 },
                 title = {
@@ -77,16 +78,28 @@ fun TextFieldAlertDialog(
                         OutlinedTextField(
                             modifier = outlinedInputParameters.modifier
                                 .padding(vertical = 16.dp)
-                                .focusRequester(focusRequester),
-                            value = textValue,
-                            onValueChange = {
-                                textValue = if (outlinedInputParameters.maxLength != null) {
-                                    it.substring(
-                                        0,
-                                        min(it.length, outlinedInputParameters.maxLength)
+                                .focusRequester(focusRequester)
+                                .onFocusChanged { focusState ->
+                                    if (focusState.isFocused) {
+                                        textFieldValue =
+                                            textFieldValue.copy(selection = TextRange(textFieldValue.text.length))
+                                    }
+                                },
+                            value = textFieldValue,
+                            onValueChange = { newValue ->
+                                textFieldValue = if (outlinedInputParameters.maxLength != null) {
+                                    TextFieldValue(
+                                        text = newValue.text.substring(
+                                            0,
+                                            min(
+                                                newValue.text.length,
+                                                outlinedInputParameters.maxLength
+                                            )
+                                        ),
+                                        selection = TextRange(newValue.text.length)
                                     )
                                 } else {
-                                    it
+                                    newValue
                                 }
                             },
                             trailingIcon = {
@@ -99,7 +112,7 @@ fun TextFieldAlertDialog(
                                 }
                                 if (outlinedInputParameters.maxLength != null) {
                                     Text(
-                                        text = "${textValue.length}/${outlinedInputParameters.maxLength}",
+                                        text = "${textFieldValue.text.length}/${outlinedInputParameters.maxLength}",
                                         style = MaterialTheme.typography.bodyLarge,
                                         modifier = Modifier.padding(end = 16.dp),
                                         color = RedUISolid,
@@ -123,8 +136,8 @@ fun TextFieldAlertDialog(
                                 focusedPlaceholderColor = Color(0xFFA79C9E),
                             ),
                             keyboardOptions = outlinedInputParameters.keyboardOptions,
-                            isError = textValue.isNotEmpty() && !outlinedInputParameters.validation(
-                                textValue
+                            isError = textFieldValue.text.isNotEmpty() && !outlinedInputParameters.validation(
+                                textFieldValue.text
                             ),
                             maxLines = 1,
                             singleLine = true,
@@ -134,21 +147,27 @@ fun TextFieldAlertDialog(
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            onConfirm(textValue)
+                            onConfirm(textFieldValue.text)
                         },
-                        enabled = (outlinedInputParameters.allowEmpty || textValue.isNotEmpty())
-                                && outlinedInputParameters.validation(textValue),
+                        enabled = (outlinedInputParameters.allowEmpty || textFieldValue.text.isNotEmpty())
+                                && outlinedInputParameters.validation(textFieldValue.text),
                         colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)
                     ) {
-                        Text(stringResource(R.string.done), style = MaterialTheme.typography.labelLarge)
+                        Text(
+                            stringResource(R.string.done),
+                            style = MaterialTheme.typography.labelLarge
+                        )
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = {
-                        textValue = ""
+                        textFieldValue = textFieldValue.copy(text = "")
                         onDismiss()
                     }, colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)) {
-                        Text(stringResource(R.string.cancel), style = MaterialTheme.typography.labelLarge)
+                        Text(
+                            stringResource(R.string.cancel),
+                            style = MaterialTheme.typography.labelLarge
+                        )
                     }
                 },
             )
@@ -165,6 +184,7 @@ data class OutlinedInputParameters(
     val keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     val validation: (String) -> Boolean = { _ -> true },
     val allowEmpty: Boolean = false,
+    val initialValue: String = "",
 )
 
 @Preview
