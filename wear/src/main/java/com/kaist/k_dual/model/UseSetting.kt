@@ -1,4 +1,4 @@
-package com.kaist.k_dual.presentation
+package com.kaist.k_dual.model
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -9,7 +9,6 @@ import androidx.compose.runtime.setValue
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
-import com.kaist.k_canvas.DefaultSetting
 import com.kaist.k_canvas.PREFERENCES_FILE_KEY
 import com.kaist.k_canvas.SETTINGS_KEY
 import com.kaist.k_canvas.Setting

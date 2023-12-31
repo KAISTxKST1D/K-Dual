@@ -1,5 +1,7 @@
 package com.kaist.k_dual.presentation
 
+import GlucoseUpdateService
+import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -14,12 +16,14 @@ import androidx.navigation.navArgument
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
+import com.kaist.k_dual.model.UseSetting
 import com.kaist.k_dual.presentation.theme.KDualTheme
 
 class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         UseSetting.initialize(this)
+        startService(Intent(this, GlucoseUpdateService::class.java))
         val userId = intent.getIntExtra("routeGraph", 0)
         setContent {
             WearApp(userId)

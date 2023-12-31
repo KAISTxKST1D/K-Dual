@@ -1,4 +1,4 @@
-package com.kaist.k_dual.watchface
+package com.kaist.k_dual.service
 
 import android.view.SurfaceHolder
 import androidx.wear.watchface.CanvasType
@@ -8,6 +8,7 @@ import androidx.wear.watchface.WatchFaceService
 import androidx.wear.watchface.WatchFaceType
 import androidx.wear.watchface.WatchState
 import androidx.wear.watchface.style.CurrentUserStyleRepository
+import com.kaist.k_dual.watchface.KDualCanvasRenderer
 
 class KDualWatchFaceService : WatchFaceService() {
     override suspend fun createWatchFace(

@@ -31,6 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.wear.compose.material.MaterialTheme
 import com.kaist.k_canvas.KCanvas
 import com.kaist.k_dual.R
+import com.kaist.k_dual.model.UseSetting
 import com.kaist.k_dual.presentation.theme.KDualTheme
 
 @Composable

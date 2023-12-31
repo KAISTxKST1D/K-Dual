@@ -42,7 +42,8 @@ import com.google.gson.JsonSyntaxException
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
-import com.kaist.k_dual.presentation.UseBloodGlucose
+import android.util.Log
+import com.kaist.k_dual.model.UseBloodGlucose
 
 class KDualCanvasRenderer(
     private val context: Context,
@@ -110,7 +111,7 @@ class KDualCanvasRenderer(
     }
 
     private val handler = Handler(Looper.getMainLooper())
-    private val updateInterval = 5 * 60 * 1000L
+    private val updateInterval = 30 * 1000L
 
     private val updateBloodGlucoseTask = object : Runnable {
         override fun run() {
