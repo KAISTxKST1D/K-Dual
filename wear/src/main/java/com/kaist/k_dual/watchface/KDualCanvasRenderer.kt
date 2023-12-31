@@ -42,7 +42,6 @@ import com.google.gson.JsonSyntaxException
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
-import android.util.Log
 import com.kaist.k_dual.model.UseBloodGlucose
 
 class KDualCanvasRenderer(
