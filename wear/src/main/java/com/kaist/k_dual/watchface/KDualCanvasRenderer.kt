@@ -43,6 +43,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 import com.kaist.k_dual.model.UseBloodGlucose
+import com.kaist.k_dual.service.GlucoseUpdateService
 
 class KDualCanvasRenderer(
     private val context: Context,
@@ -91,7 +92,6 @@ class KDualCanvasRenderer(
     private val sharedPrefChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
             updateSettings()
-            updateBloodGlucoseTask.run()
             invalidate()
         }
     private val updateSettings: () -> Unit = {
@@ -110,15 +110,7 @@ class KDualCanvasRenderer(
     }
 
     private val handler = Handler(Looper.getMainLooper())
-    private val updateInterval = 30 * 1000L
-
-    private val updateBloodGlucoseTask = object : Runnable {
-        override fun run() {
-            UseBloodGlucose.updateBloodGlucose(context)
-            invalidate()
-            handler.postDelayed(this, updateInterval)
-        }
-    }
+    private val updateInterval = 5 * 60 * 1000L
 
     private val checkAlertConditionTask = object : Runnable {
         override fun run() {
@@ -160,15 +152,17 @@ class KDualCanvasRenderer(
         context.registerReceiver(batteryReceiver, intentFilter)
         sharedPref.registerOnSharedPreferenceChangeListener(sharedPrefChangeListener)
         updateSettings()
-        updateBloodGlucoseTask.run()
         checkAlertConditionTask.run()
+        val intent = Intent(context, GlucoseUpdateService::class.java)
+        context.startService(intent)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         context.unregisterReceiver(batteryReceiver)
-        handler.removeCallbacks(updateBloodGlucoseTask)
         handler.removeCallbacks(checkAlertConditionTask)
+        val intent = Intent(context, GlucoseUpdateService::class.java)
+        context.stopService(intent)
     }
 
     override suspend fun createSharedAssets(): KDualAssets {
