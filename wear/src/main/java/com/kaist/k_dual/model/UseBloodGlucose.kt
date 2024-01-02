@@ -199,7 +199,8 @@ object UseBloodGlucose {
                     NightScout().getBGDataByUrl(formattedUrl).getOrNull()
                         ?: return@launch
                 if (recentThreeHourGlucoseData.size < 2) return@launch
-                dataArray.add(recentThreeHourGlucoseData)
+                val sortedGlucoseData = recentThreeHourGlucoseData.sortedBy { it.date }
+                dataArray.add(sortedGlucoseData)
                 val recentGlucoseData = recentThreeHourGlucoseData[0].sgv
                 val secondGlucoseData = recentThreeHourGlucoseData[1].sgv
                 when (glucoseUnit) {
@@ -245,7 +246,8 @@ object UseBloodGlucose {
                         ?: return@launch
                 if (glucoseData.size < 2) return@launch
 
-                dataArray.add(glucoseData)
+                val sortedGlucoseData = glucoseData.sortedBy { it.timestamp }
+                dataArray.add(sortedGlucoseData)
                 val currentGlucoseData: GlucoseEntry = glucoseData[0]
                 val secondGlucoseData: GlucoseEntry = glucoseData[1]
                 when (glucoseUnit) {
