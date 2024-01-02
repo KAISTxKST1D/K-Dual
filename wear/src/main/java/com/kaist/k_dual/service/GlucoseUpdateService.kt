@@ -15,7 +15,7 @@ class GlucoseUpdateService : Service() {
         serviceScope.launch {
             while (true) {
                 UseBloodGlucose.updateBloodGlucose(applicationContext)
-                delay(5 * 60 * 1000L) // delay for 5 minutes
+                delay(30 * 1000L)
             }
         }
         return START_STICKY
