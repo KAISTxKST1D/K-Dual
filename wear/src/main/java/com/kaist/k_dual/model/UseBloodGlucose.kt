@@ -22,45 +22,6 @@ val defaultGraphNightScoutData: List<NightScoutData> =
     listOf(NightScoutData("", "", 0, "", 0.0, 0.0f, "", "", "", "", 0, 0, "", 0))
 val defaultGraphDexcomData: List<GlucoseEntry> = listOf(GlucoseEntry(0, 0.0, Trend.FLAT, 0))
 
-val dummyGraphDexcomData: List<GlucoseEntry> = listOf(
-    GlucoseEntry(81, 4.5, Trend.FLAT, 1701343513311L),
-    GlucoseEntry(79, 4.4, Trend.SINGLEDOWN, 1701343813311L),
-    GlucoseEntry(180, 10.0, Trend.FLAT, 1701344113311L),
-    GlucoseEntry(125, 6.9, Trend.SINGLEUP, 1701344413311L),
-    GlucoseEntry(147, 8.2, Trend.SINGLEDOWN, 1701344713311L),
-    GlucoseEntry(102, 5.7, Trend.FLAT, 1701345013311L),
-    GlucoseEntry(166, 9.2, Trend.SINGLEUP, 1701345313311L),
-    GlucoseEntry(163, 9.1, Trend.SINGLEDOWN, 1701345613311L),
-    GlucoseEntry(103, 5.7, Trend.SINGLEDOWN, 1701345913311L),
-    GlucoseEntry(89, 4.9, Trend.SINGLEUP, 1701346213311L),
-    GlucoseEntry(88, 4.9, Trend.FLAT, 1701346513311L),
-    GlucoseEntry(75, 4.2, Trend.FLAT, 1701346813311L),
-    GlucoseEntry(161, 8.9, Trend.SINGLEDOWN, 1701347113311L),
-    GlucoseEntry(109, 6.1, Trend.SINGLEDOWN, 1701347413311L),
-    GlucoseEntry(130, 7.2, Trend.FLAT, 1701347713311L),
-    GlucoseEntry(173, 9.6, Trend.FLAT, 1701348013311L),
-    GlucoseEntry(139, 7.7, Trend.SINGLEDOWN, 1701348313311L),
-    GlucoseEntry(80, 4.4, Trend.FLAT, 1701348613311L),
-    GlucoseEntry(157, 8.7, Trend.FLAT, 1701348913311L),
-    GlucoseEntry(120, 6.7, Trend.SINGLEDOWN, 1701349213311L),
-    GlucoseEntry(153, 8.5, Trend.FLAT, 1701349513311L),
-    GlucoseEntry(93, 5.2, Trend.SINGLEUP, 1701349813311L),
-    GlucoseEntry(129, 7.2, Trend.FLAT, 1701350113311L),
-    GlucoseEntry(163, 9.1, Trend.SINGLEDOWN, 1701350413311L),
-    GlucoseEntry(155, 8.6, Trend.FLAT, 1701350713311L),
-    GlucoseEntry(147, 8.2, Trend.SINGLEDOWN, 1701351013311L),
-    GlucoseEntry(125, 6.9, Trend.SINGLEDOWN, 1701351313311L),
-    GlucoseEntry(159, 8.8, Trend.FLAT, 1701351613311L),
-    GlucoseEntry(133, 7.4, Trend.FLAT, 1701351913311L),
-    GlucoseEntry(129, 7.2, Trend.FLAT, 1701352213311L),
-    GlucoseEntry(113, 6.3, Trend.FLAT, 1701352513311L),
-    GlucoseEntry(167, 9.3, Trend.SINGLEUP, 1701352813311L),
-    GlucoseEntry(148, 8.2, Trend.FLAT, 1701353113311L),
-    GlucoseEntry(150, 8.3, Trend.FLAT, 1701353413311L),
-    GlucoseEntry(108, 6.0, Trend.SINGLEUP, 1701353713311L),
-    GlucoseEntry(176, 9.8, Trend.SINGLEUP, 1701354013311L)
-)
-
 object UseBloodGlucose {
     private var _firstUser = mutableStateOf("-")
     var firstUser: String by _firstUser
