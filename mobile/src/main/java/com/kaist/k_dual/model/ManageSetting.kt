@@ -51,7 +51,6 @@ object ManageSetting {
                 Log.d("phoneApp", "Settings changed:$settingsJson")
             }
         )
-
     }
 
     fun getSettings() {
