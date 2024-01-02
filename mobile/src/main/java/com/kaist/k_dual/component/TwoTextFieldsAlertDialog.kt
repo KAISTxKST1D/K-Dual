@@ -15,12 +15,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kaist.k_dual.ui.theme.RedUISolid
 import com.kaist.k_dual.ui.theme.KDualTheme
+import kotlin.math.min
 
 @Composable
 fun TwoTextFieldsAlertDialog(
@@ -33,8 +37,8 @@ fun TwoTextFieldsAlertDialog(
     outlinedInputParameters1: OutlinedInputParameters,
     outlinedInputParameters2: OutlinedInputParameters
 ) {
-    var textValue1 by remember { mutableStateOf("") }
-    var textValue2 by remember { mutableStateOf("") }
+    var textFieldValue1 by remember { mutableStateOf(TextFieldValue(outlinedInputParameters1.initialValue)) }
+    var textFieldValue2 by remember { mutableStateOf(TextFieldValue(outlinedInputParameters2.initialValue)) }
 
     val customColorScheme = lightColorScheme(
         surface = Color(0xFFFCECEC)
@@ -52,8 +56,8 @@ fun TwoTextFieldsAlertDialog(
                 modifier = modifier,
                 onDismissRequest = {
                     onDismiss()
-                    textValue1 = ""
-                    textValue2 = ""
+                    textFieldValue1 = TextFieldValue("")
+                    textFieldValue2 = TextFieldValue("")
                 },
                 title = {
                     Text(
@@ -72,10 +76,29 @@ fun TwoTextFieldsAlertDialog(
                         )
                         OutlinedTextField(
                             modifier = outlinedInputParameters1.modifier
-                                .focusRequester(focusRequester),
-                            value = textValue1,
-                            onValueChange = {
-                                textValue1 = it
+                                .focusRequester(focusRequester)
+                                .onFocusChanged { focusState ->
+                                    if (focusState.isFocused) {
+                                        textFieldValue1 =
+                                            textFieldValue1.copy(selection = TextRange(textFieldValue1.text.length))
+                                    }
+                                },
+                            value = textFieldValue1,
+                            onValueChange = { newValue ->
+                                textFieldValue1 = if (outlinedInputParameters1.maxLength != null) {
+                                    TextFieldValue(
+                                        text = newValue.text.substring(
+                                            0,
+                                            min(
+                                                newValue.text.length,
+                                                outlinedInputParameters1.maxLength
+                                            )
+                                        ),
+                                        selection = TextRange(newValue.text.length)
+                                    )
+                                } else {
+                                    newValue
+                                }
                             },
                             trailingIcon = {
                                 outlinedInputParameters1.suffix?.let {
@@ -103,18 +126,37 @@ fun TwoTextFieldsAlertDialog(
                                 focusedPlaceholderColor = Color(0xFFA79C9E),
                             ),
                             keyboardOptions = outlinedInputParameters1.keyboardOptions,
-                            isError = textValue1.isNotEmpty() && !outlinedInputParameters1.validation(
-                                textValue1
+                            isError = textFieldValue1.text.isNotEmpty() && !outlinedInputParameters1.validation(
+                                textFieldValue1.text
                             ),
                             maxLines = 1,
                             singleLine = true,
                         )
                         OutlinedTextField(
                             modifier = outlinedInputParameters2.modifier
-                                .padding(top = 6.dp),
-                            value = textValue2,
-                            onValueChange = {
-                                textValue2 = it
+                                .padding(top = 6.dp)
+                                .onFocusChanged { focusState ->
+                                    if (focusState.isFocused) {
+                                        textFieldValue2 =
+                                            textFieldValue2.copy(selection = TextRange(textFieldValue2.text.length))
+                                    }
+                                },
+                            value = textFieldValue2,
+                            onValueChange = { newValue ->
+                                textFieldValue2 = if (outlinedInputParameters2.maxLength != null) {
+                                    TextFieldValue(
+                                        text = newValue.text.substring(
+                                            0,
+                                            min(
+                                                newValue.text.length,
+                                                outlinedInputParameters2.maxLength
+                                            )
+                                        ),
+                                        selection = TextRange(newValue.text.length)
+                                    )
+                                } else {
+                                    newValue
+                                }
                             },
                             trailingIcon = {
                                 outlinedInputParameters2.suffix?.let {
@@ -142,8 +184,8 @@ fun TwoTextFieldsAlertDialog(
                                 focusedPlaceholderColor = Color(0xFFA79C9E),
                             ),
                             keyboardOptions = outlinedInputParameters2.keyboardOptions,
-                            isError = textValue2.isNotEmpty() && !outlinedInputParameters2.validation(
-                                textValue2
+                            isError = textFieldValue2.text.isNotEmpty() && !outlinedInputParameters2.validation(
+                                textFieldValue2.text
                             ),
                             maxLines = 1,
                             singleLine = true,
@@ -154,9 +196,9 @@ fun TwoTextFieldsAlertDialog(
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            onConfirm(textValue1, textValue2)
+                            onConfirm(textFieldValue1.text, textFieldValue2.text)
                         },
-                        enabled = textValue1.isNotEmpty() && textValue2.isNotEmpty(),
+                        enabled = textFieldValue1.text.isNotEmpty() && textFieldValue2.text.isNotEmpty(),
                         colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)
                     ) {
                         Text("Done", style = MaterialTheme.typography.labelLarge)
@@ -164,8 +206,8 @@ fun TwoTextFieldsAlertDialog(
                 },
                 dismissButton = {
                     TextButton(onClick = {
-                        textValue1 = ""
-                        textValue2 = ""
+                        textFieldValue1 = TextFieldValue("")
+                        textFieldValue2 = TextFieldValue("")
                         onDismiss()
                     }, colors = ButtonDefaults.textButtonColors(contentColor = RedUISolid)) {
                         Text("Cancel", style = MaterialTheme.typography.labelLarge)

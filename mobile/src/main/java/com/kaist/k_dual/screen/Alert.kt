@@ -232,6 +232,7 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                                 placeholder = stringResource(R.string.enter_the_glucose_value),
                                 suffix = ManageSetting.settings.glucoseUnits.label,
                                 label = stringResource(R.string.low_value),
+                                initialValue = userSetting.lowValue.toString(),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                 validation = {
                                     try {
@@ -276,9 +277,10 @@ fun AlertScreen(navController: NavController, isFirst: Boolean, onSendMessageFai
                             title = "High Value",
                             description = "Enter the high value of blood glucose to receive vibration alert.",
                             outlinedInputParameters = OutlinedInputParameters(
-                                placeholder = "Enter the glucose value",
+                                placeholder = stringResource(R.string.enter_the_glucose_value),
                                 suffix = ManageSetting.settings.glucoseUnits.label,
-                                label = "High Value",
+                                label = stringResource(R.string.high_value),
+                                initialValue = userSetting.highValue.toString(),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                 validation = {
                                     try {

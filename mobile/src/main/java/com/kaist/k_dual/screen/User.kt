@@ -137,6 +137,7 @@ fun UserScreen(
                             label = stringResource(R.string.name),
                             maxLength = 8,
                             allowEmpty = true,
+                            initialValue = userSetting.name
                         )
                     )
                 }
@@ -296,7 +297,8 @@ fun UserScreen(
                             outlinedInputParameters = OutlinedInputParameters(
                                 placeholder = stringResource(R.string.enter_or_paste_url),
                                 label = stringResource(R.string.url),
-                                validation = { urlPattern.matches(it) }
+                                validation = { urlPattern.matches(it) },
+                                initialValue = userSetting.nightscoutUrl
                             )
                         )
                     }
@@ -360,10 +362,12 @@ fun UserScreen(
                             outlinedInputParameters1 = OutlinedInputParameters(
                                 placeholder = stringResource(R.string.ex_user1),
                                 label = stringResource(R.string.id),
+                                initialValue = userSetting.dexcomId
                             ),
                             outlinedInputParameters2 = OutlinedInputParameters(
                                 placeholder = stringResource(R.string.ex_user2),
                                 label = stringResource(R.string.password),
+                                initialValue = userSetting.dexcomPassword
                             )
                         )
                     }
