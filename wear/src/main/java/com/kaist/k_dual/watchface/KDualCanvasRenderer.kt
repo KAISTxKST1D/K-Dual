@@ -43,6 +43,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 import com.kaist.k_dual.model.UseBloodGlucose
+import com.kaist.k_dual.model.UseSetting
 import com.kaist.k_dual.service.GlucoseUpdateService
 
 class KDualCanvasRenderer(
@@ -92,6 +93,7 @@ class KDualCanvasRenderer(
     private val sharedPrefChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
             updateSettings()
+            UseBloodGlucose.updateBloodGlucose(context)
             invalidate()
         }
     private val updateSettings: () -> Unit = {
