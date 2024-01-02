@@ -60,7 +60,7 @@
         </service>
 
         <service
-            android:name=".listener.ListenerService"
+            android:name=".service.ListenerService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

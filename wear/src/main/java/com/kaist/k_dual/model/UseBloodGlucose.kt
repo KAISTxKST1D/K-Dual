@@ -14,12 +14,12 @@ import com.kaist.k_canvas.SETTINGS_KEY
 import com.kaist.k_canvas.Setting
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.math.RoundingMode
 import kotlin.math.round
 
 val defaultGraphNightScoutData: List<NightScoutData> =
-    listOf(NightScoutData("", "", 0, "", 0, 0.0f, "", "", "", "", 0, 0, "", 0))
+    listOf(NightScoutData("", "", 0, "", 0.0, 0.0f, "", "", "", "", 0, 0, "", 0))
 val defaultGraphDexcomData: List<GlucoseEntry> = listOf(GlucoseEntry(0, 0.0, Trend.FLAT, 0))
 
 val dummyGraphDexcomData: List<GlucoseEntry> = listOf(
@@ -61,7 +61,6 @@ val dummyGraphDexcomData: List<GlucoseEntry> = listOf(
     GlucoseEntry(176, 9.8, Trend.SINGLEUP, 1701354013311L)
 )
 
-
 object UseBloodGlucose {
     private var _firstUser = mutableStateOf("-")
     var firstUser: String by _firstUser
@@ -86,6 +85,8 @@ object UseBloodGlucose {
 
     private var _secondUserGraphDexcomData = mutableStateOf(defaultGraphDexcomData)
     var secondUserGraphDexcomData: List<GlucoseEntry> by _secondUserGraphDexcomData
+    
+    private var updateJob: Job? = null
 
     fun updateBloodGlucose(context: Context) {
         val latestGlucoseProps = LatestGlucoseProps(180, 36)
@@ -111,7 +112,9 @@ object UseBloodGlucose {
 
         val glucoseUnit = settings.glucoseUnits
 
-        CoroutineScope(Dispatchers.Main).launch {
+        updateJob?.cancel()
+
+        updateJob = CoroutineScope(Dispatchers.Main).launch {
             when (settings.firstUserSetting.deviceType) {
                 DeviceType.Nightscout -> {
                     val dataArray = getNightScoutData(
@@ -201,8 +204,8 @@ object UseBloodGlucose {
                 val secondGlucoseData = recentThreeHourGlucoseData[1].sgv
                 when (glucoseUnit) {
                     GlucoseUnits.mg_dL -> {
-                        dataArray.add(recentGlucoseData.toString())
-                        dataArray.add((recentGlucoseData - secondGlucoseData).toString())
+                        dataArray.add(recentGlucoseData.toInt().toString())
+                        dataArray.add((recentGlucoseData - secondGlucoseData).toInt().toString())
                     }
 
                     GlucoseUnits.mmol_L -> {
@@ -262,10 +265,5 @@ object UseBloodGlucose {
             getDataJob.join()
         }
         return dataArray
-    }
-
-
-    private fun mgdlToMmol(mgdl: Int): Double {
-        return (mgdl / 18.0).toBigDecimal().setScale(2, RoundingMode.HALF_EVEN).toDouble()
     }
 }

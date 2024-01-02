@@ -18,7 +18,7 @@ data class NightScoutData(
     val device: String,
     val date: Long,
     val dateString: String,
-    val sgv: Int,
+    val sgv: Double,
     val delta: Float,
     val direction: String,
     val type: String,
@@ -44,7 +44,7 @@ class NightScout {
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
                 var body: List<NightScoutData> =
-                    listOf(NightScoutData("", "", 0, "", 0, 0.0f, "", "", "", "", 0, 0, "", 0))
+                    listOf(NightScoutData("", "", 0, "", 0.0, 0.0f, "", "", "", "", 0, 0, "", 0))
                 var done = false
                 val apiService = retrofit.create(ApiService::class.java)
                 apiService.getBGData(36).enqueue(object : Callback<List<NightScoutData>> {
