@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "579138516126",
+    "project_id": "k-dual",
+    "storage_bucket": "k-dual.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:579138516126:android:2040af4900f784cad2b78f",
+        "android_client_info": {
+          "package_name": "com.kaist.k_dual"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOol_kj8NAd41SHPgeL1lF4nmkGnL_jJ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
