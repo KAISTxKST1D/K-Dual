@@ -12,6 +12,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
+import android.net.wifi.WifiManager
 import android.os.BatteryManager
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -150,6 +151,8 @@ class KDualCanvasRenderer(
         }
     }
 
+    private var wifiLock: WifiManager.WifiLock
+
     init {
         context.registerReceiver(batteryReceiver, intentFilter)
         sharedPref.registerOnSharedPreferenceChangeListener(sharedPrefChangeListener)
@@ -157,6 +160,10 @@ class KDualCanvasRenderer(
         checkAlertConditionTask.run()
         val intent = Intent(context, GlucoseUpdateService::class.java)
         context.startService(intent)
+        val wifiManager = getSystemService(context, WifiManager::class.java)
+        wifiLock =
+            wifiManager!!.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "MyWifiLock")
+        wifiLock.acquire()
     }
 
     override fun onDestroy() {
@@ -165,6 +172,7 @@ class KDualCanvasRenderer(
         handler.removeCallbacks(checkAlertConditionTask)
         val intent = Intent(context, GlucoseUpdateService::class.java)
         context.stopService(intent)
+        wifiLock.release()
     }
 
     override suspend fun createSharedAssets(): KDualAssets {
