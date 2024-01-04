@@ -1,4 +1,4 @@
-package com.kaist.k_dual.presentation
+package com.kaist.k_dual.model
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -9,7 +9,6 @@ import androidx.compose.runtime.setValue
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
-import com.kaist.k_canvas.DefaultSetting
 import com.kaist.k_canvas.PREFERENCES_FILE_KEY
 import com.kaist.k_canvas.SETTINGS_KEY
 import com.kaist.k_canvas.Setting
@@ -19,11 +18,7 @@ object UseSetting {
     private val gson = Gson()
     var settings: Setting? by mutableStateOf(null)
 
-    private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
-        updateSettings()
-    }
-
-    private fun updateSettings() {
+    fun updateSettings() {
         val jsonString = sharedPreferences.getString(SETTINGS_KEY, null)
         Log.d("updateSettings", jsonString ?: "")
         settings = if (jsonString != null) {
@@ -42,13 +37,5 @@ object UseSetting {
     fun initialize(context: Context) {
         sharedPreferences = context.getSharedPreferences(PREFERENCES_FILE_KEY, Context.MODE_PRIVATE)
         updateSettings()
-    }
-
-    fun registerListener() {
-        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
-    }
-
-    fun unregisterListener() {
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
     }
 }

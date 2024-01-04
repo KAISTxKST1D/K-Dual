@@ -13,12 +13,12 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import java.lang.Exception
 
-data class nightScoutData(
+data class NightScoutData(
     val id: String,
     val device: String,
     val date: Long,
     val dateString: String,
-    val sgv: Int,
+    val sgv: Double,
     val delta: Float,
     val direction: String,
     val type: String,
@@ -32,31 +32,31 @@ data class nightScoutData(
 
 interface ApiService {
     @GET("api/v1/entries/sgv.json")
-    fun getBGData(@Query("count") count: Int): retrofit2.Call<List<nightScoutData>>
+    fun getBGData(@Query("count") count: Int): retrofit2.Call<List<NightScoutData>>
 }
 
 class NightScout {
-    suspend fun getBGDataByUrl(urlStr: String): Result<List<nightScoutData>> =
+    suspend fun getBGDataByUrl(urlStr: String): Result<List<NightScoutData>> =
         withContext(Dispatchers.IO) {
             try {
                 val retrofit: Retrofit = Retrofit.Builder()
                     .baseUrl(urlStr)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
-                var body: List<nightScoutData> =
-                    listOf(nightScoutData("", "", 0, "", 0, 0.0f, "", "", "", "", 0, 0, "", 0))
+                var body: List<NightScoutData> =
+                    listOf(NightScoutData("", "", 0, "", 0.0, 0.0f, "", "", "", "", 0, 0, "", 0))
                 var done = false
                 val apiService = retrofit.create(ApiService::class.java)
-                apiService.getBGData(36).enqueue(object : Callback<List<nightScoutData>> {
+                apiService.getBGData(36).enqueue(object : Callback<List<NightScoutData>> {
                     override fun onResponse(
-                        call: Call<List<nightScoutData>>,
-                        response: Response<List<nightScoutData>>
+                        call: Call<List<NightScoutData>>,
+                        response: Response<List<NightScoutData>>
                     ) {
                         body = response.body() ?: return
                         done = true
                     }
 
-                    override fun onFailure(call: Call<List<nightScoutData>>, t: Throwable) {
+                    override fun onFailure(call: Call<List<NightScoutData>>, t: Throwable) {
                         done = true
                         Log.e("getBGDataByUrl", t.message ?: "")
                     }

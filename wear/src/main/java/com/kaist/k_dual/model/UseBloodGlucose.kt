@@ -1,6 +1,9 @@
-package com.kaist.k_dual.presentation
+package com.kaist.k_dual.model
 
 import android.content.Context
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
@@ -9,33 +12,42 @@ import com.kaist.k_canvas.GlucoseUnits
 import com.kaist.k_canvas.PREFERENCES_FILE_KEY
 import com.kaist.k_canvas.SETTINGS_KEY
 import com.kaist.k_canvas.Setting
-import com.kaist.k_dual.model.ConfigurationProps
-import com.kaist.k_dual.model.DexcomClient
-import com.kaist.k_dual.model.DexcomServer
-import com.kaist.k_dual.model.GlucoseEntry
-import com.kaist.k_dual.model.LatestGlucoseProps
-import com.kaist.k_dual.model.NightScout
-import com.kaist.k_dual.model.Trend
-import com.kaist.k_dual.model.nightScoutData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.math.RoundingMode
 import kotlin.math.round
 
-val defaultGraphNightScoutData: List<nightScoutData> =
-    listOf(nightScoutData("", "", 0, "", 0, 0.0f, "", "", "", "", 0, 0, "", 0))
+val defaultGraphNightScoutData: List<NightScoutData> =
+    listOf(NightScoutData("", "", 0, "", 0.0, 0.0f, "", "", "", "", 0, 0, "", 0))
 val defaultGraphDexcomData: List<GlucoseEntry> = listOf(GlucoseEntry(0, 0.0, Trend.FLAT, 0))
 
 object UseBloodGlucose {
-    var firstUser: String = "-"
-    var secondUser: String = "-"
-    var firstUserDiff: String = "0"
-    var secondUserDiff: String = "0"
-    var firstUserGraphNightScoutData = defaultGraphNightScoutData
-    var secondUserGraphNightScoutData = defaultGraphNightScoutData
-    var firstUserGraphDexcomData = defaultGraphDexcomData
-    var secondUserGraphDexcomData = defaultGraphDexcomData
+    private var _firstUser = mutableStateOf("-")
+    var firstUser: String by _firstUser
+
+    private var _secondUser = mutableStateOf("-")
+    var secondUser: String by _secondUser
+
+    private var _firstUserDiff = mutableStateOf("0")
+    var firstUserDiff: String by _firstUserDiff
+
+    private var _secondUserDiff = mutableStateOf("0")
+    var secondUserDiff: String by _secondUserDiff
+
+    private var _firstUserGraphNightScoutData = mutableStateOf(defaultGraphNightScoutData)
+    var firstUserGraphNightScoutData: List<NightScoutData> by _firstUserGraphNightScoutData
+
+    private var _secondUserGraphNightScoutData = mutableStateOf(defaultGraphNightScoutData)
+    var secondUserGraphNightScoutData: List<NightScoutData> by _secondUserGraphNightScoutData
+
+    private var _firstUserGraphDexcomData = mutableStateOf(defaultGraphDexcomData)
+    var firstUserGraphDexcomData: List<GlucoseEntry> by _firstUserGraphDexcomData
+
+    private var _secondUserGraphDexcomData = mutableStateOf(defaultGraphDexcomData)
+    var secondUserGraphDexcomData: List<GlucoseEntry> by _secondUserGraphDexcomData
+    
+    private var updateJob: Job? = null
 
     fun updateBloodGlucose(context: Context) {
         val latestGlucoseProps = LatestGlucoseProps(180, 36)
@@ -61,7 +73,9 @@ object UseBloodGlucose {
 
         val glucoseUnit = settings.glucoseUnits
 
-        CoroutineScope(Dispatchers.Main).launch {
+        updateJob?.cancel()
+
+        updateJob = CoroutineScope(Dispatchers.Main).launch {
             when (settings.firstUserSetting.deviceType) {
                 DeviceType.Nightscout -> {
                     val dataArray = getNightScoutData(
@@ -69,7 +83,7 @@ object UseBloodGlucose {
                         glucoseUnit = glucoseUnit
                     )
                     if (dataArray.isNotEmpty()) {
-                        firstUserGraphNightScoutData = dataArray[0] as List<nightScoutData>
+                        firstUserGraphNightScoutData = dataArray[0] as List<NightScoutData>
                         firstUser = dataArray[1] as String
                         firstUserDiff = dataArray[2] as String
                     } else {
@@ -105,7 +119,7 @@ object UseBloodGlucose {
                             glucoseUnit = glucoseUnit
                         )
                         if (dataArray.isNotEmpty()) {
-                            secondUserGraphNightScoutData = dataArray[0] as List<nightScoutData>
+                            secondUserGraphNightScoutData = dataArray[0] as List<NightScoutData>
                             secondUser = dataArray[1] as String
                             secondUserDiff = dataArray[2] as String
                         } else {
@@ -146,13 +160,14 @@ object UseBloodGlucose {
                     NightScout().getBGDataByUrl(formattedUrl).getOrNull()
                         ?: return@launch
                 if (recentThreeHourGlucoseData.size < 2) return@launch
-                dataArray.add(recentThreeHourGlucoseData)
+                val sortedGlucoseData = recentThreeHourGlucoseData.sortedBy { it.date }
+                dataArray.add(sortedGlucoseData)
                 val recentGlucoseData = recentThreeHourGlucoseData[0].sgv
                 val secondGlucoseData = recentThreeHourGlucoseData[1].sgv
                 when (glucoseUnit) {
                     GlucoseUnits.mg_dL -> {
-                        dataArray.add(recentGlucoseData.toString())
-                        dataArray.add((recentGlucoseData - secondGlucoseData).toString())
+                        dataArray.add(recentGlucoseData.toInt().toString())
+                        dataArray.add((recentGlucoseData - secondGlucoseData).toInt().toString())
                     }
 
                     GlucoseUnits.mmol_L -> {
@@ -192,7 +207,8 @@ object UseBloodGlucose {
                         ?: return@launch
                 if (glucoseData.size < 2) return@launch
 
-                dataArray.add(glucoseData)
+                val sortedGlucoseData = glucoseData.sortedBy { it.timestamp }
+                dataArray.add(sortedGlucoseData)
                 val currentGlucoseData: GlucoseEntry = glucoseData[0]
                 val secondGlucoseData: GlucoseEntry = glucoseData[1]
                 when (glucoseUnit) {
@@ -212,10 +228,5 @@ object UseBloodGlucose {
             getDataJob.join()
         }
         return dataArray
-    }
-
-
-    private fun mgdlToMmol(mgdl: Int): Double {
-        return (mgdl / 18.0).toBigDecimal().setScale(2, RoundingMode.HALF_EVEN).toDouble()
     }
 }

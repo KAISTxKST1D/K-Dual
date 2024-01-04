@@ -53,6 +53,8 @@ import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.kaist.k_canvas.KCanvas
+import com.kaist.k_dual.model.UseBloodGlucose
+import com.kaist.k_dual.model.UseSetting
 import com.kaist.k_dual.model.mgdlToMmol
 import com.patrykandpatrick.vico.compose.chart.scroll.rememberChartScrollSpec
 import com.patrykandpatrick.vico.core.axis.AxisItemPlacer

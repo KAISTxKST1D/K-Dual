@@ -162,7 +162,7 @@ class DexcomClient(configurationProps: ConfigurationProps) {
                     val trend = Trend.valueOf(entry.Trend.uppercase(Locale.ROOT))
                     GlucoseEntry(
                         mgdl = entry.Value,
-                        mmol = mgdlToMmol(entry.Value),
+                        mmol = mgdlToMmol(entry.Value.toDouble()),
                         trend = trend,
                         timestamp = extractNumber(entry.WT)
                     )
@@ -182,7 +182,7 @@ class DexcomClient(configurationProps: ConfigurationProps) {
 
 }
 
-fun mgdlToMmol(mgdl: Int): Double {
+fun mgdlToMmol(mgdl: Double): Double {
     return (mgdl / 18.0).toBigDecimal().setScale(2, RoundingMode.HALF_EVEN).toDouble()
 }
 
