@@ -39,11 +39,8 @@ import androidx.core.app.ActivityCompat
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
-import android.os.Handler
-import android.os.Looper
 import android.os.PowerManager
 import com.kaist.k_dual.model.UseBloodGlucose
-import com.kaist.k_dual.model.UseSetting
 import com.kaist.k_dual.service.GlucoseUpdateService
 
 class KDualCanvasRenderer(
@@ -111,16 +108,6 @@ class KDualCanvasRenderer(
         }
     }
 
-    private val handler = Handler(Looper.getMainLooper())
-    private val updateInterval = 5 * 60 * 1000L
-
-    private val checkAlertConditionTask = object : Runnable {
-        override fun run() {
-            checkAlertCondition()
-            handler.postDelayed(this, updateInterval)
-        }
-    }
-
     private fun checkAlertCondition() {
         settings?.let {
             val firstUserBGValue = UseBloodGlucose.firstUser.toIntOrNull()
@@ -150,19 +137,26 @@ class KDualCanvasRenderer(
         }
     }
 
+    private val bgUpdateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == "com.kaist.k_dual.ACTION_BG_UPDATED") {
+                checkAlertCondition()
+            }
+        }
+    }
+
     init {
         context.registerReceiver(batteryReceiver, intentFilter)
         sharedPref.registerOnSharedPreferenceChangeListener(sharedPrefChangeListener)
         updateSettings()
-        checkAlertConditionTask.run()
         val intent = Intent(context, GlucoseUpdateService::class.java)
         context.startService(intent)
+        context.registerReceiver(bgUpdateReceiver, IntentFilter("com.kaist.k_dual.ACTION_BG_UPDATED"), Context.RECEIVER_NOT_EXPORTED)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         context.unregisterReceiver(batteryReceiver)
-        handler.removeCallbacks(checkAlertConditionTask)
         val intent = Intent(context, GlucoseUpdateService::class.java)
         context.stopService(intent)
     }
