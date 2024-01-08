@@ -49,7 +49,7 @@ object UseBloodGlucose {
     
     private var updateJob: Job? = null
 
-    fun updateBloodGlucose(context: Context) {
+    fun updateBloodGlucose(context: Context): Job? {
         val latestGlucoseProps = LatestGlucoseProps(180, 36)
 
         val sharedPref = context.getSharedPreferences(
@@ -69,7 +69,7 @@ object UseBloodGlucose {
             }
         } else {
             null
-        } ?: return
+        } ?: return updateJob
 
         val glucoseUnit = settings.glucoseUnits
 
@@ -149,6 +149,7 @@ object UseBloodGlucose {
                 }
             }
         }
+        return updateJob
     }
 
     private suspend fun getNightScoutData(url: String, glucoseUnit: GlucoseUnits): List<Any> {
