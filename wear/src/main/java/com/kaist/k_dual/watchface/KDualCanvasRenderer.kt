@@ -270,7 +270,9 @@ class KDualCanvasRenderer(
     }
 
     override fun onTapEvent(tapType: Int, tapEvent: TapEvent, complicationSlot: ComplicationSlot?) {
-        // For test blink effect
+        if (settings == null) {
+            return
+        }
         if (settings?.enableDualMode == true && tapEvent.yPos > watchRect.height() / 2) {
             if (tapType == TapType.UP) {
                 openWearApp(2)

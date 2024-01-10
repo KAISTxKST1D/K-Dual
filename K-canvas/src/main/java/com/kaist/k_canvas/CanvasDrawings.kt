@@ -168,8 +168,8 @@ class KCanvas {
 
             // Draw info text
             val textBounds = Rect()
-            val info1 = "Requires\nUser Setup"
-            val info2 = "Return to the mobile app\non your smartphone\nto complete setup."
+            val info1 = context.resources.getString(R.string.setup_info_title)
+            val info2 = context.resources.getString(R.string.setup_info_description)
             val info1Paint = KPaint.setupInfoPaint(1, unitF, typeface)
             val info2Paint = KPaint.setupInfoPaint(2, unitF, typeface)
             val info1LineHeight = unitF * 24f
