@@ -88,16 +88,25 @@ fun TextFieldAlertDialog(
                             value = textFieldValue,
                             onValueChange = { newValue ->
                                 textFieldValue = if (outlinedInputParameters.maxLength != null) {
-                                    TextFieldValue(
-                                        text = newValue.text.substring(
-                                            0,
-                                            min(
-                                                newValue.text.length,
-                                                outlinedInputParameters.maxLength
-                                            )
-                                        ),
-                                        selection = TextRange(newValue.text.length)
+                                    val trimmedText = newValue.text.substring(
+                                        0,
+                                        min(
+                                            newValue.text.length,
+                                            outlinedInputParameters.maxLength
+                                        )
                                     )
+                                    if (newValue.composition != null) {
+                                        TextFieldValue(
+                                            text = trimmedText,
+                                            selection = TextRange(newValue.selection.start),
+                                            composition = newValue.composition
+                                        )
+                                    } else {
+                                        TextFieldValue(
+                                            text = trimmedText,
+                                            selection = TextRange(newValue.text.length)
+                                        )
+                                    }
                                 } else {
                                     newValue
                                 }
