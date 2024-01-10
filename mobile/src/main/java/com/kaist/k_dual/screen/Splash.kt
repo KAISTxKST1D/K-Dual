@@ -58,7 +58,7 @@ fun SplashScreen(navController: NavController) {
                     modifier = Modifier.size(100.dp)
                 )
             }
-            val image: Painter = painterResource(id = R.drawable.colaborations)
+            val image: Painter = painterResource(id = R.drawable.collaborations)
             Image(
                 painter = image,
                 contentDescription = "Logo",
